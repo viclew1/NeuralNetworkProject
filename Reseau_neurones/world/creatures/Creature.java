@@ -147,10 +147,10 @@ public abstract class Creature
 		int cpt=0;
 		for (int i=0;i<captors.length;i++)
 		{
-			double[] results = captors[i].getResults();
-			for (int j=0;j<results.length;j++)
+			List<Double> results = captors[i].getResults();
+			for (int j=0;j<results.size();j++)
 			{
-				inputs[cpt] = results[j];
+				inputs[cpt] = results.get(j);
 				cpt++;
 			}
 		}
@@ -160,7 +160,6 @@ public abstract class Creature
 	}
 	
 	protected abstract void applyDecisions(double[] decisions);
-
 
 	protected void forward(double intensity)
 	{
@@ -177,16 +176,24 @@ public abstract class Creature
 			orientation+=orientationMax;
 	}
 
-
+	/**
+	 * Interactions
+	 */
+	
 	public abstract void interactWith(Collectable c);
+	
 	public abstract void interactWith(Creature c);
+	
 	public void interactWith(Delimitation d)
 	{
-		//hp-=d.getDegats();
+		hp-=d.getDamages();
+		if (hp<=0)
+			alive=false;
 	}
 
-
-	// CALCULS DE LA POSITION SUR L'ECRAN
+	/**
+	 *  CALCULS DE LA POSITION SUR L'ECRAN
+	 */
 
 	protected int xFinal()
 	{
@@ -203,7 +210,9 @@ public abstract class Creature
 		return (int) (size*SIZE);
 	}
 
-	// GETTERS
+	/**
+	 *  GETTERS
+	 */
 
 	public int getType()
 	{

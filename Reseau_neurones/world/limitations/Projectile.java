@@ -1,8 +1,6 @@
 package limitations;
 
-import static utils.Constantes.SCROLL_X;
-import static utils.Constantes.SCROLL_Y;
-import static utils.Constantes.SIZE;
+import static utils.Constantes.*;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -11,11 +9,11 @@ import creatures.Creature;
 
 public class Projectile extends Delimitation {
 	
-	private double speed, orientation;
+	private double speed, orientation, damages;
 	private Creature sender;
 
-	public Projectile(double x, double y, double size, double speed, double orientation, Creature sender) {
-		super(x, y, size, size, false);
+	public Projectile(double x, double y, double size, double speed, double orientation, double damages, Creature sender) {
+		super(x, y, size, size, damages, PROJECTILE);
 		
 		this.speed=speed;
 		this.orientation=orientation;
@@ -35,17 +33,15 @@ public class Projectile extends Delimitation {
 		x+=Math.cos(orientation)*speed;
 		y-=Math.sin(orientation)*speed;
 	}
-	
-	public double getSpeed() {
-		return this.speed;
-	}
-	
-	public double getOrientation() {
-		return this.orientation;
-	}
-	
-	public Creature getSender() {
-		return this.sender;
+
+	public double getDamages()
+	{
+		return damages;
 	}
 
+	public Creature getSender()
+	{
+		return sender;
+	}
+	
 }

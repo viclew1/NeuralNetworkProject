@@ -84,7 +84,6 @@ public abstract class World extends JPanel implements Epreuve
 	{
 
 		box=new DelimitationBox(0, 0, x, y);
-		delimitations.add(box);
 		initSelections();
 		initComputeThread();
 	}
@@ -124,17 +123,12 @@ public abstract class World extends JPanel implements Epreuve
 					for (int j=0;j<delimitations.size();j++)
 					{
 						Delimitation delim = delimitations.get(j);
-						if (!delim.isEmptyInside())
-						{
-							if (IntersectionsChecker.intersects(creature1,delim))
-								new CreaDelimInteraction(creature1,delim).process();;
-						}
-						else
-						{
-							if (!IntersectionsChecker.contains(delim,creature1))
-								new CreaDelimInteraction(creature1,delim).process();
-						}
+						if (IntersectionsChecker.intersects(creature1,delim))
+							new CreaDelimInteraction(creature1,delim).process();;
+
 					}
+					if (!IntersectionsChecker.contains(box,creature1))
+						new CreaDelimInteraction(creature1,box).process();
 					for (int j=i+1; j<creatures.size() ;j++)
 					{
 						Creature creature2 = creatures.get(j);
@@ -171,7 +165,7 @@ public abstract class World extends JPanel implements Epreuve
 			Creature creature1 = creatures.get(i);
 			if (!creature1.isAlive())
 			{
-				creatures.remove(creature1);
+				creatures.remove(i);
 				i--;
 			}
 		}
@@ -179,11 +173,13 @@ public abstract class World extends JPanel implements Epreuve
 		for (int i=0;i<delimitations.size();i++)
 		{
 			Delimitation delim = delimitations.get(i);
-			delim.update();
-			/**
-			 * TODO
-			 * Retirer de la liste si expiré
-			 */
+			if (delim.isExpired())
+			{
+				delimitations.remove(i);
+				i--;
+			}
+			else
+				delim.update();
 		}
 
 		for (int i=0;i<collectables.size();i++)
@@ -191,7 +187,7 @@ public abstract class World extends JPanel implements Epreuve
 			Collectable c = collectables.get(i);
 			if (c.isConsumed())
 			{
-				collectables.remove(c);
+				collectables.remove(i);
 				i--;
 			}
 			else
@@ -200,6 +196,16 @@ public abstract class World extends JPanel implements Epreuve
 					meatCount++;
 				else if (c.getType()==VEGETABLE)
 					vegetableCount++;
+			}
+		}
+
+		for (int i=0;i<delimitations.size();i++)
+		{
+			Delimitation delim = delimitations.get(i);
+			if (IntersectionsChecker.contains(box, delim))
+			{
+				delimitations.remove(i);
+				i--;
 			}
 		}
 
@@ -314,7 +320,7 @@ public abstract class World extends JPanel implements Epreuve
 		Draftman draftman = new Draftman();
 		if (DRAW_ALL && !sleepAndRefreshStop)
 		{
-			draftman.drawWorld(selectedCreature, creatures, collectables, delimitations, g);
+			draftman.drawWorld(selectedCreature, creatures, collectables, delimitations, box, g);
 			draftman.drawFPS(currentFrameRate(), g);
 		}
 		draftman.drawInfos(infosToPrint(), g);

@@ -8,6 +8,7 @@ import java.awt.geom.Rectangle2D;
 import collectables.Collectable;
 import creatures.Creature;
 import limitations.Delimitation;
+import limitations.DelimitationBox;
 
 public class IntersectionsChecker
 {
@@ -30,12 +31,6 @@ public class IntersectionsChecker
 				.intersects(new Rectangle2D.Double(creature2.getX(), creature2.getY(), creature2.getSize(), creature2.getSize()));
 	}
 	
-	public static boolean contains(Delimitation delim, Creature creature)
-	{
-		return new Rectangle2D.Double(delim.getX(), delim.getY(), delim.getW(), delim.getH())
-				.contains(new Point2D.Double(creature.getX()+creature.getSize()/2, creature.getY()+creature.getSize()/2));
-	}
-
 	public static boolean intersects(Line2D captorLine, Creature creature)
 	{
 		Rectangle2D creatureRect = new Rectangle2D.Double(creature.getX(), creature.getY(), creature.getSize(), creature.getSize());
@@ -89,6 +84,18 @@ public class IntersectionsChecker
 		}
 		path.closePath();
 		return path.contains(point);
+	}
+	
+	public static boolean contains(Delimitation delim, Creature creature)
+	{
+		return new Rectangle2D.Double(delim.getX(), delim.getY(), delim.getW(), delim.getH())
+				.contains(new Point2D.Double(creature.getX()+creature.getSize()/2, creature.getY()+creature.getSize()/2));
+	}
+	
+	public static boolean contains(DelimitationBox box, Delimitation delim)
+	{
+		return new Rectangle2D.Double(delim.getX(), delim.getY(), delim.getW(), delim.getH())
+				.contains(new Point2D.Double(delim.getX()+delim.getW()/2, delim.getY()+delim.getH()/2));
 	}
 
 }

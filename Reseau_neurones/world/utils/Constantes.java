@@ -21,11 +21,15 @@ public class Constantes
 	public static final double SIZE_MAX = 100;
 	public static double SCROLL_X = 0,SCROLL_Y = 0;
 
-	public static final int BEE  = 10;
-	public static final int WASP = 11;
-	public static final int TANK = 14;
-	public static final int VEGETABLE = 12;
-	public static final int MEAT = 13;
+	public static final int BEE  = 1;
+	public static final int WASP = 2;
+	public static final int TANK = 3;
+	
+	public static final int VEGETABLE = 11;
+	public static final int MEAT = 12;
+	
+	public static final int DELIMITATION_BOX = 21;
+	public static final int PROJECTILE = 22;
 
 	public static final String TYPE_BEE = "BEE";
 	public static final String TYPE_WASP = "WASP";

@@ -1,8 +1,6 @@
 package limitations;
 
-import static utils.Constantes.SCROLL_X;
-import static utils.Constantes.SCROLL_Y;
-import static utils.Constantes.SIZE;
+import static utils.Constantes.*;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -12,7 +10,7 @@ public class DelimitationBox extends Delimitation
 
 	public DelimitationBox(int x, int y, int w, int h)
 	{
-		super(x,y,w,h,true);
+		super(x,y,w,h,Double.MAX_VALUE,DELIMITATION_BOX);
 	}
 	
 	public void draw(Graphics g)

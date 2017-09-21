@@ -1,6 +1,7 @@
 package creatures.captors;
 
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.List;
 
 import collectables.Collectable;
@@ -12,7 +13,7 @@ public abstract class Captor
 	protected Creature creature;
 	protected double resultBees,resultWasps,resultVegetable,resultWalls,resultMeat;
 	protected final double range;
-	
+
 	public Captor(double range)
 	{
 		this.range=range;
@@ -38,16 +39,15 @@ public abstract class Captor
 	protected abstract void detectCollectables(List<Collectable> collectables);
 	protected abstract void detectDelimitations(List<Delimitation> delimitations);
 
-	public double[] getResults()
+	public List<Double> getResults()
 	{
-		return new double[]
-				{
-						resultBees,
-						resultWasps,
-						resultVegetable,
-						resultMeat,
-						resultWalls
-				};
+		List<Double> results = new ArrayList<>();
+		results.add(resultBees);
+		results.add(resultWasps);
+		results.add(resultVegetable);
+		results.add(resultMeat);
+		results.add(resultWalls);
+		return results;
 	}
-	
+
 }

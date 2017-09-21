@@ -80,21 +80,17 @@ public class WorldController extends Controller
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
-		double newSize,newScrollX,newScrollY;
+		double newSize;
 		double multiplier;
 		int rotation = e.getWheelRotation();
 		if (rotation > 0)
 			multiplier = Math.pow(0.9, rotation);
 		else
 			multiplier = Math.pow(1.1, -rotation);
-		newScrollX = SCROLL_X * multiplier;
-		newScrollY = SCROLL_Y * multiplier;
 		newSize = SIZE * multiplier;
 		if (newSize>SIZE_MAX) newSize=SIZE_MAX;
 		if (newSize<SIZE_MIN) newSize=SIZE_MIN;
 		SIZE=newSize;
-		//SCROLL_X = newScrollX;
-		//SCROLL_Y = newScrollY;
 	}
 
 	@Override
