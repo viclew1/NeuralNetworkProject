@@ -3,6 +3,7 @@ package creatures;
 import static utils.Constantes.*;
 
 import java.awt.Color;
+import java.util.List;
 
 import collectables.Collectable;
 import creatures.captors.Captor;
@@ -13,15 +14,17 @@ import limitations.Delimitation;
 public class Bee extends Creature
 {
 
-	public Bee(double x, double y, Individu brain)
+	public Bee(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations)
 	{
-		super(x, y, 1, 400, 0.7,
+		super(x, y, 1, 400, 0.7,1,
 				new Captor[]{
 						new EyeCaptor(Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI,6,Math.PI/4),
 				},
-				brain,	BEE, Color.YELLOW);
+				brain,	BEE, Color.YELLOW,
+				INPUT_COUNT_BEE,
+				creatures,collectables,delimitations);
 	}
 
 	@Override
@@ -58,24 +61,8 @@ public class Bee extends Creature
 	}
 
 	@Override
-	protected void updatePosition()
+	protected void applyDecisions(double[] decisions)
 	{
-		hp--;
-		if (hp<=0)
-			alive=false;
-		double[] inputs = new double[INPUT_COUNT_BEE];
-		int cpt=0;
-		for (int i=0;i<captors.length;i++)
-		{
-			double[] results = captors[i].getResults();
-			for (int j=0;j<results.length;j++)
-			{
-				inputs[cpt] = results[j];
-				cpt++;
-			}
-		}
-		inputs[cpt]=hp/hpMax;
-		double[] decisions = brain.getOutputs(inputs);
 		turn(2*(0.5-decisions[0]));
 		forward(1);
 	}

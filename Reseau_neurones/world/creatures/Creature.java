@@ -30,8 +30,16 @@ public abstract class Creature
 	private final int type;
 	private final Color color;
 	private boolean selected=false;
+	
+	protected int nbInput;
+	protected double hpLostPerInstant;
+	
+	protected List<Creature> creatures;
+	protected List<Collectable> collectables;
+	protected List<Delimitation> delimitations;
 
-	public Creature(double x, double y, double size, double hpMax, double speed, Captor[] captors, Individu brain, int type, Color color)
+	public Creature(double x, double y, double size, double hpMax, double speed, double hpLostPerInstant, Captor[] captors, Individu brain, int type, Color color,
+			int nbInput, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations)
 	{
 		this.x=x;
 		this.y=y;
@@ -39,11 +47,16 @@ public abstract class Creature
 		this.hpMax=hpMax;
 		this.hp=hpMax;
 		this.speed=speed;
+		this.hpLostPerInstant=hpLostPerInstant;
 		this.captors=captors;
 		this.brain=brain;
 		this.type=type;
 		this.alive=true;
 		this.color=color;
+		this.nbInput=nbInput;
+		this.creatures=creatures;
+		this.collectables=collectables;
+		this.delimitations=delimitations;
 		initCaptors();
 	}
 
@@ -119,13 +132,34 @@ public abstract class Creature
 			c.update(x, y, size, orientation);
 	}
 
-	public void detect(List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations)
+	public void detect()
 	{
 		for (Captor c : captors)
 			c.detect(creatures, collectables, delimitations);
 	}
 
-	protected abstract void updatePosition();
+	private void updatePosition()
+	{
+		hp-=hpLostPerInstant;
+		if (hp<=0)
+			alive=false;
+		double[] inputs = new double[nbInput];
+		int cpt=0;
+		for (int i=0;i<captors.length;i++)
+		{
+			double[] results = captors[i].getResults();
+			for (int j=0;j<results.length;j++)
+			{
+				inputs[cpt] = results[j];
+				cpt++;
+			}
+		}
+		inputs[cpt]=hp/hpMax;
+		double[] decisions = brain.getOutputs(inputs);
+		applyDecisions(decisions);
+	}
+	
+	protected abstract void applyDecisions(double[] decisions);
 
 
 	protected void forward(double intensity)

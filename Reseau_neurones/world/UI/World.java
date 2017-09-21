@@ -113,7 +113,7 @@ public abstract class World extends JPanel implements Epreuve
 				for (int i=indexStart; i<indexEnd ;i++)
 				{
 					Creature creature1 = creatures.get(i);
-					creature1.detect(creatures, collectables, delimitations);
+					creature1.detect();
 					creature1.update();
 					for (int j=0;j<collectables.size();j++)
 					{
@@ -331,12 +331,14 @@ public abstract class World extends JPanel implements Epreuve
 
 	public void generateBee(Individu intelligence)
 	{
-		creatures.add(new Bee(3+new Random().nextDouble()*(box.getW()/3), 3+new Random().nextDouble()*(box.getH()-6), intelligence));
+		creatures.add(new Bee(3+new Random().nextDouble()*(box.getW()/3), 3+new Random().nextDouble()*(box.getH()-6), intelligence,
+				creatures,collectables,delimitations));
 	}
 
 	public void generateWasp(Individu intelligence)
 	{
-		creatures.add(new Wasp(box.getW()*2/3+new Random().nextDouble()*(box.getW()/3-3), 3+new Random().nextDouble()*(box.getH()-6), intelligence));
+		creatures.add(new Wasp(box.getW()*2/3+new Random().nextDouble()*(box.getW()/3-3), 3+new Random().nextDouble()*(box.getH()-6), intelligence,
+				creatures,collectables,delimitations));
 	}
 
 

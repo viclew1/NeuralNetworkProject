@@ -3,6 +3,7 @@ package creatures;
 import static utils.Constantes.*;
 
 import java.awt.Color;
+import java.util.List;
 
 import collectables.Collectable;
 import creatures.captors.Captor;
@@ -13,15 +14,17 @@ import limitations.Delimitation;
 public class Wasp extends Creature
 {
 
-	public Wasp(double x, double y, Individu brain)
+	public Wasp(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations)
 	{
-		super(x, y, 2, 400, 0.35,
+		super(x, y, 2, 400, 0.35,1,
 				new Captor[]{
 						new EyeCaptor(Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI,6,Math.PI/4),
 				},
-				brain, WASP, Color.ORANGE);
+				brain, WASP, Color.ORANGE,
+				INPUT_COUNT_WASP,
+				creatures,collectables,delimitations);
 	}
 
 	@Override
@@ -63,26 +66,11 @@ public class Wasp extends Creature
 	}
 
 	@Override
-	protected void updatePosition()
+	protected void applyDecisions(double[] decisions)
 	{
-		hp--;
-		if (hp<=0)
-			alive=false;
-		double[] inputs = new double[INPUT_COUNT_WASP];
-		int cpt=0;
-		for (int i=0;i<captors.length;i++)
-		{
-			double[] results = captors[i].getResults();
-			for (int j=0;j<results.length;j++)
-			{
-				inputs[cpt] = results[j];
-				cpt++;
-			}
-		}
-		inputs[cpt]=hp/hpMax;
-		double[] decisions = brain.getOutputs(inputs);
 		turn(2*(0.5-decisions[0]));
 		forward(1);
 	}
+
 
 }

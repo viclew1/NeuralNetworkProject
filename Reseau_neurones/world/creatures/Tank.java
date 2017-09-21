@@ -1,6 +1,7 @@
 package creatures;
 
 import java.awt.Color;
+import java.util.List;
 
 import collectables.Collectable;
 import creatures.captors.Captor;
@@ -13,13 +14,14 @@ import static utils.Constantes.*;
 public class Tank extends Creature
 {
 
-	public Tank(double x, double y, Individu brain)
+	public Tank(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations)
 	{
-		super(x, y, 3, 500, 0.15, new Captor[] {
+		super(x, y, 3, 500, 0.15,0, new Captor[] {
 				new EyeCaptor(Math.PI/7,20,Math.PI/3),
 				new EyeCaptor(-Math.PI/7,20,Math.PI/3),
-		}, brain, TANK, Color.BLUE);
-		// TODO Auto-generated constructor stub
+		}, brain, TANK, Color.BLUE,
+				INPUT_COUNT_TANK,
+				creatures,collectables,delimitations);
 	}
 
 	@Override
@@ -37,22 +39,8 @@ public class Tank extends Creature
 	}
 
 	@Override
-	protected void updatePosition()
+	protected void applyDecisions(double[] decisions)
 	{
-		double[] inputs = new double[INPUT_COUNT_TANK];
-		int cpt=0;
-		for (int i=0;i<captors.length;i++)
-		{
-			double[] results = captors[i].getResults();
-			for (int j=0;j<results.length;j++)
-			{
-				inputs[cpt] = results[j];
-				cpt++;
-			}
-		}
-		inputs[cpt]=hp/hpMax;
-		double[] decisions = brain.getOutputs(inputs);
-		turn(2*(0.5-decisions[0]));
-		forward(1);
+
 	}
 }
