@@ -23,16 +23,27 @@ public class Constantes
 
 	public static final int BEE  = 10;
 	public static final int WASP = 11;
+	public static final int TANK = 14;
 	public static final int VEGETABLE = 12;
 	public static final int MEAT = 13;
 
 	public static final String TYPE_BEE = "BEE";
 	public static final String TYPE_WASP = "WASP";
+	public static final String TYPE_TANK = "TANK";
 	
 	
-	public static final int INPUT_COUNT=16;
-	public static final int HIDDEN_COUNT=12;
-	public static final int OUTPUT_COUNT=1;
+	public static final int INPUT_COUNT_BEE=16;
+	public static final int HIDDEN_COUNT_BEE=12;
+	public static final int OUTPUT_COUNT_BEE=1;
+	
+	public static final int INPUT_COUNT_WASP=16;
+	public static final int HIDDEN_COUNT_WASP=12;
+	public static final int OUTPUT_COUNT_WASP=1;
+
+	public static final int INPUT_COUNT_TANK=16;
+	public static final int HIDDEN_COUNT_TANK=12;
+	public static final int OUTPUT_COUNT_TANK=1;
+	
 	
 	public static final int FOOD_AMOUNT=1000;
 	

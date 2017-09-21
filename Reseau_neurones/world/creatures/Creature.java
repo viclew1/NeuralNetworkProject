@@ -8,7 +8,6 @@ import java.util.List;
 
 import collectables.Collectable;
 import creatures.captors.Captor;
-import creatures.captors.EyeCaptor;
 import genetics.Individu;
 import limitations.Delimitation;
 
@@ -32,7 +31,7 @@ public abstract class Creature
 	private final Color color;
 	private boolean selected=false;
 
-	public Creature(double x, double y, double size, double hpMax, double speed, Individu brain, int type, Color color)
+	public Creature(double x, double y, double size, double hpMax, double speed, Captor[] captors, Individu brain, int type, Color color)
 	{
 		this.x=x;
 		this.y=y;
@@ -40,11 +39,7 @@ public abstract class Creature
 		this.hpMax=hpMax;
 		this.hp=hpMax;
 		this.speed=speed;
-		this.captors=new Captor[]{
-				new EyeCaptor(Math.PI/7,10,Math.PI/3),
-				new EyeCaptor(-Math.PI/7,10,Math.PI/3),
-				new EyeCaptor(-Math.PI,6,Math.PI/4),
-		};
+		this.captors=captors;
 		this.brain=brain;
 		this.type=type;
 		this.alive=true;
@@ -130,27 +125,7 @@ public abstract class Creature
 			c.detect(creatures, collectables, delimitations);
 	}
 
-	protected void updatePosition()
-	{
-		hp--;
-		if (hp<=0)
-			alive=false;
-		double[] inputs = new double[INPUT_COUNT];
-		int cpt=0;
-		for (int i=0;i<captors.length;i++)
-		{
-			double[] results = captors[i].getResults();
-			for (int j=0;j<results.length;j++)
-			{
-				inputs[cpt] = results[j];
-				cpt++;
-			}
-		}
-		inputs[cpt]=hp/hpMax;
-		double[] decisions = brain.getOutputs(inputs);
-		turn(2*(0.5-decisions[0]));
-		forward(1);
-	}
+	protected abstract void updatePosition();
 
 
 	protected void forward(double intensity)
@@ -171,7 +146,10 @@ public abstract class Creature
 
 	public abstract void interactWith(Collectable c);
 	public abstract void interactWith(Creature c);
-	public abstract void interactWith(Delimitation d);
+	public void interactWith(Delimitation d)
+	{
+		//hp-=d.getDegats();
+	}
 
 
 	// CALCULS DE LA POSITION SUR L'ECRAN

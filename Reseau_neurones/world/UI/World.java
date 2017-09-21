@@ -1,22 +1,6 @@
 package UI;
 
-import static utils.Constantes.DRAW_ALL;
-import static utils.Constantes.DRAW_CAPTORS;
-import static utils.Constantes.DRAW_HP;
-import static utils.Constantes.FOOD_AMOUNT;
-import static utils.Constantes.HIDDEN_COUNT;
-import static utils.Constantes.INPUT_COUNT;
-import static utils.Constantes.MEAT;
-import static utils.Constantes.OUTPUT_COUNT;
-import static utils.Constantes.PAUSE;
-import static utils.Constantes.SCROLL_X;
-import static utils.Constantes.SCROLL_Y;
-import static utils.Constantes.SIZE;
-import static utils.Constantes.SLOW_MO_MODE;
-import static utils.Constantes.TYPE_BEE;
-import static utils.Constantes.TYPE_WASP;
-import static utils.Constantes.VEGETABLE;
-import static utils.Constantes.resetAllConstantes;
+import static utils.Constantes.*;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -190,6 +174,16 @@ public abstract class World extends JPanel implements Epreuve
 				creatures.remove(creature1);
 				i--;
 			}
+		}
+
+		for (int i=0;i<delimitations.size();i++)
+		{
+			Delimitation delim = delimitations.get(i);
+			delim.update();
+			/**
+			 * TODO
+			 * Retirer de la liste si expiré
+			 */
 		}
 
 		for (int i=0;i<collectables.size();i++)
@@ -393,8 +387,31 @@ public abstract class World extends JPanel implements Epreuve
 			{
 				Selection selection=new Selection(World.this, nbIndiv, nbGen, type);
 				selection.population=new Individu[selection.nombreIndividus];
+				int inputCpt,hiddenCpt,outputCpt;
+				switch (type)
+				{
+				case TYPE_BEE:
+					inputCpt=INPUT_COUNT_BEE;
+					hiddenCpt=HIDDEN_COUNT_BEE;
+					outputCpt=OUTPUT_COUNT_BEE;
+					break;
+				case TYPE_TANK:
+					inputCpt=INPUT_COUNT_TANK;
+					hiddenCpt=HIDDEN_COUNT_TANK;
+					outputCpt=OUTPUT_COUNT_TANK;
+					break;
+				case TYPE_WASP:
+					inputCpt=INPUT_COUNT_WASP;
+					hiddenCpt=HIDDEN_COUNT_WASP;
+					outputCpt=OUTPUT_COUNT_WASP;
+					break;
+				default:
+					inputCpt=-1;
+					hiddenCpt=-1;
+					outputCpt=-1;
+				}
 				for (int i=0;i<selection.nombreIndividus;i++)
-					selection.population[i]=new NeuralNetwork(type,INPUT_COUNT, HIDDEN_COUNT, OUTPUT_COUNT);
+					selection.population[i]=new NeuralNetwork(type,inputCpt, hiddenCpt, outputCpt);
 				Individu leDieu=selection.lancerSelection();
 				System.out.println(leDieu);
 			}

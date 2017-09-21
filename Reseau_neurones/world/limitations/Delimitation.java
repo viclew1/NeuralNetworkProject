@@ -20,7 +20,7 @@ public abstract class Delimitation
 	public abstract void draw(Graphics g);
 	
 	public abstract void update();
-
+	
 	public int getX()
 	{
 		return x;
