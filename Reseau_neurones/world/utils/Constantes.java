@@ -42,6 +42,10 @@ public class Constantes
 	public static boolean DRAW_ALL = true;
 	public static boolean PAUSE = false;
 	
+	public static final String[] creatures = new String[] {"Abeilles","Guepes"};
+	
+	
+	
 	public static void changePositionComputesPerSecond(int newFrequency) throws FrameRateTooLowException 
 	{
 		if (newFrequency < 5)

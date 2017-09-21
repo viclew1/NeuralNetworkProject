@@ -22,6 +22,12 @@ public class DelimitationBox extends Delimitation
 		g.drawRect((int)(x*SIZE+SCROLL_X), (int)(y*SIZE+SCROLL_Y), (int)(w*SIZE), (int)(h*SIZE));
 		g.setColor(oldColor);
 	}
+
+	@Override
+	public void update()
+	{
+		
+	}
 	
 	
 }
