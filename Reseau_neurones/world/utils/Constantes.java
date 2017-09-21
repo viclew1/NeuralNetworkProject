@@ -8,7 +8,7 @@ public class Constantes
 	private static int FRAME_RATE;
 	public static long TimeBetweenTwoComputes;
 	
-	public static final int POPULATION_SIZE_BEE = 200;
+	public static final int POPULATION_SIZE_BEE = 196;
 	public static final int POPULATION_SIZE_WASP = 50;
 	public static final int GENERATION_COUNT = 1000;
 

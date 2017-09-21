@@ -25,6 +25,10 @@ public class Connection
 	public void mutate()
 	{
 		weight += WeightValues.DELTA_WEIGHT*new Random().nextDouble();
+		if (weight > WeightValues.MAX_WEIGHT)
+			weight = WeightValues.MAX_WEIGHT;
+		if (weight < WeightValues.MIN_WEIGHT)
+			weight = WeightValues.MIN_WEIGHT;
 	}
 	
 	public double getWeight()
