@@ -5,10 +5,10 @@ import java.awt.Graphics;
 public abstract class Delimitation
 {
 
-	protected int x,y,w,h;
+	protected double x,y,w,h;
 	private boolean emptyEnside;
 
-	public Delimitation(int x, int y, int w, int h, boolean emptyInside)
+	public Delimitation(double x, double y, double w, double h, boolean emptyInside)
 	{
 		this.x=x;
 		this.y=y;
@@ -21,22 +21,22 @@ public abstract class Delimitation
 	
 	public abstract void update();
 
-	public int getX()
+	public double getX()
 	{
 		return x;
 	}
 
-	public int getY()
+	public double getY()
 	{
 		return y;
 	}
 
-	public int getW()
+	public double getW()
 	{
 		return w;
 	}
 
-	public int getH()
+	public double getH()
 	{
 		return h;
 	}
