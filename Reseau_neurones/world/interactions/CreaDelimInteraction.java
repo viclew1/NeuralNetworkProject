@@ -15,6 +15,7 @@ public class CreaDelimInteraction extends Interaction
 	public void process()
 	{
 		((Creature)o1).interactWith((Delimitation)o2);
+		((Delimitation)o2).interactWith((Creature)o1);
 	}
 
 }

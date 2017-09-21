@@ -11,7 +11,7 @@ public abstract class Collectable
 
 	protected double x,y;
 	protected boolean consumed;
-	private int type;
+	private final int type;
 	private double size;
 	
 	public Collectable(double x, double y, double size, int type)

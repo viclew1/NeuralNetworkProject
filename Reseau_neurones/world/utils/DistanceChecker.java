@@ -2,6 +2,7 @@ package utils;
 
 import collectables.Collectable;
 import creatures.Creature;
+import limitations.Delimitation;
 
 public class DistanceChecker
 {
@@ -12,6 +13,16 @@ public class DistanceChecker
 		double yy = y2 - y1;
 		double squaredLenght = Math.pow(xx, 2) + Math.pow(yy, 2);
 		return Math.max(0,Math.sqrt(squaredLenght)-d1-d2);
+	}
+	
+	public static double distance(Creature crea, Delimitation d)
+	{
+		double x1 = crea.getX()+crea.getSize()/2;
+		double y1 = crea.getY()+crea.getSize()/2;
+		
+		double x2 = d.getX()+d.getW()/2;
+		double y2 = d.getY()+d.getH()/2;
+		return distancePtoP(x1, y1, x2, y2, crea.getSize()/2, d.getW()/2);
 	}
 	
 	public static double distance(Creature crea1, Creature crea2)

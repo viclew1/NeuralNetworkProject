@@ -63,6 +63,12 @@ public class IntersectionsChecker
 	
 	public static boolean intersects(Line2D captorLine1, Line2D captorLine2, Delimitation delim)
 	{
+		Point2D delimPoint = new Point2D.Double(delim.getX()+delim.getW()/2, delim.getY()+delim.getH()/2);
+		return intersects(captorLine1,captorLine2,delimPoint);
+	}
+	
+	public static boolean intersects(Line2D captorLine1, Line2D captorLine2, DelimitationBox delim)
+	{
 		Rectangle2D delimRect = new Rectangle2D.Double(delim.getX(), delim.getY(), delim.getW(), delim.getH());
 		if (!delimRect.contains(captorLine1.getX2(),captorLine1.getY2()))
 			return true;
@@ -94,7 +100,7 @@ public class IntersectionsChecker
 	
 	public static boolean contains(DelimitationBox box, Delimitation delim)
 	{
-		return new Rectangle2D.Double(delim.getX(), delim.getY(), delim.getW(), delim.getH())
+		return new Rectangle2D.Double(box.getX(), box.getY(), box.getW(), box.getH())
 				.contains(new Point2D.Double(delim.getX()+delim.getW()/2, delim.getY()+delim.getH()/2));
 	}
 

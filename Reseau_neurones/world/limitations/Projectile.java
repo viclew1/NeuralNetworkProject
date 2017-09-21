@@ -6,24 +6,25 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import creatures.Creature;
+import creatures.ShooterCreature;
 
 public class Projectile extends Delimitation {
-	
-	private double speed, orientation, damages;
-	private Creature sender;
 
-	public Projectile(double x, double y, double size, double speed, double orientation, double damages, Creature sender) {
-		super(x, y, size, size, damages, PROJECTILE);
-		
+	private double speed, orientation;
+	private Color color;
+	
+	public Projectile(double x, double y, double size, double speed, double orientation, double damages, ShooterCreature sender, Color color) {
+		super(x, y, size, size, damages, sender, PROJECTILE);
+
 		this.speed=speed;
 		this.orientation=orientation;
-		this.sender=sender;
+		this.color=color;
 	}
 
 	@Override
 	public void draw(Graphics g) {
 		Color oldColor = g.getColor();
-		g.setColor(Color.RED);
+		g.setColor(color);
 		g.fillOval((int)(x*SIZE+SCROLL_X), (int)(y*SIZE+SCROLL_Y), (int)(w*SIZE), (int)(h*SIZE));
 		g.setColor(oldColor);
 	}
@@ -34,14 +35,14 @@ public class Projectile extends Delimitation {
 		y-=Math.sin(orientation)*speed;
 	}
 
-	public double getDamages()
+	@Override
+	public void interactWith(Creature o1)
 	{
-		return damages;
+		if (getSender()!=o1)
+		{
+			sender.targetReport(o1.getType());
+			expire();
+		}
 	}
 
-	public Creature getSender()
-	{
-		return sender;
-	}
-	
 }

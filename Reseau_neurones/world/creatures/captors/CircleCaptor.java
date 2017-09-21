@@ -6,6 +6,7 @@ import java.util.List;
 import collectables.Collectable;
 import creatures.Creature;
 import limitations.Delimitation;
+import limitations.DelimitationBox;
 
 public class CircleCaptor extends Captor
 {
@@ -44,7 +45,7 @@ public class CircleCaptor extends Captor
 	}
 
 	@Override
-	protected void detectDelimitations(List<Delimitation> delimitations)
+	protected void detectDelimitations(List<Delimitation> delimitations, DelimitationBox box)
 	{
 		// TODO Auto-generated method stub
 		

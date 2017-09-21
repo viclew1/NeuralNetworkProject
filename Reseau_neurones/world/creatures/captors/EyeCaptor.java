@@ -11,6 +11,7 @@ import java.util.List;
 import collectables.Collectable;
 import creatures.Creature;
 import limitations.Delimitation;
+import limitations.DelimitationBox;
 import utils.DistanceChecker;
 import utils.IntersectionsChecker;
 
@@ -78,17 +79,30 @@ public class EyeCaptor extends Captor
 		{
 			Creature c = creatures.get(i);
 			if (c!=null && c!=creature)
-				if (c.getType()==BEE)
+				switch (c.getType())
 				{
+				case BEE:
 					if (IntersectionsChecker.intersects(line1,line2,c))
 						if ((dist = DistanceChecker.distance(creature, c))<resultBees)
 							resultBees=dist;
-				}
-				else if (c.getType()==WASP)
-				{
+					break;
+				case WASP:
 					if (IntersectionsChecker.intersects(line1,line2,c))
 						if ((dist = DistanceChecker.distance(creature, c))<resultWasps)
 							resultWasps=dist;
+					break;
+				case SOLDIER:
+					if (IntersectionsChecker.intersects(line1,line2,c))
+						if ((dist = DistanceChecker.distance(creature, c))<resultSoldier)
+							resultSoldier=dist;
+					break;
+				case TANK:
+					if (IntersectionsChecker.intersects(line1,line2,c))
+						if ((dist = DistanceChecker.distance(creature, c))<resultTank)
+							resultTank=dist;
+					break;
+				default:
+					break;
 				}
 		}
 		resultBees/=range;
@@ -108,17 +122,20 @@ public class EyeCaptor extends Captor
 		for (int i=0;i<collectables.size();i++)
 		{
 			Collectable c = collectables.get(i);
-			if (c.getType()==VEGETABLE)
+			switch (c.getType())
 			{
+			case VEGETABLE:
 				if (IntersectionsChecker.intersects(line1,line2,c))
 					if ((dist = DistanceChecker.distance(creature, c))<resultVegetable)
 						resultVegetable=dist;
-			}
-			else if (c.getType()==MEAT)
-			{
+				break;
+			case MEAT:
 				if (IntersectionsChecker.intersects(line1,line2,c))
 					if ((dist = DistanceChecker.distance(creature, c))<resultMeat)
 						resultMeat=dist;
+				break;
+			default:
+				break;
 			}
 		}
 		resultVegetable/=range;
@@ -130,16 +147,34 @@ public class EyeCaptor extends Captor
 	}
 
 	@Override
-	protected void detectDelimitations(List<Delimitation> delimitations)
+	protected void detectDelimitations(List<Delimitation> delimitations, DelimitationBox box)
 	{
+		resultProjectile = Double.MAX_VALUE;
+		double dist;
 		for (int i=0;i<delimitations.size();i++)
 		{
 			Delimitation d = delimitations.get(i);
-			if (IntersectionsChecker.intersects(line1,line2,d))
-			{
-				resultWalls=1;
-				return;
-			}
+			if (d!=null)
+				switch (d.getType())
+				{
+				case PROJECTILE:
+					if (IntersectionsChecker.intersects(line1,line2,d))
+						if ((dist = DistanceChecker.distance(creature, d))<resultProjectile)
+							resultProjectile=dist;
+					break;
+				default:
+					break;
+				}
+		}
+
+		resultProjectile/=range;
+		if (resultProjectile > 1) resultProjectile = 0;
+		else resultProjectile = 1 - resultProjectile;
+
+		if (IntersectionsChecker.intersects(line1,line2,box))
+		{
+			resultWalls=1;
+			return;
 		}
 		resultWalls = 0;
 	}

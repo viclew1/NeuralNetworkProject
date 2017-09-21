@@ -8,8 +8,10 @@ public class Constantes
 	private static int FRAME_RATE;
 	public static long TimeBetweenTwoComputes;
 	
-	public static final int POPULATION_SIZE_BEE = 196;
-	public static final int POPULATION_SIZE_WASP = 50;
+	public static final int POPULATION_SIZE_BEE = 200;
+	public static final int POPULATION_SIZE_WASP = 100;
+	public static final int POPULATION_SIZE_TANK = 100;
+	public static final int POPULATION_SIZE_SOLDIER = 100;
 	public static final int GENERATION_COUNT = 1000;
 
 	public static final int CREATURE 		= 1;
@@ -24,6 +26,7 @@ public class Constantes
 	public static final int BEE  = 1;
 	public static final int WASP = 2;
 	public static final int TANK = 3;
+	public static final int SOLDIER = 4;
 	
 	public static final int VEGETABLE = 11;
 	public static final int MEAT = 12;
@@ -34,6 +37,7 @@ public class Constantes
 	public static final String TYPE_BEE = "BEE";
 	public static final String TYPE_WASP = "WASP";
 	public static final String TYPE_TANK = "TANK";
+	public static final String TYPE_SOLDIER = "SOLDIER";
 	
 	
 	public static final int INPUT_COUNT_BEE=16;
@@ -44,12 +48,15 @@ public class Constantes
 	public static final int HIDDEN_COUNT_WASP=12;
 	public static final int OUTPUT_COUNT_WASP=1;
 
-	public static final int INPUT_COUNT_TANK=16;
-	public static final int HIDDEN_COUNT_TANK=12;
-	public static final int OUTPUT_COUNT_TANK=1;
+	public static final int INPUT_COUNT_TANK=13;
+	public static final int HIDDEN_COUNT_TANK=8;
+	public static final int OUTPUT_COUNT_TANK=4;
 	
+	public static final int INPUT_COUNT_SOLDIER=13;
+	public static final int HIDDEN_COUNT_SOLDIER=8;
+	public static final int OUTPUT_COUNT_SOLDIER=4;
 	
-	public static final int FOOD_AMOUNT=1000;
+	public static int FOOD_AMOUNT=1000;
 	
 	public static boolean DRAW_CAPTORS = false;
 	public static boolean DRAW_HP = false;
@@ -57,7 +64,7 @@ public class Constantes
 	public static boolean DRAW_ALL = true;
 	public static boolean PAUSE = false;
 	
-	public static final String[] creatures = new String[] {"Abeilles","Guepes"};
+	public static final String[] creatures = new String[] {"Abeilles","Guepes","Soldats","Tanks"};
 	
 	
 	

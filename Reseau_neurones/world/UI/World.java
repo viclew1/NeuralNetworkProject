@@ -19,6 +19,8 @@ import UI.controls.WorldController;
 import collectables.Collectable;
 import creatures.Bee;
 import creatures.Creature;
+import creatures.Soldier;
+import creatures.Tank;
 import creatures.Wasp;
 import genetics.Epreuve;
 import genetics.Individu;
@@ -114,29 +116,34 @@ public abstract class World extends JPanel implements Epreuve
 					Creature creature1 = creatures.get(i);
 					creature1.detect();
 					creature1.update();
+					if (!creature1.isAlive())
+						continue;
 					for (int j=0;j<collectables.size();j++)
 					{
 						Collectable collect = collectables.get(j);
-						if (IntersectionsChecker.intersects(creature1,collect))
-							new CreaCollecInteraction(creature1,collect).process();;
+						if (!collect.isConsumed())
+							if (IntersectionsChecker.intersects(creature1,collect))
+								new CreaCollecInteraction(creature1,collect).process();
 					}
 					for (int j=0;j<delimitations.size();j++)
 					{
 						Delimitation delim = delimitations.get(j);
-						if (IntersectionsChecker.intersects(creature1,delim))
-							new CreaDelimInteraction(creature1,delim).process();;
-
+						if (delim!=null)
+							if (!delim.isExpired())
+								if (IntersectionsChecker.intersects(creature1,delim))
+									new CreaDelimInteraction(creature1,delim).process();
 					}
 					if (!IntersectionsChecker.contains(box,creature1))
 						new CreaDelimInteraction(creature1,box).process();
 					for (int j=i+1; j<creatures.size() ;j++)
 					{
 						Creature creature2 = creatures.get(j);
-						if (IntersectionsChecker.intersects(creature1,creature2))
-							new CreaCreaInteraction(creature1,creature2).process();;
+						if (creature2.isAlive())
+							if (IntersectionsChecker.intersects(creature1,creature2))
+								new CreaCreaInteraction(creature1,creature2).process();
 					}
 					if (!IntersectionsChecker.contains(box,creature1))
-						new CreaDelimInteraction(creature1,box).process();;
+						new CreaDelimInteraction(creature1,box).process();
 				}
 			}
 		});
@@ -173,7 +180,7 @@ public abstract class World extends JPanel implements Epreuve
 		for (int i=0;i<delimitations.size();i++)
 		{
 			Delimitation delim = delimitations.get(i);
-			if (delim.isExpired())
+			if (delim.isExpired() || !IntersectionsChecker.contains(box, delim))
 			{
 				delimitations.remove(i);
 				i--;
@@ -199,15 +206,6 @@ public abstract class World extends JPanel implements Epreuve
 			}
 		}
 
-		for (int i=0;i<delimitations.size();i++)
-		{
-			Delimitation delim = delimitations.get(i);
-			if (IntersectionsChecker.contains(box, delim))
-			{
-				delimitations.remove(i);
-				i--;
-			}
-		}
 
 		for (int i=collectables.size();i<FOOD_AMOUNT;i++)
 			generateCollectables();
@@ -265,7 +263,7 @@ public abstract class World extends JPanel implements Epreuve
 		}
 		es.shutdown();
 		try {
-			es.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+			es.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -338,13 +336,25 @@ public abstract class World extends JPanel implements Epreuve
 	public void generateBee(Individu intelligence)
 	{
 		creatures.add(new Bee(3+new Random().nextDouble()*(box.getW()/3), 3+new Random().nextDouble()*(box.getH()-6), intelligence,
-				creatures,collectables,delimitations));
+				creatures,collectables,delimitations,box));
 	}
 
 	public void generateWasp(Individu intelligence)
 	{
 		creatures.add(new Wasp(box.getW()*2/3+new Random().nextDouble()*(box.getW()/3-3), 3+new Random().nextDouble()*(box.getH()-6), intelligence,
-				creatures,collectables,delimitations));
+				creatures,collectables,delimitations,box));
+	}
+
+	public void generateSoldier(Individu intelligence)
+	{
+		creatures.add(new Soldier(3+new Random().nextDouble()*(box.getW()-6), 3+new Random().nextDouble()*(box.getH()-6), intelligence,
+				creatures,collectables,delimitations,box));
+	}
+
+	public void generateTank(Individu intelligence)
+	{
+		creatures.add(new Tank(3+new Random().nextDouble()*(box.getW()-6), 3+new Random().nextDouble()*(box.getH()-6), intelligence,
+				creatures,collectables,delimitations,box));
 	}
 
 
@@ -366,7 +376,15 @@ public abstract class World extends JPanel implements Epreuve
 			case TYPE_BEE:
 				generateBee(i);
 				break;
+			case TYPE_TANK:
+				generateTank(i);
+				break;
+			case TYPE_SOLDIER:
+				generateSoldier(i);
+				break;
 			default:
+				System.out.println("World.lancerEpreuve : Type non défini");
+				System.exit(0);
 				break;
 			}
 		}
@@ -395,7 +413,7 @@ public abstract class World extends JPanel implements Epreuve
 			{
 				Selection selection=new Selection(World.this, nbIndiv, nbGen, type);
 				selection.population=new Individu[selection.nombreIndividus];
-				int inputCpt,hiddenCpt,outputCpt;
+				int inputCpt=-1,hiddenCpt=-1,outputCpt=-1;
 				switch (type)
 				{
 				case TYPE_BEE:
@@ -413,10 +431,14 @@ public abstract class World extends JPanel implements Epreuve
 					hiddenCpt=HIDDEN_COUNT_WASP;
 					outputCpt=OUTPUT_COUNT_WASP;
 					break;
+				case TYPE_SOLDIER:
+					inputCpt=INPUT_COUNT_SOLDIER;
+					hiddenCpt=HIDDEN_COUNT_SOLDIER;
+					outputCpt=OUTPUT_COUNT_SOLDIER;
+					break;
 				default:
-					inputCpt=-1;
-					hiddenCpt=-1;
-					outputCpt=-1;
+					System.out.println("World.initSelection - Type inconnu");
+					System.exit(0);
 				}
 				for (int i=0;i<selection.nombreIndividus;i++)
 					selection.population[i]=new NeuralNetwork(type,inputCpt, hiddenCpt, outputCpt);
@@ -435,6 +457,7 @@ public abstract class World extends JPanel implements Epreuve
 
 	public synchronized void finTest()
 	{
+		delimitations.clear();
 		collectables.clear();
 		done=true;
 		generationCount++;
@@ -472,7 +495,17 @@ public abstract class World extends JPanel implements Epreuve
 
 	public void genocide()
 	{
+		sleepAndRefreshStop=true;
+		try
+		{
+			Thread.sleep(1000);
+		} catch (InterruptedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		creatures.clear();
+		sleepAndRefreshStop=false;
 	}
 
 	public void selectCreature(Point point)

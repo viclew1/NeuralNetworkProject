@@ -1,5 +1,7 @@
 package creatures;
 
+import static utils.Constantes.*;
+
 import java.awt.Color;
 import java.util.List;
 
@@ -10,21 +12,19 @@ import genetics.Individu;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
 
-import static utils.Constantes.*;
-
-public class Tank extends ShooterCreature
+public class Soldier extends ShooterCreature
 {
 
-	public Tank(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
+	public Soldier(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
-		super(x, y, 3, 500, 0.15,0.05,
-				0.2,1.2,150,Color.BLACK,
+		super(x, y, 1.5, 500, 0.40,0.05,
+				0.4,1,60,Color.RED,
 				new Captor[] {
-				new EyeCaptor(Math.PI/7,10,Math.PI/3),
-				new EyeCaptor(-Math.PI/7,10,Math.PI/3),
-				new EyeCaptor(0, 100, Math.PI/24),
-		}, brain, TANK, Color.BLUE,
-				INPUT_COUNT_TANK,
+						new EyeCaptor(Math.PI/7,10,Math.PI/3),
+						new EyeCaptor(-Math.PI/7,10,Math.PI/3),
+						new EyeCaptor(0, 100, Math.PI/24),
+		}, brain, SOLDIER, Color.CYAN,
+				INPUT_COUNT_SOLDIER,
 				creatures,collectables,delimitations, box);
 	}
 
@@ -32,14 +32,14 @@ public class Tank extends ShooterCreature
 	public void interactWith(Collectable c)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void interactWith(Creature c)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -59,10 +59,10 @@ public class Tank extends ShooterCreature
 		switch (targetType)
 		{
 		case SOLDIER:
-			brain.addScore(1);
+			brain.addScore(-1);
 			break;
 		case TANK:
-			brain.addScore(5);
+			brain.addScore(1);
 			break;
 		default:
 			break;

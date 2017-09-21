@@ -2,15 +2,21 @@ package limitations;
 
 import java.awt.Graphics;
 
+import creatures.Creature;
+import creatures.ShooterCreature;
+
 public abstract class Delimitation
 {
 
 	protected double x,y,w,h;
+	protected final ShooterCreature sender;
+	protected double damages;
+	
 	private boolean expired=false;
-	private double damages;
-	private int type;
 
-	public Delimitation(double x, double y, double w, double h, double damages, int type)
+	private final int type;
+
+	public Delimitation(double x, double y, double w, double h, double damages, ShooterCreature sender, int type)
 	{
 		this.x=x;
 		this.y=y;
@@ -18,12 +24,24 @@ public abstract class Delimitation
 		this.h=h;
 		this.type=type;
 		this.damages=damages;
+		this.sender=sender;
 	}
 
 	public abstract void draw(Graphics g);
 	
 	public abstract void update();
 
+	public abstract void interactWith(Creature o1);
+	
+	public void expire()
+	{
+		expired=true;
+	}
+	
+	/**
+	 * Getters
+	 */
+	
 	public double getX()
 	{
 		return x;
@@ -48,10 +66,10 @@ public abstract class Delimitation
 	{
 		return damages;
 	}
-	
-	public void expire()
+
+	public Creature getSender()
 	{
-		expired=true;
+		return sender;
 	}
 	
 	public boolean isExpired()
@@ -63,6 +81,4 @@ public abstract class Delimitation
 	{
 		return type;
 	}
-
-
 }

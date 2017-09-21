@@ -10,11 +10,12 @@ import creatures.captors.Captor;
 import creatures.captors.EyeCaptor;
 import genetics.Individu;
 import limitations.Delimitation;
+import limitations.DelimitationBox;
 
-public class Bee extends Creature
+public class Bee extends InsectCreature
 {
 
-	public Bee(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations)
+	public Bee(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
 		super(x, y, 1, 400, 0.7,1,
 				new Captor[]{
@@ -24,7 +25,7 @@ public class Bee extends Creature
 				},
 				brain,	BEE, Color.YELLOW,
 				INPUT_COUNT_BEE,
-				creatures,collectables,delimitations);
+				creatures,collectables,delimitations,box);
 	}
 
 	@Override
@@ -64,6 +65,6 @@ public class Bee extends Creature
 	protected void applyDecisions(double[] decisions)
 	{
 		turn(2*(0.5-decisions[0]));
-		forward(1);
+		moveFront(1);
 	}
 }

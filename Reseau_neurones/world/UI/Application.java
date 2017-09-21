@@ -172,7 +172,8 @@ public class Application extends JFrame{
 	private void generateWorldButtonActionPerformed(java.awt.event.ActionEvent evt) {      
 		int x=Integer.parseInt(jTextField2.getText());
 		int y=Integer.parseInt(jTextField3.getText());
-		this.world=new WorldBeesWasps();
+		//this.world=new WorldBeesWasps();
+		this.world=new WorldOfTanks();
 		worldPanel.add(world);
 		worldPanel.repaint();
 		world.start(x, y);

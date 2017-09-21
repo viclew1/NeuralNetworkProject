@@ -10,6 +10,8 @@ import collectables.Collectable;
 import creatures.captors.Captor;
 import genetics.Individu;
 import limitations.Delimitation;
+import limitations.DelimitationBox;
+import limitations.Projectile;
 
 public abstract class Creature
 {
@@ -30,16 +32,18 @@ public abstract class Creature
 	private final int type;
 	private final Color color;
 	private boolean selected=false;
-	
+
 	protected int nbInput;
 	protected double hpLostPerInstant;
-	
+
 	protected List<Creature> creatures;
 	protected List<Collectable> collectables;
 	protected List<Delimitation> delimitations;
+	protected DelimitationBox box;
 
-	public Creature(double x, double y, double size, double hpMax, double speed, double hpLostPerInstant, Captor[] captors, Individu brain, int type, Color color,
-			int nbInput, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations)
+	public Creature(double x, double y, double size, double hpMax, double speed, double hpLostPerInstant, Captor[] captors,
+			int[] thingsToSee, Individu brain, int type, Color color, int nbInput, List<Creature> creatures, 
+			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
 		this.x=x;
 		this.y=y;
@@ -57,7 +61,8 @@ public abstract class Creature
 		this.creatures=creatures;
 		this.collectables=collectables;
 		this.delimitations=delimitations;
-		initCaptors();
+		this.box=box;
+		initCaptors(thingsToSee);
 	}
 
 	public void draw(Graphics g, boolean selected)
@@ -117,11 +122,12 @@ public abstract class Creature
 		updateCaptors();
 	}
 
-	protected void initCaptors()
+	protected void initCaptors(int[] thingsToSee)
 	{
 		for (Captor c : captors)
 		{
 			c.setCreature(this);
+			c.setThingsToSee(thingsToSee);
 			c.update(x, y, size, orientation);
 		}
 	}
@@ -135,7 +141,7 @@ public abstract class Creature
 	public void detect()
 	{
 		for (Captor c : captors)
-			c.detect(creatures, collectables, delimitations);
+			c.detect(creatures, collectables, delimitations, box);
 	}
 
 	private void updatePosition()
@@ -158,10 +164,10 @@ public abstract class Creature
 		double[] decisions = brain.getOutputs(inputs);
 		applyDecisions(decisions);
 	}
-	
+
 	protected abstract void applyDecisions(double[] decisions);
 
-	protected void forward(double intensity)
+	protected void moveFront(double intensity)
 	{
 		x+=Math.cos(orientation)*speed*intensity;
 		y-=Math.sin(orientation)*speed*intensity;
@@ -176,16 +182,31 @@ public abstract class Creature
 			orientation+=orientationMax;
 	}
 
+	protected void straff(double intensity)
+	{
+		x-=Math.cos(orientation+Math.PI/2)*speed*intensity;
+		y+=Math.sin(orientation+Math.PI/2)*speed*intensity;
+	}
+
 	/**
 	 * Interactions
 	 */
-	
+
 	public abstract void interactWith(Collectable c);
-	
+
 	public abstract void interactWith(Creature c);
-	
+
 	public void interactWith(Delimitation d)
 	{
+		switch (d.getType())
+		{
+		case PROJECTILE:
+			if (((Projectile)d).getSender()==this)
+				return;
+			break;
+		default:
+			break;
+		}
 		hp-=d.getDamages();
 		if (hp<=0)
 			alive=false;

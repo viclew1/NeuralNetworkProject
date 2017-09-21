@@ -10,11 +10,12 @@ import creatures.captors.Captor;
 import creatures.captors.EyeCaptor;
 import genetics.Individu;
 import limitations.Delimitation;
+import limitations.DelimitationBox;
 
-public class Wasp extends Creature
+public class Wasp extends InsectCreature
 {
 
-	public Wasp(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations)
+	public Wasp(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
 		super(x, y, 2, 400, 0.35,1,
 				new Captor[]{
@@ -24,7 +25,7 @@ public class Wasp extends Creature
 				},
 				brain, WASP, Color.ORANGE,
 				INPUT_COUNT_WASP,
-				creatures,collectables,delimitations);
+				creatures,collectables,delimitations, box);
 	}
 
 	@Override
@@ -69,7 +70,7 @@ public class Wasp extends Creature
 	protected void applyDecisions(double[] decisions)
 	{
 		turn(2*(0.5-decisions[0]));
-		forward(1);
+		moveFront(1);
 	}
 
 
