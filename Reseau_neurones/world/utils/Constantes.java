@@ -12,7 +12,7 @@ public class Constantes
 	public static final int POPULATION_SIZE_WASP = 100;
 	public static final int POPULATION_SIZE_TANK = 100;
 	public static final int POPULATION_SIZE_SOLDIER = 100;
-	public static final int GENERATION_COUNT = 1000;
+	public static final int GENERATION_COUNT = 100000;
 
 	public static final int CREATURE 		= 1;
 	public static final int COLLECTABLE 	= 2;

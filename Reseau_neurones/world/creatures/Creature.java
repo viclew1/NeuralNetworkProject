@@ -208,6 +208,7 @@ public abstract class Creature
 			break;
 		}
 		hp-=d.getDamages();
+		brain.addScore(-6);
 		if (hp<=0)
 			alive=false;
 	}

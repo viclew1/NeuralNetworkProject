@@ -22,7 +22,7 @@ public class Tank extends ShooterCreature
 				new Captor[] {
 				new EyeCaptor(Math.PI/7,10,Math.PI/3),
 				new EyeCaptor(-Math.PI/7,10,Math.PI/3),
-				new EyeCaptor(0, 100, Math.PI/24),
+				new EyeCaptor(-Math.PI,5,Math.PI/2),
 		}, brain, TANK, Color.BLUE,
 				INPUT_COUNT_TANK,
 				creatures,collectables,delimitations, box);
