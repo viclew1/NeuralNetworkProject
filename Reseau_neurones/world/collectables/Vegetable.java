@@ -24,4 +24,10 @@ public class Vegetable extends Collectable
 		g.setColor(oldColor);
 	}
 
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

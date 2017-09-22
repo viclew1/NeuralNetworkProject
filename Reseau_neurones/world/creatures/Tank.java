@@ -31,8 +31,25 @@ public class Tank extends ShooterCreature
 	@Override
 	public void interactWith(Collectable c)
 	{
-		// TODO Auto-generated method stub
-		
+		if (c.isConsumed()) {
+			return;
+		}
+		switch (c.getType())
+		{
+		case FUEL:
+			brain.addScore(10);
+			hp+=50;
+			if (hp>hpMax) {
+				hp=hpMax;
+			}
+			c.consume();
+			break;
+		case POWERUP:
+			
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override

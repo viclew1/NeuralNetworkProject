@@ -23,6 +23,7 @@ public abstract class Collectable
 		this.type=type;
 	}
 	
+	public abstract void update();
 	public abstract void draw(Graphics g);
 	public void consume()
 	{

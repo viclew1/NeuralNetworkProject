@@ -30,6 +30,8 @@ public class Constantes
 	
 	public static final int VEGETABLE = 11;
 	public static final int MEAT = 12;
+	public static final int FUEL = 13;
+	public static final int POWERUP = 14;
 	
 	public static final int DELIMITATION_BOX = 21;
 	public static final int PROJECTILE = 22;
