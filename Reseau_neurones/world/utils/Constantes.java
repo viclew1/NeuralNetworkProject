@@ -41,6 +41,7 @@ public class Constantes
 	public static final String TYPE_TANK = "TANK";
 	public static final String TYPE_SOLDIER = "SOLDIER";
 	
+	public static int GENERATION_LENGTH;
 	
 	public static final int INPUT_COUNT_BEE=16;
 	public static final int HIDDEN_COUNT_BEE=12;
@@ -50,19 +51,21 @@ public class Constantes
 	public static final int HIDDEN_COUNT_WASP=12;
 	public static final int OUTPUT_COUNT_WASP=1;
 
-	public static final int INPUT_COUNT_TANK=13;
-	public static final int HIDDEN_COUNT_TANK=8;
+	public static final int INPUT_COUNT_TANK=19;
+	public static final int HIDDEN_COUNT_TANK=15;
 	public static final int OUTPUT_COUNT_TANK=4;
 	
-	public static final int INPUT_COUNT_SOLDIER=13;
-	public static final int HIDDEN_COUNT_SOLDIER=8;
+	public static final int INPUT_COUNT_SOLDIER=19;
+	public static final int HIDDEN_COUNT_SOLDIER=15;
 	public static final int OUTPUT_COUNT_SOLDIER=4;
 	
 	public static int FOOD_AMOUNT=1000;
+	public static int FUEL_AMOUNT=250;
 	
 	public static boolean DRAW_CAPTORS = false;
 	public static boolean DRAW_HP = false;
 	public static boolean SLOW_MO_MODE = false;
+	public static final long SLOW_MO_TIME = 1000/120;
 	public static boolean DRAW_ALL = true;
 	public static boolean PAUSE = false;
 	

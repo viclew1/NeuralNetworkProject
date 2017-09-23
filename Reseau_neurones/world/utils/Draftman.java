@@ -62,6 +62,13 @@ public class Draftman
 			g2.drawString(list.get(i), 10, 15+15*i);
 	}
 	
+	public void drawAvancement(double currentLength, double generationLength, Graphics g)
+	{
+		Graphics2D g2 = (Graphics2D) g;
+		int avancement = (int) (currentLength*100/generationLength);
+		g2.drawString(avancement + "%", 10, 300);
+	}
+	
 	public void drawFPS(int currentFrameRate, Graphics g)
 	{
 		Graphics2D g2 = (Graphics2D) g;

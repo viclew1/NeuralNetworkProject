@@ -38,20 +38,21 @@ public abstract class World extends JPanel implements Epreuve
 {
 	private static final long serialVersionUID = 6616688571724528064L;
 
-	private final long SLOW_MO_TIME = 1000/60;
 	private Controller controller;
 
 	protected List<Delimitation> delimitations;
 	protected List<Creature> creatures;
 	protected List<Collectable> collectables;
 	protected DelimitationBox box;
-	protected int meatCount,vegetableCount;
+	protected int collectableAmount;
+	protected int meatCount,vegetableCount, powerUpCount, fuelCount;
 	protected int generationCount=1;
 
 	private long timeStartCompute;
 
 	private boolean done;
-
+	private int refreshCount;
+	
 	private double[] fpsHistory = new double[500];
 	private int fpsCount=0;
 
@@ -151,13 +152,14 @@ public abstract class World extends JPanel implements Epreuve
 
 	private boolean sleepAndRefresh()
 	{
-		long timeStart=System.currentTimeMillis();
+		timeStartCompute = System.currentTimeMillis();
 		if (sleepAndRefreshStop)
 			return false;
 		if (PAUSE)
 			return false;
 
-		if (creatures.isEmpty())
+		refreshCount++;
+		if (creatures.isEmpty() || refreshCount >= GENERATION_LENGTH)
 		{
 			sleepAndRefreshStop=true;
 			finTest();
@@ -166,6 +168,8 @@ public abstract class World extends JPanel implements Epreuve
 
 		meatCount=0;
 		vegetableCount=0;
+		fuelCount=0;
+		powerUpCount=0;
 
 		for (int i=0; i<creatures.size() ;i++)
 		{
@@ -199,21 +203,35 @@ public abstract class World extends JPanel implements Epreuve
 			}
 			else
 			{
-				if (c.getType()==MEAT)
+				c.update();
+				switch (c.getType())
+				{
+				case MEAT : 
 					meatCount++;
-				else if (c.getType()==VEGETABLE)
+					break;
+				case VEGETABLE :
 					vegetableCount++;
+					break;
+				case FUEL :
+					fuelCount++;
+					break;
+				case POWERUP :
+					powerUpCount++;
+					break;
+				default:
+					System.out.println("World.sleepAndRefresh - Collectable inconnu");
+				}
 			}
 		}
 
 
-		for (int i=collectables.size();i<FOOD_AMOUNT;i++)
+		for (int i=collectables.size();i<collectableAmount;i++)
 			generateCollectables();
 
 		startSleepAndRefreshMultiThreads();
 
 
-		long timeToWait = SLOW_MO_TIME-(System.currentTimeMillis()-timeStart);
+		long timeToWait = SLOW_MO_TIME-(System.currentTimeMillis()-timeStartCompute);
 		if (SLOW_MO_MODE && timeToWait>0)
 		{
 			try
@@ -224,6 +242,13 @@ public abstract class World extends JPanel implements Epreuve
 				e.printStackTrace();
 			}
 		}
+		
+
+		fpsHistory[fpsCount]=System.currentTimeMillis()-timeStartCompute;
+		fpsCount++;
+		if (fpsCount==fpsHistory.length)
+			fpsCount=0;
+		
 		return true;
 	}
 
@@ -312,7 +337,6 @@ public abstract class World extends JPanel implements Epreuve
 
 	public void paint(Graphics g)
 	{
-		timeStartCompute = System.currentTimeMillis();
 		super.getRootPane().updateUI();
 
 		Draftman draftman = new Draftman();
@@ -322,11 +346,7 @@ public abstract class World extends JPanel implements Epreuve
 			draftman.drawFPS(currentFrameRate(), g);
 		}
 		draftman.drawInfos(infosToPrint(), g);
-
-		fpsHistory[fpsCount]=System.currentTimeMillis()-timeStartCompute;
-		fpsCount++;
-		if (fpsCount==fpsHistory.length)
-			fpsCount=0;
+		draftman.drawAvancement(refreshCount, GENERATION_LENGTH, g);
 	}
 
 	/**
@@ -452,11 +472,12 @@ public abstract class World extends JPanel implements Epreuve
 	@Override
 	public double fitness(Individu individu)
 	{
-		return individu.score();
+		return individu.getScore();
 	}
 
 	public synchronized void finTest()
 	{
+		refreshCount = 0;
 		delimitations.clear();
 		collectables.clear();
 		done=true;

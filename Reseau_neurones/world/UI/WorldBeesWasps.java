@@ -1,15 +1,6 @@
 package UI;
 
-import static utils.Constantes.DRAW_ALL;
-import static utils.Constantes.DRAW_CAPTORS;
-import static utils.Constantes.DRAW_HP;
-import static utils.Constantes.GENERATION_COUNT;
-import static utils.Constantes.PAUSE;
-import static utils.Constantes.POPULATION_SIZE_BEE;
-import static utils.Constantes.POPULATION_SIZE_WASP;
-import static utils.Constantes.SLOW_MO_MODE;
-import static utils.Constantes.TYPE_BEE;
-import static utils.Constantes.TYPE_WASP;
+import static utils.Constantes.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +16,8 @@ public class WorldBeesWasps extends World
 	@Override
 	protected void initSelections()
 	{
+		GENERATION_LENGTH = 80000;
+		collectableAmount = FOOD_AMOUNT;
 		initSelection(POPULATION_SIZE_BEE, GENERATION_COUNT, TYPE_BEE);
 		initSelection(POPULATION_SIZE_WASP, GENERATION_COUNT, TYPE_WASP);
 	}

@@ -20,9 +20,9 @@ public class Tank extends ShooterCreature
 		super(x, y, 3, 500, 0.15,0.05,
 				0.2,1.2,150,Color.BLACK,
 				new Captor[] {
-				new EyeCaptor(Math.PI/7,10,Math.PI/3),
-				new EyeCaptor(-Math.PI/7,10,Math.PI/3),
-				new EyeCaptor(-Math.PI,5,Math.PI/2),
+				new EyeCaptor(Math.PI/7,16,Math.PI/3),
+				new EyeCaptor(-Math.PI/7,16,Math.PI/3),
+				new EyeCaptor(-Math.PI,4,Math.PI/2),
 		}, brain, TANK, Color.BLUE,
 				INPUT_COUNT_TANK,
 				creatures,collectables,delimitations, box);
@@ -37,7 +37,7 @@ public class Tank extends ShooterCreature
 		switch (c.getType())
 		{
 		case FUEL:
-			brain.addScore(10);
+			brain.addScore(1);
 			hp+=50;
 			if (hp>hpMax) {
 				hp=hpMax;
@@ -76,7 +76,7 @@ public class Tank extends ShooterCreature
 		switch (targetType)
 		{
 		case SOLDIER:
-			brain.addScore(1);
+			brain.addScore(5);
 			break;
 		case TANK:
 			brain.addScore(5);

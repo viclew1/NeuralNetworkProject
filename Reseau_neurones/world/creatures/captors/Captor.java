@@ -14,7 +14,8 @@ import static utils.Constantes.*;
 public abstract class Captor
 {
 	protected Creature creature;
-	protected double resultBees,resultWasps,resultVegetable,resultWalls,resultMeat,resultSoldier,resultTank,resultProjectile;
+	protected double resultBees,resultWasps,resultVegetable,resultWalls,resultMeat,
+	resultSoldier,resultTank,resultProjectile,resultFuel,resultPowerUp;
 	protected final double range;
 	private int[] thingsToSee;
 
@@ -65,6 +66,10 @@ public abstract class Captor
 			results.add(resultTank);
 		if (sees(PROJECTILE))
 			results.add(resultProjectile);
+		if (sees(FUEL))
+			results.add(resultFuel);
+		if (sees(POWERUP))
+			results.add(resultPowerUp);
 
 		results.add(resultWalls);
 

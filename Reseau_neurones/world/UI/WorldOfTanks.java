@@ -4,6 +4,9 @@ import static utils.Constantes.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+import collectables.Fuel;
 
 public class WorldOfTanks extends World
 {
@@ -16,6 +19,8 @@ public class WorldOfTanks extends World
 	@Override
 	protected void initSelections()
 	{
+		GENERATION_LENGTH = 80000;
+		collectableAmount = FUEL_AMOUNT;
 		//initSelection(POPULATION_SIZE_SOLDIER, GENERATION_COUNT, TYPE_SOLDIER);
 		initSelection(POPULATION_SIZE_TANK, GENERATION_COUNT, TYPE_TANK);
 	}
@@ -23,7 +28,7 @@ public class WorldOfTanks extends World
 	@Override
 	protected void generateCollectables()
 	{
-		
+		collectables.add(new Fuel(3+new Random().nextDouble()*(box.getW()-6), 3+new Random().nextDouble()*(box.getH()-6)));
 	}
 
 	@Override

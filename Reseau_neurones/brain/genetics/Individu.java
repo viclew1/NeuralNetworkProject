@@ -32,7 +32,7 @@ public abstract class Individu
 	
 	public abstract double[] getOutputs(double[] input);
 
-	public double score()
+	public double getScore()
 	{
 		return score;
 	}

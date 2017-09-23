@@ -146,6 +146,7 @@ public abstract class Creature
 
 	private void updatePosition()
 	{
+		brain.addScore(0.01);
 		hp-=hpLostPerInstant;
 		if (hp<=0)
 			alive=false;

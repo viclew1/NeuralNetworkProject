@@ -228,6 +228,4 @@ public class NeuralNetwork extends Individu
 
 		g.setColor(oldColor);
 	}
-
-
 }

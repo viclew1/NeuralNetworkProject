@@ -118,6 +118,8 @@ public class EyeCaptor extends Captor
 	{
 		resultVegetable = Double.MAX_VALUE;
 		resultMeat = Double.MAX_VALUE;
+		resultFuel = Double.MAX_VALUE;
+		resultPowerUp = Double.MAX_VALUE;
 		double dist;
 		for (int i=0;i<collectables.size();i++)
 		{
@@ -133,6 +135,15 @@ public class EyeCaptor extends Captor
 				if (IntersectionsChecker.intersects(line1,line2,c))
 					if ((dist = DistanceChecker.distance(creature, c))<resultMeat)
 						resultMeat=dist;
+			case FUEL:
+				if (IntersectionsChecker.intersects(line1,line2,c))
+					if ((dist = DistanceChecker.distance(creature, c))<resultFuel)
+						resultFuel=dist;
+				break;
+			case POWERUP:
+				if (IntersectionsChecker.intersects(line1,line2,c))
+					if ((dist = DistanceChecker.distance(creature, c))<resultPowerUp)
+						resultPowerUp=dist;
 				break;
 			default:
 				break;
@@ -144,6 +155,12 @@ public class EyeCaptor extends Captor
 		resultMeat/=range;
 		if (resultMeat > 1) resultMeat = 0;
 		else resultMeat = 1 - resultMeat;
+		resultFuel/=range;
+		if (resultFuel > 1) resultFuel = 0;
+		else resultFuel = 1 - resultFuel;
+		resultPowerUp/=range;
+		if (resultPowerUp > 1) resultPowerUp = 0;
+		else resultPowerUp = 1 - resultPowerUp;
 	}
 
 	@Override

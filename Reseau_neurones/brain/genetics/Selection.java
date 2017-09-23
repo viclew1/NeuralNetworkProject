@@ -9,7 +9,7 @@ public class Selection
 	public int nombreGenerations;
 	public Individu[] population;
 	public Individu meilleurTrouvé;
-	public double meilleureFitness=0;
+	public double meilleureFitness=Double.MIN_VALUE;
 	public String type;
 
 	public Selection(Epreuve epreuve, int nombreIndividus, int nombreGenerations, String type)
@@ -24,11 +24,10 @@ public class Selection
 
 	public Individu lancerSelection()
 	{
-		//int cpt=1;
 		for (int i=0;i<nombreGenerations;i++)
 		{
 			//System.out.println("------ DEBUT GENERATION "+(i+1)+" ------");
-			championnat();
+			epreuve.lancerEpreuve(population,type);
 			if (found)
 				return meilleurIndividu();
 			double meilleurScore = epreuve.fitness(meilleurIndividu());
@@ -40,97 +39,88 @@ public class Selection
 				System.out.println("Génération : "+(i+1));
 				System.out.println("Meilleure trouvaille : "+meilleurTrouvé+"\nFitness : "+meilleureFitness);
 			}
+			generateNextGeneration();
 		}
 
 		return meilleurIndividu();
 	}
 
-	public void championnat()
+	public void generateNextGeneration()
 	{
-		epreuve.lancerEpreuve(population,type);
+		/*
+		 * Calculate S = the sum of a finesses.
 
-		for (int i = 0; i < population.length ; i++)
+Generate a random number between 0 and S.
+
+Starting from the top of the population, keep adding the finesses to the partial sum P, till P<S.
+
+The individual for which P exceeds S is the chosen individual.
+		 */
+		double fitnessSum = 0;
+		for (Individu i : population)
+			fitnessSum+=epreuve.fitness(i);
+
+		Individu[] newPopulation = new Individu[nombreIndividus];
+		for (int i=0 ; i<nombreIndividus ; i++)
 		{
-			duel(i);
+			Individu i1=population[nombreIndividus-1];
+			Individu i2=population[nombreIndividus-1];
+			double partialFitnessSum = 0;
+			double randomDouble = new Random().nextDouble()*fitnessSum;
+			for (int j=nombreIndividus-1 ; j>=0 ; j--)
+			{
+				partialFitnessSum += epreuve.fitness(population[j]);
+				if (partialFitnessSum > randomDouble)
+					i1 = population[j];
+			}
+			partialFitnessSum = 0;
+			randomDouble = new Random().nextDouble()*fitnessSum;
+			for (int j=nombreIndividus-1 ; j>=0 ; j--)
+			{
+				partialFitnessSum += epreuve.fitness(population[j]);
+				if (partialFitnessSum > randomDouble)
+					i2 = population[j];
+			}
+
+			newPopulation[i] = breed(i1,i2);
 		}
-		
+
+		population = newPopulation;
 	}
 
-	public void duel(int a)
+	private Individu breed(Individu i1, Individu i2)
 	{
-		int b=new Random().nextInt(nombreIndividus);
-		while (a==b)
+		Individu parent1,parent2;
+		if (new Random().nextBoolean())
 		{
-			b=new Random().nextInt(nombreIndividus);
-		}
-
-		Individu win,lose;
-
-		double fitA=epreuve.fitness(population[a]);
-		double fitB=epreuve.fitness(population[b]);
-
-		if (fitA>fitB)
-		{
-			win=population[a];
-			lose=population[b];
+			parent1 = i1;
+			parent2 = i2;
 		}
 		else
 		{
-			win=population[b];
-			lose=population[a];
+			parent1 = i2;
+			parent2 = i1;
 		}
+		Individu child = parent1.deepCopy();
 
 		int rdm=new Random().nextInt(100);
 		if (rdm>=100-Const.chancesCrossOver)
 		{
-			lose.crossOver(win);
+			child.crossOver(parent2);
 		}
 		if (rdm>=100-Const.chancesMutation)
 		{
-			lose.mutate();
-		}
-	}
-
-	public void duel()
-	{
-		int a=new Random().nextInt(nombreIndividus);
-		int b=new Random().nextInt(nombreIndividus);
-		while (a==b)
-		{
-			b=new Random().nextInt(nombreIndividus);
+			child.mutate();
 		}
 
-		Individu win,lose;
 
-		double fitA=epreuve.fitness(population[a]);
-		double fitB=epreuve.fitness(population[b]);
-
-		if (fitA>fitB)
-		{
-			win=population[a];
-			lose=population[b];
-		}
-		else
-		{
-			win=population[b];
-			lose=population[a];
-		}
-
-		int rdm=new Random().nextInt(100);
-		if (rdm>=100-Const.chancesCrossOver)
-		{
-			lose.crossOver(win);
-		}
-		if (rdm>=100-Const.chancesMutation)
-		{
-			lose.mutate();
-		}
+		return child;
 	}
 
 	public Individu meilleurIndividu()
 	{
 		Individu meilleurIndividu=population[0];
-		double meilleurScore=Integer.MIN_VALUE;
+		double meilleurScore=Double.MIN_VALUE;
 		for (Individu i : population)
 		{
 			double score=epreuve.fitness(i);
