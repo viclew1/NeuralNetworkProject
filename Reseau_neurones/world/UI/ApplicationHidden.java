@@ -1,5 +1,7 @@
 package UI;
 
+import UI.worldsIMPL.WorldBeesWasps;
+
 public class ApplicationHidden
 {
 

@@ -2,6 +2,8 @@ package UI;
 
 import javax.swing.JFrame;
 
+import UI.worldsIMPL.WorldOfDodge;
+
 import static utils.Constantes.*;
 
 import java.awt.Component;

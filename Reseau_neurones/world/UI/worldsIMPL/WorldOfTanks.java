@@ -1,4 +1,4 @@
-package UI;
+package UI.worldsIMPL;
 
 import static utils.Constantes.*;
 
@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import collectables.Fuel;
+import UI.World;
+import collectables.expirables.Fuel;
 
 public class WorldOfTanks extends World
 {

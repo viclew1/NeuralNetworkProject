@@ -1,4 +1,4 @@
-package limitations;
+package limitations.throwables;
 
 import java.awt.Color;
 import static utils.Constantes.*;

@@ -5,10 +5,10 @@ import static utils.Constantes.*;
 import java.awt.Color;
 import java.util.List;
 
+import captors.Captor;
+import captors.EyeCaptor;
 import collectables.Collectable;
 import creatures.Creature;
-import creatures.captors.Captor;
-import creatures.captors.EyeCaptor;
 import genetics.Individu;
 import limitations.Delimitation;
 import limitations.DelimitationBox;

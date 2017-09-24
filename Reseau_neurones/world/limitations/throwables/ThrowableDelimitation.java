@@ -1,4 +1,4 @@
-package limitations;
+package limitations.throwables;
 
 import static utils.Constantes.SCROLL_X;
 import static utils.Constantes.SCROLL_Y;
@@ -9,6 +9,7 @@ import java.awt.Graphics;
 
 import creatures.Creature;
 import creatures.shooters.ShooterCreature;
+import limitations.Delimitation;
 
 public class ThrowableDelimitation extends Delimitation
 {

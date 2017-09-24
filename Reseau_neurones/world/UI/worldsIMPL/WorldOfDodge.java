@@ -1,10 +1,11 @@
-package UI;
+package UI.worldsIMPL;
 
 import static utils.Constantes.*;
 
 import java.util.Random;
 
-import limitations.FireBall;
+import UI.World;
+import limitations.throwables.FireBall;
 
 public class WorldOfDodge extends World
 {

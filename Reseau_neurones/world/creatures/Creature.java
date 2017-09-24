@@ -6,12 +6,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.List;
 
+import captors.Captor;
 import collectables.Collectable;
-import creatures.captors.Captor;
 import genetics.Individu;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
-import limitations.Projectile;
+import limitations.throwables.Projectile;
 
 public abstract class Creature
 {

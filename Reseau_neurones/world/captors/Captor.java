@@ -1,4 +1,4 @@
-package creatures.captors;
+package captors;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -14,9 +14,9 @@ import static utils.Constantes.*;
 public abstract class Captor
 {
 	protected Creature creature;
-	protected double resultBees,resultWasps,resultVegetable,resultWalls,resultMeat,
-	resultSoldier,resultTank,resultProjectile,resultFuel,resultPowerUp, resultFireBall,
-	resultComplexDodger, resultSimpleDodger;
+	protected double resultBees,resultWasps,resultVegetable,resultMeat,
+	resultSoldier,resultTank,resultProjectile,resultFuel,resultPowerUp, 
+	resultFireBall,	resultComplexDodger, resultSimpleDodger;
 	protected final double range;
 	private int[] thingsToSee;
 
@@ -77,8 +77,6 @@ public abstract class Captor
 			results.add(resultComplexDodger);
 		if (sees(SIMPLEDODGER))
 			results.add(resultSimpleDodger);
-
-		results.add(resultWalls);
 
 		return results;
 	}

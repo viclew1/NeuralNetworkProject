@@ -1,4 +1,4 @@
-package creatures.captors;
+package captors;
 
 import static utils.Constantes.*;
 import java.awt.Graphics;

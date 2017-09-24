@@ -1,4 +1,4 @@
-package collectables;
+package collectables.expirables;
 
 import java.awt.Color;
 import java.awt.Graphics;

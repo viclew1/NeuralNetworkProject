@@ -1,16 +1,12 @@
 package creatures.dodgers;
 
-import static utils.Constantes.COMPLEXDODGER;
 import static utils.Constantes.FIREBALL;
-import static utils.Constantes.INPUT_COUNT_COMPLEXDODGER;
-
 import java.awt.Color;
 import java.util.List;
 
+import captors.Captor;
 import collectables.Collectable;
 import creatures.Creature;
-import creatures.captors.Captor;
-import creatures.captors.EyeCaptor;
 import genetics.Individu;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
@@ -29,20 +25,17 @@ public abstract class DodgerCreature extends Creature
 				FIREBALL
 		}, brain, type, color, nbInput, creatures,
 				collectables, delimitations, box);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void interactWith(Collectable c)
 	{
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void interactWith(Creature c)
 	{
-		// TODO Auto-generated method stub
 		
 	}
 

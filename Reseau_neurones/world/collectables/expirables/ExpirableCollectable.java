@@ -1,4 +1,6 @@
-package collectables;
+package collectables.expirables;
+
+import collectables.Collectable;
 
 public abstract class ExpirableCollectable extends Collectable {
 

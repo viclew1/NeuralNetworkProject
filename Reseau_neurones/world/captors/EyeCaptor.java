@@ -1,4 +1,4 @@
-package creatures.captors;
+package captors;
 
 import static utils.Constantes.*;
 
@@ -48,16 +48,7 @@ public class EyeCaptor extends Captor
 	public void draw(Graphics g)
 	{
 		Color color = g.getColor();
-		if (resultBees!=0)
-			g.setColor(Color.YELLOW);
-		else if (resultWasps!=0)
-			g.setColor(Color.ORANGE);
-		else if (resultVegetable!=0)
-			g.setColor(Color.GREEN);
-		else if (resultMeat!=0)
-			g.setColor(Color.RED);
-		else if (resultWalls!=0)
-			g.setColor(Color.DARK_GRAY);
+		g.setColor(Color.BLACK);
 		g.drawLine((int)(line1.getX1()*SIZE+SCROLL_X),
 				(int)(line1.getY1()*SIZE+SCROLL_Y), 
 				(int)(line1.getX2()*SIZE+SCROLL_X), 
@@ -228,13 +219,6 @@ public class EyeCaptor extends Captor
 		resultFireBall/=range;
 		if (resultFireBall > 1) resultFireBall = 0;
 		else resultFireBall = 1 - resultFireBall;
-		
-		if (IntersectionsChecker.intersects(line1,line2,box))
-		{
-			resultWalls=1;
-			return;
-		}
-		resultWalls = 0;
 	}
 
 }

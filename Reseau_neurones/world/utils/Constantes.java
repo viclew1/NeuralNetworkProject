@@ -52,27 +52,27 @@ public class Constantes
 	
 	public static int GENERATION_LENGTH;
 	
-	public static final int INPUT_COUNT_BEE=16;
+	public static final int INPUT_COUNT_BEE=18;
 	public static final int HIDDEN_COUNT_BEE=12;
 	public static final int OUTPUT_COUNT_BEE=1;
 	
-	public static final int INPUT_COUNT_WASP=16;
+	public static final int INPUT_COUNT_WASP=18;
 	public static final int HIDDEN_COUNT_WASP=12;
 	public static final int OUTPUT_COUNT_WASP=1;
 
-	public static final int INPUT_COUNT_TANK=19;
+	public static final int INPUT_COUNT_TANK=21;
 	public static final int HIDDEN_COUNT_TANK=15;
 	public static final int OUTPUT_COUNT_TANK=4;
 	
-	public static final int INPUT_COUNT_SOLDIER=19;
+	public static final int INPUT_COUNT_SOLDIER=21;
 	public static final int HIDDEN_COUNT_SOLDIER=15;
 	public static final int OUTPUT_COUNT_SOLDIER=4;
 	
-	public static final int INPUT_COUNT_COMPLEXDODGER=11;
+	public static final int INPUT_COUNT_COMPLEXDODGER=13;
 	public static final int HIDDEN_COUNT_COMPLEXDODGER=15;
 	public static final int OUTPUT_COUNT_COMPLEXDODGER=2;
 
-	public static final int INPUT_COUNT_SIMPLEDODGER=9;
+	public static final int INPUT_COUNT_SIMPLEDODGER=11;
 	public static final int HIDDEN_COUNT_SIMPLEDODGER=15;
 	public static final int OUTPUT_COUNT_SIMPLEDODGER=2;
 	
