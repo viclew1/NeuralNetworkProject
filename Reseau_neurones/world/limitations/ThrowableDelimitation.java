@@ -8,7 +8,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import creatures.Creature;
-import creatures.ShooterCreature;
+import creatures.shooters.ShooterCreature;
 
 public class ThrowableDelimitation extends Delimitation
 {

@@ -3,7 +3,7 @@ package limitations;
 import java.awt.Graphics;
 
 import creatures.Creature;
-import creatures.ShooterCreature;
+import creatures.shooters.ShooterCreature;
 
 public abstract class Delimitation
 {

@@ -1,9 +1,10 @@
-package creatures;
+package creatures.shooters;
 
 import java.awt.Color;
 import java.util.List;
 
 import collectables.Collectable;
+import creatures.Creature;
 import creatures.captors.Captor;
 import genetics.Individu;
 import limitations.Delimitation;

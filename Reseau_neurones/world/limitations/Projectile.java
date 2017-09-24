@@ -3,7 +3,8 @@ package limitations;
 import static utils.Constantes.*;
 
 import java.awt.Color;
-import creatures.ShooterCreature;
+
+import creatures.shooters.ShooterCreature;
 
 public class Projectile extends ThrowableDelimitation {
 
