@@ -47,15 +47,6 @@ public class Selection
 
 	public void generateNextGeneration()
 	{
-		/*
-		 * Calculate S = the sum of a finesses.
-
-Generate a random number between 0 and S.
-
-Starting from the top of the population, keep adding the finesses to the partial sum P, till P<S.
-
-The individual for which P exceeds S is the chosen individual.
-		 */
 		double fitnessSum = 0;
 		for (Individu i : population)
 			fitnessSum+=epreuve.fitness(i);
@@ -63,14 +54,14 @@ The individual for which P exceeds S is the chosen individual.
 		Individu[] newPopulation = new Individu[nombreIndividus];
 		for (int i=0 ; i<nombreIndividus ; i++)
 		{
-			Individu i1=population[nombreIndividus-1];
-			Individu i2=population[nombreIndividus-1];
+			Individu i1=null;
+			Individu i2=null;
 			double partialFitnessSum = 0;
 			double randomDouble = new Random().nextDouble()*fitnessSum;
 			for (int j=nombreIndividus-1 ; j>=0 ; j--)
 			{
 				partialFitnessSum += epreuve.fitness(population[j]);
-				if (partialFitnessSum > randomDouble)
+				if (partialFitnessSum >= randomDouble)
 					i1 = population[j];
 			}
 			partialFitnessSum = 0;
@@ -78,7 +69,7 @@ The individual for which P exceeds S is the chosen individual.
 			for (int j=nombreIndividus-1 ; j>=0 ; j--)
 			{
 				partialFitnessSum += epreuve.fitness(population[j]);
-				if (partialFitnessSum > randomDouble)
+				if (partialFitnessSum >= randomDouble)
 					i2 = population[j];
 			}
 
@@ -105,13 +96,10 @@ The individual for which P exceeds S is the chosen individual.
 
 		int rdm=new Random().nextInt(100);
 		if (rdm>=100-Const.chancesCrossOver)
-		{
 			child.crossOver(parent2);
-		}
+		rdm=new Random().nextInt(100);
 		if (rdm>=100-Const.chancesMutation)
-		{
 			child.mutate();
-		}
 
 
 		return child;
