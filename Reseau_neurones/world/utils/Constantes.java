@@ -8,10 +8,13 @@ public class Constantes
 	private static int FRAME_RATE;
 	public static long TimeBetweenTwoComputes;
 	
-	public static final int POPULATION_SIZE_BEE = 200;
+	public static final int POPULATION_SIZE_BEE = 100;
 	public static final int POPULATION_SIZE_WASP = 100;
 	public static final int POPULATION_SIZE_TANK = 100;
 	public static final int POPULATION_SIZE_SOLDIER = 100;
+	public static final int POPULATION_SIZE_COMPLEXDODGER = 100;
+	public static final int POPULATION_SIZE_SIMPLEDODGER = 100;
+	
 	public static final int GENERATION_COUNT = 100000;
 
 	public static final int CREATURE 		= 1;
@@ -27,6 +30,9 @@ public class Constantes
 	public static final int WASP = 2;
 	public static final int TANK = 3;
 	public static final int SOLDIER = 4;
+	public static final int COMPLEXDODGER = 5;
+	public static final int SIMPLEDODGER = 6;
+	
 	
 	public static final int VEGETABLE = 11;
 	public static final int MEAT = 12;
@@ -35,11 +41,14 @@ public class Constantes
 	
 	public static final int DELIMITATION_BOX = 21;
 	public static final int PROJECTILE = 22;
+	public static final int FIREBALL = 23;
 
 	public static final String TYPE_BEE = "BEE";
 	public static final String TYPE_WASP = "WASP";
 	public static final String TYPE_TANK = "TANK";
 	public static final String TYPE_SOLDIER = "SOLDIER";
+	public static final String TYPE_COMPLEXDODGER = "COMPLEX DODGER";
+	public static final String TYPE_SIMPLEDODGER = "SIMPLE DODGER";
 	
 	public static int GENERATION_LENGTH;
 	
@@ -59,6 +68,14 @@ public class Constantes
 	public static final int HIDDEN_COUNT_SOLDIER=15;
 	public static final int OUTPUT_COUNT_SOLDIER=4;
 	
+	public static final int INPUT_COUNT_COMPLEXDODGER=11;
+	public static final int HIDDEN_COUNT_COMPLEXDODGER=15;
+	public static final int OUTPUT_COUNT_COMPLEXDODGER=2;
+
+	public static final int INPUT_COUNT_SIMPLEDODGER=9;
+	public static final int HIDDEN_COUNT_SIMPLEDODGER=15;
+	public static final int OUTPUT_COUNT_SIMPLEDODGER=2;
+	
 	public static int FOOD_AMOUNT=1000;
 	public static int FUEL_AMOUNT=250;
 	
@@ -69,7 +86,7 @@ public class Constantes
 	public static boolean DRAW_ALL = true;
 	public static boolean PAUSE = false;
 	
-	public static final String[] creatures = new String[] {"Abeilles","Guepes","Soldats","Tanks"};
+	public static final String[] creatures = new String[] {"Abeilles","Guepes","Soldats","Tanks","Complex Dodger", "Simple Dodger"};
 	
 	
 	

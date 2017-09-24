@@ -62,7 +62,10 @@ public class Selection
 			{
 				partialFitnessSum += epreuve.fitness(population[j]);
 				if (partialFitnessSum >= randomDouble)
+				{
 					i1 = population[j];
+					break;
+				}
 			}
 			partialFitnessSum = 0;
 			randomDouble = new Random().nextDouble()*fitnessSum;
@@ -70,7 +73,10 @@ public class Selection
 			{
 				partialFitnessSum += epreuve.fitness(population[j]);
 				if (partialFitnessSum >= randomDouble)
+				{
 					i2 = population[j];
+					break;
+				}
 			}
 
 			newPopulation[i] = breed(i1,i2);

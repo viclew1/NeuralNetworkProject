@@ -38,16 +38,10 @@ public class WorldBeesWasps extends World
 	}
 
 	@Override
-	protected List<String> infosToPrint()
+	protected void generateDelimitations()
 	{
-		List<String> infos = new ArrayList<>();
-		infos.add("Génération : "+generationCount);
-		infos.add((SLOW_MO_MODE?"Désactiver":"Activer")+" slow motion : V");
-		infos.add((DRAW_CAPTORS?"Cacher":"Afficher")+" capteurs : S");
-		infos.add((DRAW_HP?"Cacher":"Afficher")+" points de vie : H");
-		infos.add((DRAW_ALL?"Cacher":"Afficher")+" la simulation : G");
-		infos.add((!PAUSE?"Mettre en pause":"Quitter la pause")+" : SPACE");
-		infos.add("Tuer cette génération entière : K");
-		return infos;
+		// TODO Auto-generated method stub
+		
 	}
+
 }

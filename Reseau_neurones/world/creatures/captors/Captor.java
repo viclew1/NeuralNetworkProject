@@ -15,7 +15,8 @@ public abstract class Captor
 {
 	protected Creature creature;
 	protected double resultBees,resultWasps,resultVegetable,resultWalls,resultMeat,
-	resultSoldier,resultTank,resultProjectile,resultFuel,resultPowerUp;
+	resultSoldier,resultTank,resultProjectile,resultFuel,resultPowerUp, resultFireBall,
+	resultComplexDodger, resultSimpleDodger;
 	protected final double range;
 	private int[] thingsToSee;
 
@@ -70,6 +71,12 @@ public abstract class Captor
 			results.add(resultFuel);
 		if (sees(POWERUP))
 			results.add(resultPowerUp);
+		if (sees(FIREBALL))
+			results.add(resultFireBall);
+		if (sees(COMPLEXDODGER))
+			results.add(resultComplexDodger);
+		if (sees(SIMPLEDODGER))
+			results.add(resultSimpleDodger);
 
 		results.add(resultWalls);
 

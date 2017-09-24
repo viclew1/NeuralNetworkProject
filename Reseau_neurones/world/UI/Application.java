@@ -173,7 +173,8 @@ public class Application extends JFrame{
 		int x=Integer.parseInt(jTextField2.getText());
 		int y=Integer.parseInt(jTextField3.getText());
 		//this.world=new WorldBeesWasps();
-		this.world=new WorldOfTanks();
+		//this.world=new WorldOfTanks();
+		this.world = new WorldOfDodge();
 		worldPanel.add(world);
 		worldPanel.repaint();
 		world.start(x, y);

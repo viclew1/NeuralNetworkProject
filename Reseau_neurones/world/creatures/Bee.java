@@ -60,11 +60,4 @@ public class Bee extends InsectCreature
 			break;
 		}
 	}
-
-	@Override
-	protected void applyDecisions(double[] decisions)
-	{
-		turn(2*(0.5-decisions[0]));
-		moveFront(1);
-	}
 }

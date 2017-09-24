@@ -205,11 +205,16 @@ public abstract class Creature
 			if (((Projectile)d).getSender()==this)
 				return;
 			break;
+		case FIREBALL:
+			break;
+		case DELIMITATION_BOX:
+			break;
 		default:
+			System.out.println("Creature.interactWith(Delimitation d) - Delimitation inconnue : "+d.getType());
+			System.exit(0);
 			break;
 		}
 		hp-=d.getDamages();
-		brain.addScore(-6);
 		if (hp<=0)
 			alive=false;
 	}

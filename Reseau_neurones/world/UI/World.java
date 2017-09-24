@@ -8,10 +8,6 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 import javax.swing.JPanel;
 
 import UI.controls.Controller;
@@ -19,6 +15,8 @@ import UI.controls.WorldController;
 import collectables.Collectable;
 import creatures.Bee;
 import creatures.Creature;
+import creatures.SimpleDodger;
+import creatures.ComplexDodger;
 import creatures.Soldier;
 import creatures.Tank;
 import creatures.Wasp;
@@ -56,9 +54,7 @@ public abstract class World extends JPanel implements Epreuve
 	private double[] fpsHistory = new double[500];
 	private int fpsCount=0;
 
-	private boolean sleepAndRefreshStop;
-	private Thread[] sleepAndRefreshThreads;
-	private ExecutorService es;
+	private boolean sleepAndRefreshStop = true;
 
 	private Creature selectedCreature;
 
@@ -76,7 +72,6 @@ public abstract class World extends JPanel implements Epreuve
 		creatures = new ArrayList<>(1000);
 		collectables = new ArrayList<>(1000);
 		delimitations = new ArrayList<>(1000);
-		sleepAndRefreshThreads = new Thread[10];
 	}
 
 	/**
@@ -97,58 +92,11 @@ public abstract class World extends JPanel implements Epreuve
 
 	protected abstract void initSelections();
 	protected abstract void generateCollectables();
-	protected abstract List<String> infosToPrint();
-
+	protected abstract void generateDelimitations();
 
 	/**
 	 * Méthodes de calcul de position des objets
 	 */
-
-	private void initSleepAndRefreshThread(final int indexThread, final int indexStart, final int indexEnd)
-	{
-		sleepAndRefreshThreads[indexThread] = new Thread(new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-				for (int i=indexStart; i<indexEnd ;i++)
-				{
-					Creature creature1 = creatures.get(i);
-					creature1.detect();
-					creature1.update();
-					if (!creature1.isAlive())
-						continue;
-					for (int j=0;j<collectables.size();j++)
-					{
-						Collectable collect = collectables.get(j);
-						if (!collect.isConsumed())
-							if (IntersectionsChecker.intersects(creature1,collect))
-								new CreaCollecInteraction(creature1,collect).process();
-					}
-					for (int j=0;j<delimitations.size();j++)
-					{
-						Delimitation delim = delimitations.get(j);
-						if (delim!=null)
-							if (!delim.isExpired())
-								if (IntersectionsChecker.intersects(creature1,delim))
-									new CreaDelimInteraction(creature1,delim).process();
-					}
-					if (!IntersectionsChecker.contains(box,creature1))
-						new CreaDelimInteraction(creature1,box).process();
-					for (int j=i+1; j<creatures.size() ;j++)
-					{
-						Creature creature2 = creatures.get(j);
-						if (creature2.isAlive())
-							if (IntersectionsChecker.intersects(creature1,creature2))
-								new CreaCreaInteraction(creature1,creature2).process();
-					}
-					if (!IntersectionsChecker.contains(box,creature1))
-						new CreaDelimInteraction(creature1,box).process();
-				}
-			}
-		});
-	}
 
 	private boolean sleepAndRefresh()
 	{
@@ -227,8 +175,43 @@ public abstract class World extends JPanel implements Epreuve
 
 		for (int i=collectables.size();i<collectableAmount;i++)
 			generateCollectables();
+		
+		generateDelimitations();
 
-		startSleepAndRefreshMultiThreads();
+		for (int i=0; i<creatures.size() ;i++)
+		{
+			Creature creature1 = creatures.get(i);
+			creature1.detect();
+			creature1.update();
+			if (!creature1.isAlive())
+				continue;
+			for (int j=0;j<collectables.size();j++)
+			{
+				Collectable collect = collectables.get(j);
+				if (!collect.isConsumed())
+					if (IntersectionsChecker.intersects(creature1,collect))
+						new CreaCollecInteraction(creature1,collect).process();
+			}
+			for (int j=0;j<delimitations.size();j++)
+			{
+				Delimitation delim = delimitations.get(j);
+				if (delim!=null)
+					if (!delim.isExpired())
+						if (IntersectionsChecker.intersects(creature1,delim))
+							new CreaDelimInteraction(creature1,delim).process();
+			}
+			if (!IntersectionsChecker.contains(box,creature1))
+				new CreaDelimInteraction(creature1,box).process();
+			for (int j=i+1; j<creatures.size() ;j++)
+			{
+				Creature creature2 = creatures.get(j);
+				if (creature2.isAlive())
+					if (IntersectionsChecker.intersects(creature1,creature2))
+						new CreaCreaInteraction(creature1,creature2).process();
+			}
+			if (!IntersectionsChecker.contains(box,creature1))
+				new CreaDelimInteraction(creature1,box).process();
+		}
 
 
 		long timeToWait = SLOW_MO_TIME-(System.currentTimeMillis()-timeStartCompute);
@@ -250,48 +233,6 @@ public abstract class World extends JPanel implements Epreuve
 			fpsCount=0;
 		
 		return true;
-	}
-
-	private void startSleepAndRefreshMultiThreads()
-	{
-		int nbCrea = creatures.size();
-		int nbThreads = 0;
-
-		if (nbCrea<10)
-		{
-			for (int i=0; i<nbCrea;i++)
-				initSleepAndRefreshThread(i, i, i+1);
-			nbThreads = nbCrea;
-		}
-		else
-		{
-			nbThreads=10;
-			int indexStart = 0;
-			int indexStop = 0;
-			double sum = 0;
-			for (int i=0; i<9;i++)
-			{
-				indexStart= (int) sum;
-				sum+=(double)nbCrea/10;
-				indexStop = (int) (sum);
-				initSleepAndRefreshThread(i, indexStart, indexStop);
-			}
-			indexStart = indexStop;
-			indexStop = nbCrea;
-			initSleepAndRefreshThread(9, indexStart, indexStop);
-		}
-
-		es = Executors.newCachedThreadPool();
-
-		for (int i=0;i<nbThreads;i++) {
-			es.execute(sleepAndRefreshThreads[i]);
-		}
-		es.shutdown();
-		try {
-			es.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void initComputeThread()
@@ -348,6 +289,19 @@ public abstract class World extends JPanel implements Epreuve
 		draftman.drawInfos(infosToPrint(), g);
 		draftman.drawAvancement(refreshCount, GENERATION_LENGTH, g);
 	}
+	
+	private List<String> infosToPrint()
+	{
+			List<String> infos = new ArrayList<>();
+			infos.add("Génération : "+generationCount);
+			infos.add((SLOW_MO_MODE?"Désactiver":"Activer")+" slow motion : V");
+			infos.add((DRAW_CAPTORS?"Cacher":"Afficher")+" capteurs : S");
+			infos.add((DRAW_HP?"Cacher":"Afficher")+" points de vie : H");
+			infos.add((DRAW_ALL?"Cacher":"Afficher")+" la simulation : G");
+			infos.add((!PAUSE?"Mettre en pause":"Quitter la pause")+" : SPACE");
+			infos.add("Tuer cette génération entière : K");
+			return infos;
+	}
 
 	/**
 	 * Générateurs de créatures
@@ -376,6 +330,18 @@ public abstract class World extends JPanel implements Epreuve
 		creatures.add(new Tank(3+new Random().nextDouble()*(box.getW()-6), 3+new Random().nextDouble()*(box.getH()-6), intelligence,
 				creatures,collectables,delimitations,box));
 	}
+	
+	public void generateComplexDodger(Individu intelligence)
+	{
+		creatures.add(new ComplexDodger(box.getW()/2, box.getH()/2, intelligence,
+				creatures,collectables,delimitations,box));
+	}
+	
+	public void generateSimpleDodger(Individu intelligence)
+	{
+		creatures.add(new SimpleDodger(box.getW()/2, box.getH()/2, intelligence,
+				creatures,collectables,delimitations,box));
+	}
 
 
 	/**
@@ -401,6 +367,12 @@ public abstract class World extends JPanel implements Epreuve
 				break;
 			case TYPE_SOLDIER:
 				generateSoldier(i);
+				break;
+			case TYPE_COMPLEXDODGER:
+				generateComplexDodger(i);
+				break;
+			case TYPE_SIMPLEDODGER:
+				generateSimpleDodger(i);
 				break;
 			default:
 				System.out.println("World.lancerEpreuve : Type non défini");
@@ -455,6 +427,16 @@ public abstract class World extends JPanel implements Epreuve
 					inputCpt=INPUT_COUNT_SOLDIER;
 					hiddenCpt=HIDDEN_COUNT_SOLDIER;
 					outputCpt=OUTPUT_COUNT_SOLDIER;
+					break;
+				case TYPE_COMPLEXDODGER:
+					inputCpt=INPUT_COUNT_COMPLEXDODGER;
+					hiddenCpt=HIDDEN_COUNT_COMPLEXDODGER;
+					outputCpt=OUTPUT_COUNT_COMPLEXDODGER;
+					break;
+				case TYPE_SIMPLEDODGER:
+					inputCpt=INPUT_COUNT_SIMPLEDODGER;
+					hiddenCpt=HIDDEN_COUNT_SIMPLEDODGER;
+					outputCpt=OUTPUT_COUNT_SIMPLEDODGER;
 					break;
 				default:
 					System.out.println("World.initSelection - Type inconnu");
@@ -522,7 +504,6 @@ public abstract class World extends JPanel implements Epreuve
 			Thread.sleep(1000);
 		} catch (InterruptedException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		creatures.clear();
