@@ -29,7 +29,7 @@ public class WorldOfTanks extends World
 	@Override
 	protected void generateCollectables()
 	{
-		collectables.add(new Fuel(3+new Random().nextDouble()*(box.getW()-6), 3+new Random().nextDouble()*(box.getH()-6)));
+		collectables.add(new Fuel(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6)));
 	}
 
 	@Override

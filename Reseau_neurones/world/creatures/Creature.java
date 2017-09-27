@@ -156,10 +156,7 @@ public abstract class Creature
 		{
 			List<Double> results = captors[i].getResults();
 			for (int j=0;j<results.size();j++)
-			{
-				inputs[cpt] = results.get(j);
-				cpt++;
-			}
+				inputs[cpt++] = results.get(j);
 		}
 		inputs[cpt]=hp/hpMax;
 		double[] decisions = brain.getOutputs(inputs);
@@ -207,7 +204,7 @@ public abstract class Creature
 			break;
 		case FIREBALL:
 			break;
-		case DELIMITATION_BOX:
+		case WALL:
 			break;
 		default:
 			System.out.println("Creature.interactWith(Delimitation d) - Delimitation inconnue : "+d.getType());

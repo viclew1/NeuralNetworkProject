@@ -7,6 +7,7 @@ import UI.worldsIMPL.WorldOfDodge;
 import static utils.Constantes.*;
 
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 
 
@@ -223,7 +224,15 @@ public class Application extends JFrame{
 
 	public static void main(String[] args)
 	{
-		new Application().setVisible(true);
+		EventQueue.invokeLater(new Runnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				new Application().setVisible(true);
+			}
+		});
 	}
 
 }

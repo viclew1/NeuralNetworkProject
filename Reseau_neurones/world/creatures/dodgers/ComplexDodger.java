@@ -19,13 +19,13 @@ public class ComplexDodger extends DodgerCreature
 	public ComplexDodger(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations,
 			DelimitationBox box)
 	{
-		super(x, y, 1, 1, 0.7, 0, new Captor[]{
+		super(x, y, 1, 1, 1, 0, new Captor[]{
 				new EyeCaptor(Math.PI/7,10,Math.PI/3),
 				new EyeCaptor(-Math.PI/7,10,Math.PI/3),
 				new EyeCaptor(-Math.PI,6,Math.PI/4),
 				new EyeCaptor(Math.PI/2,7,Math.PI/2),
 				new EyeCaptor(-Math.PI/2,7,Math.PI/2),
-		}, brain, COMPLEXDODGER, Color.GREEN, INPUT_COUNT_COMPLEXDODGER, creatures,
+		}, brain, COMPLEXDODGER, Color.GREEN, LAYERS_SIZES_COMPLEXDODGER[0], creatures,
 				collectables, delimitations, box);
 	}
 	

@@ -8,7 +8,7 @@ public class Selection
 	public int nombreIndividus;
 	public int nombreGenerations;
 	public Individu[] population;
-	public Individu meilleurTrouvé;
+	public Individu meilleurTrouvÃ©;
 	public double meilleureFitness=Double.MIN_VALUE;
 	public String type;
 
@@ -35,17 +35,98 @@ public class Selection
 			if (meilleurScore>meilleureFitness)
 			{
 				meilleureFitness=meilleurScore;
-				meilleurTrouvé=meilleurIndividu().deepCopy();
-				System.out.println("Génération : "+(i+1));
-				System.out.println("Meilleure trouvaille : "+meilleurTrouvé+"\nFitness : "+meilleureFitness);
+				meilleurTrouvÃ©=meilleurIndividu().deepCopy();
+				System.out.println("GÃ©nÃ©ration : "+(i+1));
+				System.out.println("Meilleure trouvaille : "+meilleurTrouvÃ©+"\nFitness : "+meilleureFitness);
 			}
-			generateNextGeneration();
+			shuffleArray(population);
+			//rouletteSelection();
+			stochasticUniversalSamplingSelection();
+			//tournamentSelection();
 		}
 
 		return meilleurIndividu();
 	}
+	
+	private void tournamentSelection()
+	{
+		for (int i = 0 ; i < nombreIndividus-1 ; i++)
+		{
+			if (i%2==1)
+				continue;
+			Individu challenger = population[i];
+			Individu opponent = population[i+1];
+			Individu winner,loser;
+			if (epreuve.fitness(challenger)>epreuve.fitness(opponent))
+			{
+				winner = challenger;
+				loser = opponent;
+			}
+			else
+			{
+				winner = opponent;
+				loser = challenger;
+			}
+			
+			int rdm=new Random().nextInt(100);
+			if (rdm>=100-Const.chancesCrossOver)
+				loser.crossOver(winner);
+			rdm=new Random().nextInt(100);
+			if (rdm>=100-Const.chancesMutation)
+				loser.mutate();
+		}
+	}
+	
+	public Individu[] stochasticNewPopulationGenerator(double fitnessSum)
+	{
+		double deltaP = fitnessSum/nombreIndividus;
+		double start = new Random().nextDouble()*deltaP;
+		double[] pointers = new double[nombreIndividus];
+		for (int i = 0 ; i<pointers.length ; i++)
+			pointers[i] = start + i*deltaP;
+		
+		Individu[] newPopulation = new Individu[nombreIndividus];
+		for (int pointerCpt=0 ; pointerCpt<nombreIndividus ; pointerCpt++)
+		{
+			double p = pointers[pointerCpt];
+			int i = 0;
+			double partialFitnessSum = 0;
+			while ((partialFitnessSum += epreuve.fitness(population[i])) < p)
+				i++;
+			newPopulation[pointerCpt] = population[i];
+		}
+		return newPopulation;
+	}
+	
+	public void stochasticUniversalSamplingSelection()
+	{
+		double fitnessSum = 0;
+		for (Individu i : population)
+			fitnessSum+=epreuve.fitness(i);
+		Individu[] parents1 = stochasticNewPopulationGenerator(fitnessSum);
+		Individu[] parents2 = stochasticNewPopulationGenerator(fitnessSum);
+		shuffleArray(parents1);
+		shuffleArray(parents2);
+		
+		Individu[] newPopulation = new Individu[nombreIndividus];
+		for (int i=0;i<nombreIndividus;i++)
+			newPopulation[i] = breed(parents1[i],parents2[i]);
+		population = newPopulation;
+	}
+	
+	private void shuffleArray(Object[] pop)
+	{
+		  for (int i=nombreIndividus-1 ; i>= 1 ; i--)
+		  {
+			  int j = new Random().nextInt(i+1);
+			  Object temp = pop[j];
+			  pop[j] = pop[i];
+			  pop[i] = temp;
+		  }
+	}
 
-	public void generateNextGeneration()
+	
+	public void rouletteSelection()
 	{
 		double fitnessSum = 0;
 		for (Individu i : population)

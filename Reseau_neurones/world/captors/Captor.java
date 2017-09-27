@@ -1,5 +1,7 @@
 package captors;
 
+import static utils.Constantes.*;
+
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,14 +11,12 @@ import creatures.Creature;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
 
-import static utils.Constantes.*;
-
 public abstract class Captor
 {
 	protected Creature creature;
 	protected double resultBees,resultWasps,resultVegetable,resultMeat,
 	resultSoldier,resultTank,resultProjectile,resultFuel,resultPowerUp, 
-	resultFireBall,	resultComplexDodger, resultSimpleDodger;
+	resultFireBall,	resultComplexDodger, resultSimpleDodger, resultWall;
 	protected final double range;
 	private int[] thingsToSee;
 
@@ -78,6 +78,8 @@ public abstract class Captor
 		if (sees(SIMPLEDODGER))
 			results.add(resultSimpleDodger);
 
+		results.add(resultWall);
+		
 		return results;
 	}
 

@@ -29,7 +29,7 @@ public class Draftman
 			d.draw(g);
 	}
 	
-	public void drawWorld(Creature selectedCreature, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, Delimitation box, Graphics g)
+	public void drawWorld(Creature selectedCreature, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, Graphics g)
 	{
 		try
 		{
@@ -46,8 +46,6 @@ public class Draftman
 			for (int i=0;i<delimitations.size();i++)
 				drawDelimitation(delimitations.get(i), g);
 			
-			drawDelimitation(box, g);
-
 			if (selectedCreature!=null && selectedCreature.isAlive())
 				selectedCreature.drawBrain(g);
 		}

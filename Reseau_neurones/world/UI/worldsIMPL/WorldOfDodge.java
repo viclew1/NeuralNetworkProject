@@ -35,7 +35,7 @@ public class WorldOfDodge extends World
 		if (cdAvancement>=cdFireBall)
 		{
 			cdAvancement=0;
-			delimitations.add(new FireBall(0, new Random().nextDouble()*box.getH()));
+			delimitations.add(new FireBall(0, new Random().nextDouble()*box.getHeight()));
 		}
 	}
 }

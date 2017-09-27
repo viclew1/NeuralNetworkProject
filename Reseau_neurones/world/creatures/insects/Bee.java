@@ -24,8 +24,7 @@ public class Bee extends InsectCreature
 						new EyeCaptor(-Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI,6,Math.PI/4),
 				},
-				brain,	BEE, Color.YELLOW,
-				INPUT_COUNT_BEE,
+				brain,	BEE, Color.YELLOW, LAYERS_SIZES_BEE[0],
 				creatures,collectables,delimitations,box);
 	}
 

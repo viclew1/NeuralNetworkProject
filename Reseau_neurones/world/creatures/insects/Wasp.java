@@ -24,8 +24,7 @@ public class Wasp extends InsectCreature
 						new EyeCaptor(-Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI,6,Math.PI/4),
 				},
-				brain, WASP, Color.ORANGE,
-				INPUT_COUNT_WASP,
+				brain, WASP, Color.ORANGE, LAYERS_SIZES_WASP[0],
 				creatures,collectables,delimitations, box);
 	}
 

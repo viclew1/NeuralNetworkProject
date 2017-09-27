@@ -5,8 +5,7 @@ public class App
 
 	public static void main(String[] args) throws InterruptedException
 	{
-		NeuralNetwork nn = new NeuralNetwork("test",2, 2, 2);
-		nn.printNetwork();
+		NeuralNetwork nn = new NeuralNetwork("test",new int[] {2,2,2});
 	}
 
 }

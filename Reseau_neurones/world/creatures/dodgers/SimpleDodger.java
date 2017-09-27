@@ -19,12 +19,12 @@ public class SimpleDodger extends DodgerCreature
 	public SimpleDodger(double x, double y, Individu brain, List<Creature> creatures,
 			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
-		super(x, y, 1, 1, 0.7, 0, new Captor[]{
+		super(x, y, 1, 1, 1, 0, new Captor[]{
 				new EyeCaptor(Math.PI/2,8,Math.PI/1.8),
 				new EyeCaptor(-Math.PI/2,8,Math.PI/1.8),
 				new EyeCaptor(-Math.PI,8,Math.PI/1.8),
 				new EyeCaptor(0,8,Math.PI/1.8),
-		}, brain, SIMPLEDODGER, Color.GREEN, INPUT_COUNT_SIMPLEDODGER, creatures,
+		}, brain, SIMPLEDODGER, Color.GREEN, LAYERS_SIZES_SIMPLEDODGER[0], creatures,
 				collectables, delimitations, box);
 	}
 	

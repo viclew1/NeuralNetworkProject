@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 import collectables.Collectable;
@@ -187,6 +188,7 @@ public class EyeCaptor extends Captor
 	@Override
 	protected void detectDelimitations(List<Delimitation> delimitations, DelimitationBox box)
 	{
+		resultWall = Double.MAX_VALUE;
 		resultProjectile = Double.MAX_VALUE;
 		resultFireBall = Double.MAX_VALUE;
 		double dist;
@@ -205,6 +207,11 @@ public class EyeCaptor extends Captor
 					if (IntersectionsChecker.intersects(line1,line2,d))
 						if ((dist = DistanceChecker.distance(creature, d))<resultFireBall)
 							resultFireBall=dist;
+				case WALL:
+					if (IntersectionsChecker.intersects(line1, line2, box))
+						if (IntersectionsChecker.intersects(line1,line2,d))
+							if ((dist = DistanceChecker.distance(creature, d))<resultWall)
+								resultWall=dist;
 					break;
 				default:
 					System.out.println("EyeCaptor.detectDelimitations - Delimitation inconnue");
@@ -219,6 +226,9 @@ public class EyeCaptor extends Captor
 		resultFireBall/=range;
 		if (resultFireBall > 1) resultFireBall = 0;
 		else resultFireBall = 1 - resultFireBall;
+		resultWall/=range;
+		if (resultWall > 1) resultWall = 0;
+		else resultWall = 1 - resultWall;
 	}
 
 }

@@ -10,17 +10,21 @@ import genetics.Individu;
 public class NeuralNetwork extends Individu
 {
 
-	private Neuron[] inputNeurons;
-	private Neuron[] hiddenNeurons;
-	private Neuron[] outputNeurons;
+	private int[] layersSizes;
+	private NeuralLayer[] layers;
 	private Connection[] connections;
 
 
-	public NeuralNetwork(String name, int inputCount, int hiddenCount, int outputCount)
+	public NeuralNetwork(String name, int[] layersSizes)
 	{
 		super(name);
-		init(inputCount,hiddenCount,outputCount);
-		connections = new Connection[inputCount*hiddenCount+hiddenCount*outputCount];
+		this.layersSizes=layersSizes;
+		initLayers();
+		int connectionsSz = 0 ;
+		for (int i = 0 ; i < layersSizes.length - 1 ; i++)
+			connectionsSz += layersSizes[i] * layersSizes[i+1];
+
+		connections = new Connection[connectionsSz];
 		for (int i=0;i<connections.length;i++)
 			connections[i] = new Connection();
 	}
@@ -28,78 +32,48 @@ public class NeuralNetwork extends Individu
 	private NeuralNetwork(NeuralNetwork nn)
 	{
 		super(nn.name);
-		init(nn.inputNeurons.length,nn.hiddenNeurons.length,nn.outputNeurons.length);
+		this.layersSizes=nn.layersSizes;
+		initLayers();
 		connections = new Connection[nn.connections.length];
 		for (int i=0;i<connections.length;i++)
 			connections[i] = nn.connections[i].deepCopy();
 	}
 
-	private void init(int inputCount, int hiddenCount, int outputCount)
+	private void initLayers()
 	{
-		inputNeurons  = new Neuron[inputCount];
-		hiddenNeurons = new Neuron[hiddenCount];
-		outputNeurons = new Neuron[outputCount];
-		for (int i=0;i<inputNeurons.length;i++)
-			inputNeurons[i] = new Neuron();
-		for (int i=0;i<hiddenNeurons.length;i++)
-			hiddenNeurons[i] = new Neuron();
-		for (int i=0;i<outputNeurons.length;i++)
-			outputNeurons[i] = new Neuron();
+		layers = new NeuralLayer[layersSizes.length];
+		for (int i = 0 ; i < layersSizes.length ; i ++)
+			layers[i] = new NeuralLayer(layersSizes[i]);
 	}
 
 	public double[] getOutputs(double[] inputs)
 	{
-		double[] outputs = new double[outputNeurons.length];
-		if (inputs.length!=inputNeurons.length)
-			return null;
+		int connectionCpt = 0;
 
-		for (int i=0;i<hiddenNeurons.length;i++)
-			hiddenNeurons[i].resetSum();
-		for (int i=0;i<outputNeurons.length;i++)
-			outputNeurons[i].resetSum();
+		for (NeuralLayer nl : layers)
+			nl.resetSums();
 
-		for (int i=0;i<inputs.length;i++)
+		Neuron[] inputNeurons = layers[0].getNeurons();
+		for (int i = 0 ; i < inputNeurons.length ; i++)
 			inputNeurons[i].setValue(inputs[i]);
-
-		for (int i=0;i<inputNeurons.length;i++)
+		
+		for (int i = 0 ; i < layersSizes.length - 1 ; i++)
 		{
-			double value = inputNeurons[i].getValue();
-			for (int j=0;j<hiddenNeurons.length;j++)
+			Neuron[] from = layers[i].getNeurons();
+			Neuron[] to   = layers[i+1].getNeurons();
+			for (int j = 0 ; j < from.length ; j++)
 			{
-				double weight= connections[i*hiddenNeurons.length+j].getWeight();
-				hiddenNeurons[j].addToSum(value, weight);
+				double value = from[j].getValue();
+				for (int k = 0 ; k < to.length ; k++)
+				{
+					double weight = connections[connectionCpt++].getWeight();
+					to[k].addToSum(value, weight);
+				}
 			}
-		}
-		for (Neuron n : hiddenNeurons)
-			n.applyActivationFunction();
-
-		for (int i=0;i<hiddenNeurons.length;i++)
-		{
-			double value = hiddenNeurons[i].getValue();
-			for (int j=0;j<outputNeurons.length;j++)
-			{
-				double weight= connections[inputNeurons.length*hiddenNeurons.length+i*outputNeurons.length+j].getWeight();
-				outputNeurons[j].addToSum(value, weight);
-			}
+			layers[i+1].applyActivationFunctions();
 		}
 
-		for (int i=0;i<outputNeurons.length;i++)
-		{
-			outputNeurons[i].applyActivationFunction();
-			outputs[i]=outputNeurons[i].getValue();
-		}
-
-		return outputs;
-	}
-
-	public void printNetwork()
-	{
-		for (int i=0;i<inputNeurons.length;i++)
-			for (int j=0;j<hiddenNeurons.length;j++)
-				System.out.println("INPUTNEURON("+i+")    \tvers HIDDENNEURON("+j+")\t; POIDS : "+connections[i*hiddenNeurons.length+j].getWeight());
-		for (int i=0;i<hiddenNeurons.length;i++)
-			for (int j=0;j<outputNeurons.length;j++)
-				System.out.println("HIDDENNEURON("+i+")    \tvers OUTPUTNEURON("+j+")\t; POIDS : "+connections[inputNeurons.length*hiddenNeurons.length + i*outputNeurons.length+j].getWeight());
+		return layers[layers.length-1].getValues();
 	}
 
 	public NeuralNetwork deepCopy()
@@ -143,12 +117,8 @@ public class NeuralNetwork extends Individu
 	public String toString()
 	{
 		String str="["+name+"] : ";
-		for (int i=0;i<inputNeurons.length;i++)
-			for (int j=0;j<hiddenNeurons.length;j++)
-				str+=connections[i*hiddenNeurons.length+j].getWeight()+",";
-		for (int i=0;i<hiddenNeurons.length;i++)
-			for (int j=0;j<outputNeurons.length;j++)
-				str+=connections[inputNeurons.length*hiddenNeurons.length + i*outputNeurons.length+j].getWeight()+",";
+		for (Connection c : connections)
+			str+=c.getWeight()+",";
 		return str;
 	}
 
@@ -163,67 +133,39 @@ public class NeuralNetwork extends Individu
 		int alpha = 200;
 		Color myColour = new Color(255, 255, 255, alpha);
 
-		int maxLength = Math.max(inputNeurons.length, Math.max(hiddenNeurons.length, outputNeurons.length));
+		int maxLength = 0;
+		for (NeuralLayer nl : layers)
+		{
+			maxLength = Math.max(maxLength, nl.getNeurons().length);
+		}
+
 		int neuronSz = szRect/maxLength-szRect/(maxLength*5);
 
 
 		g.setColor(myColour);
 		g.fillRect(xRect, yRect, szRect, szRect*9/maxLength);
 
-		for (int i=0;i<inputNeurons.length;i++)
+		for (int layer = 0 ; layer < layers.length ; layer ++)
 		{
-			double value = inputNeurons[i].getValue();
-			Color c = new Color((int)(255-value*255),(int)(255-value*255),(int)(255-value*255),alpha);
-			int xNeuron1 = xRect+szRect/(maxLength*10)+i*szRect/maxLength;
-			int yNeuron1 = yRect+szRect/maxLength;
+			Neuron[] neurons = layers[layer].getNeurons();
+			for (int i=0;i<neurons.length;i++)
+			{
+				double value = neurons[i].getValue();
+				Color c = new Color((int)(255-value*255),(int)(255-value*255),(int)(255-value*255),alpha);
+				int xNeuron1 = xRect+szRect/(maxLength*10)+i*szRect/maxLength;
+				int yNeuron1 = yRect+2*layer*szRect/maxLength;
 
-			g.setColor(c);
-			g.fillOval(xNeuron1,
-					yNeuron1,
-					neuronSz,
-					neuronSz);
-			g.setColor(new Color(0,0,0,alpha));
-			g.drawOval(xNeuron1,
-					yNeuron1,
-					neuronSz,
-					neuronSz);
-		}
-
-		for (int i=0;i<hiddenNeurons.length;i++)
-		{
-			double value = hiddenNeurons[i].getValue();
-			Color c = new Color((int)(255-value*255),(int)(255-value*255),(int)(255-value*255),alpha);
-			int xNeuron1 = xRect+szRect/(maxLength*10)+i*szRect/maxLength;
-			int yNeuron1 = yRect+szRect*4/maxLength;
-
-			g.setColor(c);
-			g.fillOval(xNeuron1,
-					yNeuron1,
-					neuronSz,
-					neuronSz);
-			g.setColor(new Color(0,0,0,alpha));
-			g.drawOval(xNeuron1,
-					yNeuron1,
-					neuronSz,
-					neuronSz);
-		}
-
-		for (int i=0;i<outputNeurons.length;i++)
-		{
-			double value = outputNeurons[i].getValue();
-			Color c = new Color((int)(255-value*255),(int)(255-value*255),(int)(255-value*255),alpha);
-			int xNeuron1 = xRect+szRect/(maxLength*10)+i*szRect/maxLength;
-			int yNeuron1 = yRect+szRect*7/maxLength;
-			g.setColor(c);
-			g.fillOval(xNeuron1,
-					yNeuron1,
-					neuronSz,
-					neuronSz);
-			g.setColor(new Color(0,0,0,alpha));
-			g.drawOval(xNeuron1,
-					yNeuron1,
-					neuronSz,
-					neuronSz);
+				g.setColor(c);
+				g.fillOval(xNeuron1,
+						yNeuron1,
+						neuronSz,
+						neuronSz);
+				g.setColor(new Color(0,0,0,alpha));
+				g.drawOval(xNeuron1,
+						yNeuron1,
+						neuronSz,
+						neuronSz);
+			}
 		}
 
 		g.setColor(oldColor);

@@ -24,8 +24,7 @@ public class Tank extends ShooterCreature
 				new EyeCaptor(Math.PI/7,16,Math.PI/3),
 				new EyeCaptor(-Math.PI/7,16,Math.PI/3),
 				new EyeCaptor(-Math.PI,4,Math.PI/2),
-		}, brain, TANK, Color.BLUE,
-				INPUT_COUNT_TANK,
+		}, brain, TANK, Color.BLUE,	LAYERS_SIZES_TANK[0],
 				creatures,collectables,delimitations, box);
 	}
 

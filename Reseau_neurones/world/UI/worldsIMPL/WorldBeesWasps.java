@@ -30,12 +30,12 @@ public class WorldBeesWasps extends World
 		if (meatCount > vegetableCount)
 		{
 			vegetableCount++;
-			collectables.add(new Vegetable(3+new Random().nextDouble()*(box.getW()-6), 3+new Random().nextDouble()*(box.getH()-6)));
+			collectables.add(new Vegetable(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6)));
 		}
 		else
 		{
 			meatCount++;
-			collectables.add(new Meat(3+new Random().nextDouble()*(box.getW()-6), 3+new Random().nextDouble()*(box.getH()-6)));
+			collectables.add(new Meat(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6)));
 		}
 	}
 

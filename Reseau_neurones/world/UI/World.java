@@ -50,7 +50,7 @@ public abstract class World extends JPanel implements Epreuve
 
 	private boolean done;
 	private int refreshCount;
-	
+
 	private double[] fpsHistory = new double[500];
 	private int fpsCount=0;
 
@@ -82,6 +82,8 @@ public abstract class World extends JPanel implements Epreuve
 	{
 
 		box=new DelimitationBox(0, 0, x, y);
+		for (Delimitation delim : box.getWalls())
+			delimitations.add(delim);
 		initSelections();
 		initComputeThread();
 	}
@@ -121,8 +123,8 @@ public abstract class World extends JPanel implements Epreuve
 
 		for (int i=0; i<creatures.size() ;i++)
 		{
-			Creature creature1 = creatures.get(i);
-			if (!creature1.isAlive())
+			Creature c = creatures.get(i);
+			if (!c.isAlive() || !IntersectionsChecker.contains(box, c))
 			{
 				creatures.remove(i);
 				i--;
@@ -131,20 +133,22 @@ public abstract class World extends JPanel implements Epreuve
 
 		for (int i=0;i<delimitations.size();i++)
 		{
-			Delimitation delim = delimitations.get(i);
-			if (delim.isExpired() || !IntersectionsChecker.contains(box, delim))
+			Delimitation d = delimitations.get(i);
+			if (d==null)
+				continue;
+			if (d.isExpired() || !IntersectionsChecker.contains(box, d))
 			{
 				delimitations.remove(i);
 				i--;
 			}
 			else
-				delim.update();
+				d.update();
 		}
 
 		for (int i=0;i<collectables.size();i++)
 		{
 			Collectable c = collectables.get(i);
-			if (c.isConsumed())
+			if (c.isConsumed() || !IntersectionsChecker.contains(box, c))
 			{
 				collectables.remove(i);
 				i--;
@@ -175,7 +179,7 @@ public abstract class World extends JPanel implements Epreuve
 
 		for (int i=collectables.size();i<collectableAmount;i++)
 			generateCollectables();
-		
+
 		generateDelimitations();
 
 		for (int i=0; i<creatures.size() ;i++)
@@ -200,8 +204,6 @@ public abstract class World extends JPanel implements Epreuve
 						if (IntersectionsChecker.intersects(creature1,delim))
 							new CreaDelimInteraction(creature1,delim).process();
 			}
-			if (!IntersectionsChecker.contains(box,creature1))
-				new CreaDelimInteraction(creature1,box).process();
 			for (int j=i+1; j<creatures.size() ;j++)
 			{
 				Creature creature2 = creatures.get(j);
@@ -209,8 +211,6 @@ public abstract class World extends JPanel implements Epreuve
 					if (IntersectionsChecker.intersects(creature1,creature2))
 						new CreaCreaInteraction(creature1,creature2).process();
 			}
-			if (!IntersectionsChecker.contains(box,creature1))
-				new CreaDelimInteraction(creature1,box).process();
 		}
 
 
@@ -225,13 +225,13 @@ public abstract class World extends JPanel implements Epreuve
 				e.printStackTrace();
 			}
 		}
-		
+
 
 		fpsHistory[fpsCount]=System.currentTimeMillis()-timeStartCompute;
 		fpsCount++;
 		if (fpsCount==fpsHistory.length)
 			fpsCount=0;
-		
+
 		return true;
 	}
 
@@ -283,24 +283,24 @@ public abstract class World extends JPanel implements Epreuve
 		Draftman draftman = new Draftman();
 		if (DRAW_ALL && !sleepAndRefreshStop)
 		{
-			draftman.drawWorld(selectedCreature, creatures, collectables, delimitations, box, g);
+			draftman.drawWorld(selectedCreature, creatures, collectables, delimitations, g);
 			draftman.drawFPS(currentFrameRate(), g);
 		}
 		draftman.drawInfos(infosToPrint(), g);
 		draftman.drawAvancement(refreshCount, GENERATION_LENGTH, g);
 	}
-	
+
 	private List<String> infosToPrint()
 	{
-			List<String> infos = new ArrayList<>();
-			infos.add("Génération : "+generationCount);
-			infos.add((SLOW_MO_MODE?"Désactiver":"Activer")+" slow motion : V");
-			infos.add((DRAW_CAPTORS?"Cacher":"Afficher")+" capteurs : S");
-			infos.add((DRAW_HP?"Cacher":"Afficher")+" points de vie : H");
-			infos.add((DRAW_ALL?"Cacher":"Afficher")+" la simulation : G");
-			infos.add((!PAUSE?"Mettre en pause":"Quitter la pause")+" : SPACE");
-			infos.add("Tuer cette génération entière : K");
-			return infos;
+		List<String> infos = new ArrayList<>();
+		infos.add("Génération : "+generationCount);
+		infos.add((SLOW_MO_MODE?"Désactiver":"Activer")+" slow motion : V");
+		infos.add((DRAW_CAPTORS?"Cacher":"Afficher")+" capteurs : S");
+		infos.add((DRAW_HP?"Cacher":"Afficher")+" points de vie : H");
+		infos.add((DRAW_ALL?"Cacher":"Afficher")+" la simulation : G");
+		infos.add((!PAUSE?"Mettre en pause":"Quitter la pause")+" : SPACE");
+		infos.add("Tuer cette génération entière : K");
+		return infos;
 	}
 
 	/**
@@ -309,38 +309,38 @@ public abstract class World extends JPanel implements Epreuve
 
 	public void generateBee(Individu intelligence)
 	{
-		creatures.add(new Bee(3+new Random().nextDouble()*(box.getW()/3), 3+new Random().nextDouble()*(box.getH()-6), intelligence,
-				creatures,collectables,delimitations,box));
+		creatures.add(new Bee(3+new Random().nextDouble()*(box.getWidth()/3), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
+				creatures,collectables,delimitations, box));
 	}
 
 	public void generateWasp(Individu intelligence)
 	{
-		creatures.add(new Wasp(box.getW()*2/3+new Random().nextDouble()*(box.getW()/3-3), 3+new Random().nextDouble()*(box.getH()-6), intelligence,
-				creatures,collectables,delimitations,box));
+		creatures.add(new Wasp(box.getWidth()*2/3+new Random().nextDouble()*(box.getWidth()/3-3), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
+				creatures,collectables,delimitations, box));
 	}
 
 	public void generateSoldier(Individu intelligence)
 	{
-		creatures.add(new Soldier(3+new Random().nextDouble()*(box.getW()-6), 3+new Random().nextDouble()*(box.getH()-6), intelligence,
-				creatures,collectables,delimitations,box));
+		creatures.add(new Soldier(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
+				creatures,collectables,delimitations, box));
 	}
 
 	public void generateTank(Individu intelligence)
 	{
-		creatures.add(new Tank(3+new Random().nextDouble()*(box.getW()-6), 3+new Random().nextDouble()*(box.getH()-6), intelligence,
-				creatures,collectables,delimitations,box));
+		creatures.add(new Tank(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
+				creatures,collectables,delimitations, box));
 	}
-	
+
 	public void generateComplexDodger(Individu intelligence)
 	{
-		creatures.add(new ComplexDodger(box.getW()/2, box.getH()/2, intelligence,
-				creatures,collectables,delimitations,box));
+		creatures.add(new ComplexDodger(box.getWidth()/2, box.getHeight()/2, intelligence,
+				creatures,collectables,delimitations, box));
 	}
-	
+
 	public void generateSimpleDodger(Individu intelligence)
 	{
-		creatures.add(new SimpleDodger(box.getW()/2, box.getH()/2, intelligence,
-				creatures,collectables,delimitations,box));
+		creatures.add(new SimpleDodger(box.getWidth()/2, box.getHeight()/2, intelligence,
+				creatures,collectables,delimitations, box));
 	}
 
 
@@ -405,45 +405,33 @@ public abstract class World extends JPanel implements Epreuve
 			{
 				Selection selection=new Selection(World.this, nbIndiv, nbGen, type);
 				selection.population=new Individu[selection.nombreIndividus];
-				int inputCpt=-1,hiddenCpt=-1,outputCpt=-1;
+				int[] layersSize = null;
 				switch (type)
 				{
 				case TYPE_BEE:
-					inputCpt=INPUT_COUNT_BEE;
-					hiddenCpt=HIDDEN_COUNT_BEE;
-					outputCpt=OUTPUT_COUNT_BEE;
+					layersSize=LAYERS_SIZES_BEE;
 					break;
 				case TYPE_TANK:
-					inputCpt=INPUT_COUNT_TANK;
-					hiddenCpt=HIDDEN_COUNT_TANK;
-					outputCpt=OUTPUT_COUNT_TANK;
+					layersSize=LAYERS_SIZES_TANK;
 					break;
 				case TYPE_WASP:
-					inputCpt=INPUT_COUNT_WASP;
-					hiddenCpt=HIDDEN_COUNT_WASP;
-					outputCpt=OUTPUT_COUNT_WASP;
+					layersSize=LAYERS_SIZES_WASP;
 					break;
 				case TYPE_SOLDIER:
-					inputCpt=INPUT_COUNT_SOLDIER;
-					hiddenCpt=HIDDEN_COUNT_SOLDIER;
-					outputCpt=OUTPUT_COUNT_SOLDIER;
+					layersSize=LAYERS_SIZES_SOLDIER;
 					break;
 				case TYPE_COMPLEXDODGER:
-					inputCpt=INPUT_COUNT_COMPLEXDODGER;
-					hiddenCpt=HIDDEN_COUNT_COMPLEXDODGER;
-					outputCpt=OUTPUT_COUNT_COMPLEXDODGER;
+					layersSize=LAYERS_SIZES_COMPLEXDODGER;
 					break;
 				case TYPE_SIMPLEDODGER:
-					inputCpt=INPUT_COUNT_SIMPLEDODGER;
-					hiddenCpt=HIDDEN_COUNT_SIMPLEDODGER;
-					outputCpt=OUTPUT_COUNT_SIMPLEDODGER;
+					layersSize=LAYERS_SIZES_SIMPLEDODGER;
 					break;
 				default:
 					System.out.println("World.initSelection - Type inconnu");
 					System.exit(0);
 				}
 				for (int i=0;i<selection.nombreIndividus;i++)
-					selection.population[i]=new NeuralNetwork(type,inputCpt, hiddenCpt, outputCpt);
+					selection.population[i]=new NeuralNetwork(type,layersSize);
 				Individu leDieu=selection.lancerSelection();
 				System.out.println(leDieu);
 			}
@@ -460,7 +448,16 @@ public abstract class World extends JPanel implements Epreuve
 	public synchronized void finTest()
 	{
 		refreshCount = 0;
-		delimitations.clear();
+		for (int i = 0 ; i < delimitations.size() ; i ++)
+		{
+			Delimitation d = delimitations.get(i);
+			if (d!=null)
+				if (d.getType()!=WALL)
+				{
+					delimitations.remove(i);
+					i--;
+				}
+		}
 		collectables.clear();
 		done=true;
 		generationCount++;

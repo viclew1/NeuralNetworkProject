@@ -24,8 +24,7 @@ public class Soldier extends ShooterCreature
 						new EyeCaptor(Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI,5,Math.PI/2),
-		}, brain, SOLDIER, Color.CYAN,
-				INPUT_COUNT_SOLDIER,
+		}, brain, SOLDIER, Color.CYAN, LAYERS_SIZES_SOLDIER[0],
 				creatures,collectables,delimitations, box);
 	}
 
