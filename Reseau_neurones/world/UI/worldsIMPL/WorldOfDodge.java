@@ -10,7 +10,9 @@ import limitations.throwables.FireBall;
 public class WorldOfDodge extends World
 {
 	
-	private int cdFireBall=5;
+	private static final long serialVersionUID = -5324916435284951987L;
+	
+	private int cdFireBall=10;
 	private int cdAvancement=0;
 
 	@Override
@@ -18,6 +20,10 @@ public class WorldOfDodge extends World
 	{
 		GENERATION_LENGTH = 200000;
 		initSelection(POPULATION_SIZE_COMPLEXDODGER, GENERATION_COUNT, TYPE_COMPLEXDODGER);
+		initSelection(POPULATION_SIZE_COMPLEXDODGER, GENERATION_COUNT, TYPE_COMPLEXDODGER);
+		initSelection(POPULATION_SIZE_COMPLEXDODGER, GENERATION_COUNT, TYPE_COMPLEXDODGER);
+		initSelection(POPULATION_SIZE_SIMPLEDODGER, GENERATION_COUNT, TYPE_SIMPLEDODGER);
+		initSelection(POPULATION_SIZE_SIMPLEDODGER, GENERATION_COUNT, TYPE_SIMPLEDODGER);
 		initSelection(POPULATION_SIZE_SIMPLEDODGER, GENERATION_COUNT, TYPE_SIMPLEDODGER);
 	}
 
@@ -35,7 +41,10 @@ public class WorldOfDodge extends World
 		if (cdAvancement>=cdFireBall)
 		{
 			cdAvancement=0;
-			delimitations.add(new FireBall(0, new Random().nextDouble()*box.getHeight()));
+			if (new Random().nextBoolean())
+			delimitations.add(new FireBall(0, new Random().nextDouble()*box.getHeight(), 0));
+			else
+				delimitations.add(new FireBall(box.getWidth()-5, new Random().nextDouble()*box.getHeight(), Math.PI));
 		}
 	}
 }

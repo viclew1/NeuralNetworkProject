@@ -158,7 +158,15 @@ public abstract class Creature
 			for (int j=0;j<results.size();j++)
 				inputs[cpt++] = results.get(j);
 		}
-		inputs[cpt]=hp/hpMax;
+		inputs[cpt++]=hp/hpMax;
+		double xCenter = box.width/2;
+		double yCenter = box.height/2;
+		double xRatio = x - xCenter;
+		double yRatio = y - yCenter;
+		inputs[cpt++] = (xRatio>0)?xRatio/xCenter:0; 
+		inputs[cpt++] = (xRatio>0)?0:-xRatio/xCenter;
+		inputs[cpt++] = (yRatio>0)?yRatio/yCenter:0;
+		inputs[cpt++] = (yRatio>0)?0:-yRatio/yCenter;
 		double[] decisions = brain.getOutputs(inputs);
 		applyDecisions(decisions);
 	}

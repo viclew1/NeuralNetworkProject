@@ -4,7 +4,6 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
 import collectables.Collectable;
 import creatures.Creature;
 import limitations.Delimitation;
@@ -12,7 +11,6 @@ import limitations.DelimitationBox;
 
 public class IntersectionsChecker
 {
-
 	public static boolean intersects(Creature creature, Collectable collect)
 	{
 		return new Rectangle2D.Double(creature.getX(), creature.getY(), creature.getSize(), creature.getSize())
@@ -109,5 +107,4 @@ public class IntersectionsChecker
 		return new Rectangle2D.Double(box.getX(), box.getY(), box.getWidth(), box.getHeight())
 				.contains(new Point2D.Double(collec.getX()+collec.getSize()/2, collec.getY()+collec.getSize()/2));
 	}
-
 }

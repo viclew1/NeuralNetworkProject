@@ -39,7 +39,6 @@ public class Constantes
 	public static final int FUEL = 13;
 	public static final int POWERUP = 14;
 	
-	public static final int DELIMITATION_BOX = 21;
 	public static final int PROJECTILE = 22;
 	public static final int FIREBALL = 23;
 	public static final int WALL = 24;
@@ -53,12 +52,12 @@ public class Constantes
 	
 	public static int GENERATION_LENGTH;
 	
-	public static final int[] LAYERS_SIZES_BEE = new int[] {16,12,6,12,1};
-	public static final int[] LAYERS_SIZES_TANK = new int[] {19,15,7,15,4};
-	public static final int[] LAYERS_SIZES_WASP = new int[] {16,12,6,12,1};
-	public static final int[] LAYERS_SIZES_SOLDIER = new int[] {19,15,7,15,4};
-	public static final int[] LAYERS_SIZES_COMPLEXDODGER = new int[] {11,14,6,14,2};
-	public static final int[] LAYERS_SIZES_SIMPLEDODGER = new int[] {9,14,6,14,2};
+	public static final int[] LAYERS_SIZES_BEE = new int[] {20,12,6,12,1};
+	public static final int[] LAYERS_SIZES_TANK = new int[] {23,15,7,15,4};
+	public static final int[] LAYERS_SIZES_WASP = new int[] {20,12,6,12,1};
+	public static final int[] LAYERS_SIZES_SOLDIER = new int[] {23,15,7,15,4};
+	public static final int[] LAYERS_SIZES_COMPLEXDODGER = new int[] {15,14,6,14,2};
+	public static final int[] LAYERS_SIZES_SIMPLEDODGER = new int[] {21,14,6,14,2};
 	
 	public static int FOOD_AMOUNT=1000;
 	public static int FUEL_AMOUNT=250;

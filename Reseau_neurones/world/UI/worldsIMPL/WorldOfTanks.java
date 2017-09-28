@@ -2,8 +2,6 @@ package UI.worldsIMPL;
 
 import static utils.Constantes.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import UI.World;
@@ -12,9 +10,6 @@ import collectables.expirables.Fuel;
 public class WorldOfTanks extends World
 {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8366677204022090143L;
 
 	@Override

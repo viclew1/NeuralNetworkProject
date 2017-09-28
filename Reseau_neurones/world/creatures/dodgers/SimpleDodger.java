@@ -20,10 +20,14 @@ public class SimpleDodger extends DodgerCreature
 			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
 		super(x, y, 1, 1, 1, 0, new Captor[]{
-				new EyeCaptor(Math.PI/2,8,Math.PI/1.8),
-				new EyeCaptor(-Math.PI/2,8,Math.PI/1.8),
-				new EyeCaptor(-Math.PI,8,Math.PI/1.8),
-				new EyeCaptor(0,8,Math.PI/1.8),
+				new EyeCaptor(Math.PI/2,8,Math.PI/3.6),
+				new EyeCaptor(-Math.PI/2,8,Math.PI/3.6),
+				new EyeCaptor(-Math.PI,8,Math.PI/3.6),
+				new EyeCaptor(0,8,Math.PI/3.6),
+				new EyeCaptor(Math.PI/4,8,Math.PI/3.6),
+				new EyeCaptor(-Math.PI/4,8,Math.PI/3.6),
+				new EyeCaptor(-Math.PI*3/4,8,Math.PI/3.6),
+				new EyeCaptor(Math.PI*3/4,8,Math.PI/3.6),
 		}, brain, SIMPLEDODGER, Color.GREEN, LAYERS_SIZES_SIMPLEDODGER[0], creatures,
 				collectables, delimitations, box);
 	}

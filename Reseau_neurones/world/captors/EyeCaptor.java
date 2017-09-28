@@ -43,6 +43,7 @@ public class EyeCaptor extends Captor
 		Point2D p3 = new Point2D.Double(x2Front, y2Front);
 		line1 = new Line2D.Double(p1, p2);
 		line2 = new Line2D.Double(p1, p3);
+		around = new Rectangle2D.Double(line1.getX1()-range,line1.getY1()-range,range*2,range*2);
 	}
 
 	@Override
@@ -58,6 +59,8 @@ public class EyeCaptor extends Captor
 				(int)(line2.getY1()*SIZE+SCROLL_Y), 
 				(int)(line2.getX2()*SIZE+SCROLL_X), 
 				(int)(line2.getY2()*SIZE+SCROLL_Y));
+		g.setColor(Color.RED);
+		g.drawRect((int)(around.getX()*SIZE+SCROLL_X), (int)(around.getY()*SIZE+SCROLL_Y), (int)(around.getWidth()*SIZE), (int)(around.getHeight()*SIZE));
 		g.setColor(color);
 	}
 
@@ -74,44 +77,45 @@ public class EyeCaptor extends Captor
 		for (int i=0; i<creatures.size();i++)
 		{
 			Creature c = creatures.get(i);
-			if (c!=null && c!=creature)
-				switch (c.getType())
-				{
-				case BEE:
-					if (IntersectionsChecker.intersects(line1,line2,c))
-						if ((dist = DistanceChecker.distance(creature, c))<resultBees)
-							resultBees=dist;
-					break;
-				case WASP:
-					if (IntersectionsChecker.intersects(line1,line2,c))
-						if ((dist = DistanceChecker.distance(creature, c))<resultWasps)
-							resultWasps=dist;
-					break;
-				case SOLDIER:
-					if (IntersectionsChecker.intersects(line1,line2,c))
-						if ((dist = DistanceChecker.distance(creature, c))<resultSoldier)
-							resultSoldier=dist;
-					break;
-				case TANK:
-					if (IntersectionsChecker.intersects(line1,line2,c))
-						if ((dist = DistanceChecker.distance(creature, c))<resultTank)
-							resultTank=dist;
-					break;
-				case COMPLEXDODGER:
-					if (IntersectionsChecker.intersects(line1,line2,c))
-						if ((dist = DistanceChecker.distance(creature, c))<resultComplexDodger)
-							resultComplexDodger=dist;
-					break;
-				case SIMPLEDODGER:
-					if (IntersectionsChecker.intersects(line1,line2,c))
-						if ((dist = DistanceChecker.distance(creature, c))<resultSimpleDodger)
-							resultSimpleDodger=dist;
-					break;
-				default:
-					System.out.println("EyeCaptor.detectCreatures - Creature inconnue");
-					System.exit(0);
-					break;
-				}
+			if (c==null || !around.contains(c.getX()+c.getSize()/2,c.getSize()+c.getSize()/2))
+				continue;
+			switch (c.getType())
+			{
+			case BEE:
+				if (IntersectionsChecker.intersects(line1,line2,c))
+					if ((dist = DistanceChecker.distance(creature, c))<resultBees)
+						resultBees=dist;
+				break;
+			case WASP:
+				if (IntersectionsChecker.intersects(line1,line2,c))
+					if ((dist = DistanceChecker.distance(creature, c))<resultWasps)
+						resultWasps=dist;
+				break;
+			case SOLDIER:
+				if (IntersectionsChecker.intersects(line1,line2,c))
+					if ((dist = DistanceChecker.distance(creature, c))<resultSoldier)
+						resultSoldier=dist;
+				break;
+			case TANK:
+				if (IntersectionsChecker.intersects(line1,line2,c))
+					if ((dist = DistanceChecker.distance(creature, c))<resultTank)
+						resultTank=dist;
+				break;
+			case COMPLEXDODGER:
+				if (IntersectionsChecker.intersects(line1,line2,c))
+					if ((dist = DistanceChecker.distance(creature, c))<resultComplexDodger)
+						resultComplexDodger=dist;
+				break;
+			case SIMPLEDODGER:
+				if (IntersectionsChecker.intersects(line1,line2,c))
+					if ((dist = DistanceChecker.distance(creature, c))<resultSimpleDodger)
+						resultSimpleDodger=dist;
+				break;
+			default:
+				System.out.println("EyeCaptor.detectCreatures - Creature inconnue");
+				System.exit(0);
+				break;
+			}
 		}
 		resultBees/=range;
 		if (resultBees > 1) resultBees = 0;
@@ -144,6 +148,8 @@ public class EyeCaptor extends Captor
 		for (int i=0;i<collectables.size();i++)
 		{
 			Collectable c = collectables.get(i);
+			if (c==null || !around.contains(c.getX()+c.getSize()/2,c.getSize()+c.getSize()/2))
+				continue;
 			switch (c.getType())
 			{
 			case VEGETABLE:
@@ -195,29 +201,30 @@ public class EyeCaptor extends Captor
 		for (int i=0;i<delimitations.size();i++)
 		{
 			Delimitation d = delimitations.get(i);
-			if (d!=null)
-				switch (d.getType())
-				{
-				case PROJECTILE:
+			if (d==null || !around.contains(d.getX()+d.getW()/2,d.getY()+d.getH()/2))
+				continue;
+			switch (d.getType())
+			{
+			case PROJECTILE:
+				if (IntersectionsChecker.intersects(line1,line2,d))
+					if ((dist = DistanceChecker.distance(creature, d))<resultProjectile)
+						resultProjectile=dist;
+				break;
+			case FIREBALL:
+				if (IntersectionsChecker.intersects(line1,line2,d))
+					if ((dist = DistanceChecker.distance(creature, d))<resultFireBall)
+						resultFireBall=dist;
+			case WALL:
+				if (IntersectionsChecker.intersects(line1, line2, box))
 					if (IntersectionsChecker.intersects(line1,line2,d))
-						if ((dist = DistanceChecker.distance(creature, d))<resultProjectile)
-							resultProjectile=dist;
-					break;
-				case FIREBALL:
-					if (IntersectionsChecker.intersects(line1,line2,d))
-						if ((dist = DistanceChecker.distance(creature, d))<resultFireBall)
-							resultFireBall=dist;
-				case WALL:
-					if (IntersectionsChecker.intersects(line1, line2, box))
-						if (IntersectionsChecker.intersects(line1,line2,d))
-							if ((dist = DistanceChecker.distance(creature, d))<resultWall)
-								resultWall=dist;
-					break;
-				default:
-					System.out.println("EyeCaptor.detectDelimitations - Delimitation inconnue");
-					System.exit(0);
-					break;
-				}
+						if ((dist = DistanceChecker.distance(creature, d))<resultWall)
+							resultWall=dist;
+				break;
+			default:
+				System.out.println("EyeCaptor.detectDelimitations - Delimitation inconnue");
+				System.exit(0);
+				break;
+			}
 		}
 
 		resultProjectile/=range;

@@ -3,6 +3,7 @@ package captors;
 import static utils.Constantes.*;
 
 import java.awt.Graphics;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public abstract class Captor
 	resultFireBall,	resultComplexDodger, resultSimpleDodger, resultWall;
 	protected final double range;
 	private int[] thingsToSee;
+	protected Rectangle2D around;
 
 	public Captor(double range)
 	{

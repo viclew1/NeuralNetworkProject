@@ -6,9 +6,9 @@ import static utils.Constantes.*;
 public class FireBall extends ThrowableDelimitation
 {
 
-	public FireBall(double x, double y)
+	public FireBall(double x, double y, double orientation)
 	{
-		super(x, y, 5, 0.6, 0, Double.MAX_VALUE, false, null, FIREBALL, Color.RED);
+		super(x, y, 5, 0.6, orientation, Double.MAX_VALUE, false, null, FIREBALL, Color.RED);
 	}
 
 }
