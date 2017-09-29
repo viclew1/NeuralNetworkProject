@@ -1,22 +1,18 @@
 package creatures.shooters;
 
 import java.awt.Color;
-import java.util.List;
-
+import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
 import collectables.Collectable;
 import creatures.Creature;
 import genetics.Individu;
-import limitations.Delimitation;
-import limitations.DelimitationBox;
-
 import static utils.Constantes.*;
 
 public class Tank extends ShooterCreature
 {
 
-	public Tank(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
+	public Tank(double x, double y, Individu brain, World world)
 	{
 		super(x, y, 3, 500, 0.15,0.05,
 				0.2,1.2,150,Color.BLACK,
@@ -25,7 +21,7 @@ public class Tank extends ShooterCreature
 				new EyeCaptor(-Math.PI/7,16,Math.PI/3),
 				new EyeCaptor(-Math.PI,4,Math.PI/2),
 		}, brain, TANK, Color.BLUE,	LAYERS_SIZES_TANK[0],
-				creatures,collectables,delimitations, box);
+				world);
 	}
 
 	@Override

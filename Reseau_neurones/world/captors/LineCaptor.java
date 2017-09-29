@@ -1,8 +1,7 @@
 package captors;
 
-import static utils.Constantes.*;
-import java.awt.Graphics;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.List;
 
@@ -10,12 +9,12 @@ import collectables.Collectable;
 import creatures.Creature;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
+import zones.Zone;
 
 
 public class LineCaptor extends Captor
 {
 
-	private Line2D line;
 	protected final double orientation;
 	
 	public LineCaptor(double orientation, double range)
@@ -33,16 +32,7 @@ public class LineCaptor extends Captor
 		double xFront = xCenter + Math.cos(orientation+deltaOrientation)*range;
 		double yFront = yCenter - Math.sin(orientation+deltaOrientation)*range;
 		Point2D p2 = new Point2D.Double(xFront, yFront);
-		line = new Line2D.Double(p1, p2);
-	}
-
-	@Override
-	public void draw(Graphics g)
-	{
-		g.drawLine((int)(line.getX1()*SIZE+SCROLL_X),
-				(int)(line.getY1()*SIZE+SCROLL_Y), 
-				(int)(line.getX2()*SIZE+SCROLL_X), 
-				(int)(line.getY2()*SIZE+SCROLL_Y));
+		hitbox=new Path2D.Double(new Line2D.Double(p1, p2));
 	}
 
 	@Override
@@ -65,6 +55,11 @@ public class LineCaptor extends Captor
 		
 	}
 
-
+	@Override
+	protected void detectZones(List<Zone> zones)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 
 }

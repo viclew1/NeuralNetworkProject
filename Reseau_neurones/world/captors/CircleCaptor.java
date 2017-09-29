@@ -1,12 +1,12 @@
 package captors;
 
-import java.awt.Graphics;
 import java.util.List;
 
 import collectables.Collectable;
 import creatures.Creature;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
+import zones.Zone;
 
 public class CircleCaptor extends Captor
 {
@@ -18,13 +18,6 @@ public class CircleCaptor extends Captor
 
 	@Override
 	public void update(double x, double y, double sz, double deltaOrientation)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void draw(Graphics g)
 	{
 		// TODO Auto-generated method stub
 		
@@ -46,6 +39,13 @@ public class CircleCaptor extends Captor
 
 	@Override
 	protected void detectDelimitations(List<Delimitation> delimitations, DelimitationBox box)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void detectZones(List<Zone> zones)
 	{
 		// TODO Auto-generated method stub
 		

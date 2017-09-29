@@ -36,7 +36,7 @@ public class ThrowableDelimitation extends Delimitation
 	}
 
 	@Override
-	public void update() {
+	protected void updatePosition() {
 		x+=Math.cos(orientation)*speed;
 		y-=Math.sin(orientation)*speed;
 	}

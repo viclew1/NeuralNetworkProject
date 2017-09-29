@@ -13,37 +13,22 @@ public class DistanceChecker
 		double xx = x2 - x1;
 		double yy = y2 - y1;
 		double squaredLenght = Math.pow(xx, 2) + Math.pow(yy, 2);
-		return Math.max(0,Math.sqrt(squaredLenght)-d1-d2);
+		return Math.max(0,Math.sqrt(squaredLenght)-d1/2-d2/2);
 	}
 
 	public static double distance(Creature crea, Delimitation d)
 	{
-		double x1 = crea.getX()+crea.getSize()/2;
-		double y1 = crea.getY()+crea.getSize()/2;
-
-		double x2 = d.getX()+d.getW()/2;
-		double y2 = d.getY()+d.getH()/2;
-		return distancePtoP(x1, y1, x2, y2, crea.getSize()/2, d.getW()/2);
+		return distancePtoP(crea.getHitBox().getCenterX(),crea.getHitBox().getCenterY(),d.getHitBox().getCenterX(),d.getHitBox().getCenterY(),crea.getHitBox().getWidth(),d.getHitBox().getWidth());
 	}
 
 	public static double distance(Creature crea1, Creature crea2)
 	{
-		double x1 = crea1.getX()+crea1.getSize()/2;
-		double y1 = crea1.getY()+crea1.getSize()/2;
-
-		double x2 = crea2.getX()+crea2.getSize()/2;
-		double y2 = crea2.getY()+crea2.getSize()/2;
-		return distancePtoP(x1, y1, x2, y2, crea1.getSize()/2, crea2.getSize()/2);
+		return distancePtoP(crea1.getHitBox().getCenterX(),crea1.getHitBox().getCenterY(),crea2.getHitBox().getCenterX(),crea2.getHitBox().getCenterY(),crea1.getHitBox().getWidth(),crea2.getHitBox().getWidth());
 	}
 
 	public static double distance(Creature crea, Collectable collec)
 	{
-		double x1 = crea.getX()+crea.getSize()/2;
-		double y1 = crea.getY()+crea.getSize()/2;
-
-		double x2 = collec.getX()+collec.getSize()/2;
-		double y2 = collec.getY()+collec.getSize()/2;
-		return distancePtoP(x1, y1, x2, y2, crea.getSize()/2, collec.getSize()/2);
+		return distancePtoP(crea.getHitBox().getCenterX(),crea.getHitBox().getCenterY(),collec.getHitBox().getCenterX(),collec.getHitBox().getCenterY(),crea.getHitBox().getWidth(),collec.getHitBox().getWidth());
 	}
 
 }

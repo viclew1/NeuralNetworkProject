@@ -26,11 +26,13 @@ import genetics.Selection;
 import interactions.CreaCollecInteraction;
 import interactions.CreaCreaInteraction;
 import interactions.CreaDelimInteraction;
+import interactions.CreaZoneInteraction;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
 import neural_network.NeuralNetwork;
 import utils.Draftman;
 import utils.IntersectionsChecker;
+import zones.Zone;
 
 public abstract class World extends JPanel implements Epreuve
 {
@@ -41,6 +43,7 @@ public abstract class World extends JPanel implements Epreuve
 	protected List<Delimitation> delimitations;
 	protected List<Creature> creatures;
 	protected List<Collectable> collectables;
+	protected List<Zone> zones;
 	protected DelimitationBox box;
 	protected int collectableAmount;
 	protected int meatCount,vegetableCount, powerUpCount, fuelCount;
@@ -72,6 +75,7 @@ public abstract class World extends JPanel implements Epreuve
 		creatures = new ArrayList<>(1000);
 		collectables = new ArrayList<>(1000);
 		delimitations = new ArrayList<>(1000);
+		zones = new ArrayList<>(1000);
 	}
 
 	/**
@@ -121,14 +125,18 @@ public abstract class World extends JPanel implements Epreuve
 		fuelCount=0;
 		powerUpCount=0;
 
-		for (int i=0; i<creatures.size() ;i++)
+		for (int i=0 ; i<zones.size() ; i++)
 		{
-			Creature c = creatures.get(i);
-			if (!c.isAlive() || !IntersectionsChecker.contains(box, c))
+			Zone z = zones.get(i);
+			if (z==null)
+				continue;
+			if (z.isExpired() || !IntersectionsChecker.contains(box, z))
 			{
-				creatures.remove(i);
+				zones.remove(i);
 				i--;
 			}
+			else
+				z.update();
 		}
 
 		for (int i=0;i<delimitations.size();i++)
@@ -148,6 +156,8 @@ public abstract class World extends JPanel implements Epreuve
 		for (int i=0;i<collectables.size();i++)
 		{
 			Collectable c = collectables.get(i);
+			if (c==null)
+				continue;
 			if (c.isConsumed() || !IntersectionsChecker.contains(box, c))
 			{
 				collectables.remove(i);
@@ -172,6 +182,7 @@ public abstract class World extends JPanel implements Epreuve
 					break;
 				default:
 					System.out.println("World.sleepAndRefresh - Collectable inconnu");
+					System.exit(0);
 				}
 			}
 		}
@@ -185,16 +196,23 @@ public abstract class World extends JPanel implements Epreuve
 		for (int i=0; i<creatures.size() ;i++)
 		{
 			Creature creature1 = creatures.get(i);
+			if (creature1==null)
+				continue;
+			if (!creature1.isAlive() || !IntersectionsChecker.contains(box, creature1))
+			{
+				creatures.remove(i);
+				i--;
+				continue;
+			}
 			creature1.detect();
 			creature1.update();
-			if (!creature1.isAlive())
-				continue;
 			for (int j=0;j<collectables.size();j++)
 			{
 				Collectable collect = collectables.get(j);
-				if (!collect.isConsumed())
-					if (IntersectionsChecker.intersects(creature1,collect))
-						new CreaCollecInteraction(creature1,collect).process();
+				if (collect!=null)
+					if (!collect.isConsumed())
+						if (IntersectionsChecker.intersects(creature1,collect))
+							new CreaCollecInteraction(creature1,collect).process();
 			}
 			for (int j=0;j<delimitations.size();j++)
 			{
@@ -204,12 +222,21 @@ public abstract class World extends JPanel implements Epreuve
 						if (IntersectionsChecker.intersects(creature1,delim))
 							new CreaDelimInteraction(creature1,delim).process();
 			}
+			for (int j=0;j<zones.size();j++)
+			{
+				Zone zone = zones.get(j);
+				if (zone!=null)
+					if (!zone.isExpired())
+						if (IntersectionsChecker.intersects(creature1,zone))
+							new CreaZoneInteraction(creature1,zone).process();
+			}
 			for (int j=i+1; j<creatures.size() ;j++)
 			{
 				Creature creature2 = creatures.get(j);
-				if (creature2.isAlive())
-					if (IntersectionsChecker.intersects(creature1,creature2))
-						new CreaCreaInteraction(creature1,creature2).process();
+				if (creature2!=null)
+					if (creature2.isAlive())
+						if (IntersectionsChecker.intersects(creature1,creature2))
+							new CreaCreaInteraction(creature1,creature2).process();
 			}
 		}
 
@@ -310,37 +337,37 @@ public abstract class World extends JPanel implements Epreuve
 	public void generateBee(Individu intelligence)
 	{
 		creatures.add(new Bee(3+new Random().nextDouble()*(box.getWidth()/3), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
-				creatures,collectables,delimitations, box));
+				this));
 	}
 
 	public void generateWasp(Individu intelligence)
 	{
 		creatures.add(new Wasp(box.getWidth()*2/3+new Random().nextDouble()*(box.getWidth()/3-3), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
-				creatures,collectables,delimitations, box));
+				this));
 	}
 
 	public void generateSoldier(Individu intelligence)
 	{
 		creatures.add(new Soldier(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
-				creatures,collectables,delimitations, box));
+				this));
 	}
 
 	public void generateTank(Individu intelligence)
 	{
 		creatures.add(new Tank(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
-				creatures,collectables,delimitations, box));
+				this));
 	}
 
 	public void generateComplexDodger(Individu intelligence)
 	{
 		creatures.add(new ComplexDodger(box.getWidth()/2, box.getHeight()/2, intelligence,
-				creatures,collectables,delimitations, box));
+				this));
 	}
 
 	public void generateSimpleDodger(Individu intelligence)
 	{
 		creatures.add(new SimpleDodger(box.getWidth()/2, box.getHeight()/2, intelligence,
-				creatures,collectables,delimitations, box));
+				this));
 	}
 
 
@@ -517,18 +544,42 @@ public abstract class World extends JPanel implements Epreuve
 		for (int i=0;i<creatures.size();i++)
 		{
 			Creature c = creatures.get(i);
-			double c_x  = c.getX();
-			double c_y  = c.getY();
-			double c_sz = c.getSize();
-			if (c_x>realX) continue;
-			if (c_y>realY) continue;
-			if (c_x+c_sz<realX) continue;
-			if (c_y+c_sz<realY) continue;
-			selectedCreature=c;
-			return;
+			if (c.getHitBox().contains(realX,realY))
+			{
+				selectedCreature=c;
+				return;
+			}
 		}
 		selectedCreature=null;
 	}
 
+	/**
+	 * GETTERS
+	 */
+	
+	public List<Delimitation> getDelimitations()
+	{
+		return delimitations;
+	}
+
+	public List<Creature> getCreatures()
+	{
+		return creatures;
+	}
+
+	public List<Collectable> getCollectables()
+	{
+		return collectables;
+	}
+
+	public List<Zone> getZones()
+	{
+		return zones;
+	}
+
+	public DelimitationBox getDelimitationBox()
+	{
+		return box;
+	}
 
 }

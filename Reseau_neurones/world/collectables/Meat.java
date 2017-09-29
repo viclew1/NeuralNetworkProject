@@ -1,32 +1,20 @@
 package collectables;
 
-import static utils.Constantes.*;
+import static utils.Constantes.MEAT;
 
 import java.awt.Color;
-import java.awt.Graphics;
 
 public class Meat extends Collectable
 {
 
 	public Meat(double x, double y)
 	{
-		super(x, y, 0.5, MEAT);
+		super(x, y, 0.5, MEAT, Color.RED);
 	}
 
 	@Override
-	public void draw(Graphics g)
+	public void update() 
 	{
-		Color oldColor = g.getColor();
-		g.setColor(Color.RED);
-		g.fillOval(xFinal(), yFinal(), sizeFinal(), sizeFinal());
-		g.setColor(Color.BLACK);
-		g.drawOval(xFinal(), yFinal(), sizeFinal(), sizeFinal());
-		g.setColor(oldColor);
-	}
-
-	@Override
-	public void update() {
-		// TODO Auto-generated method stub
 		
 	}
 

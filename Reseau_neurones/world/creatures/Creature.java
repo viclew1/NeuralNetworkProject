@@ -1,17 +1,27 @@
 package creatures;
 
-import static utils.Constantes.*;
+import static utils.Constantes.DRAW_CAPTORS;
+import static utils.Constantes.DRAW_HP;
+import static utils.Constantes.FIREBALL;
+import static utils.Constantes.PROJECTILE;
+import static utils.Constantes.SCROLL_X;
+import static utils.Constantes.SCROLL_Y;
+import static utils.Constantes.SIZE;
+import static utils.Constantes.WALL;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.geom.Ellipse2D;
 import java.util.List;
 
+import UI.World;
 import captors.Captor;
 import collectables.Collectable;
 import genetics.Individu;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
 import limitations.throwables.Projectile;
+import zones.Zone;
 
 public abstract class Creature
 {
@@ -39,11 +49,13 @@ public abstract class Creature
 	protected List<Creature> creatures;
 	protected List<Collectable> collectables;
 	protected List<Delimitation> delimitations;
+	protected List<Zone> zones;
 	protected DelimitationBox box;
+	
+	private Ellipse2D hitbox;
 
 	public Creature(double x, double y, double size, double hpMax, double speed, double hpLostPerInstant, Captor[] captors,
-			int[] thingsToSee, Individu brain, int type, Color color, int nbInput, List<Creature> creatures, 
-			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
+			int[] thingsToSee, Individu brain, int type, Color color, int nbInput, World world)
 	{
 		this.x=x;
 		this.y=y;
@@ -58,10 +70,12 @@ public abstract class Creature
 		this.alive=true;
 		this.color=color;
 		this.nbInput=nbInput;
-		this.creatures=creatures;
-		this.collectables=collectables;
-		this.delimitations=delimitations;
-		this.box=box;
+		this.creatures=world.getCreatures();
+		this.collectables=world.getCollectables();
+		this.delimitations=world.getDelimitations();
+		this.zones=world.getZones();
+		this.box=world.getDelimitationBox();
+		updateHitBox();
 		initCaptors(thingsToSee);
 	}
 
@@ -99,6 +113,7 @@ public abstract class Creature
 			g.setColor(color);
 		else
 			g.setColor(new Color(color.getRed(),color.getGreen(),color.getBlue(),127));
+
 		g.fillOval(xFinal(), yFinal(), sizeFinal(), sizeFinal());
 		g.setColor(Color.BLACK);
 		g.drawOval(xFinal(), yFinal(), sizeFinal(), sizeFinal());
@@ -120,8 +135,14 @@ public abstract class Creature
 	{
 		updatePosition();
 		updateCaptors();
+		updateHitBox();
 	}
-
+	
+	private void updateHitBox()
+	{
+		hitbox = new Ellipse2D.Double(x,y,size,size);
+	}
+	
 	protected void initCaptors(int[] thingsToSee)
 	{
 		for (Captor c : captors)
@@ -141,7 +162,7 @@ public abstract class Creature
 	public void detect()
 	{
 		for (Captor c : captors)
-			c.detect(creatures, collectables, delimitations, box);
+			c.detect(creatures, collectables, delimitations, zones, box);
 	}
 
 	private void updatePosition()
@@ -202,6 +223,8 @@ public abstract class Creature
 
 	public abstract void interactWith(Creature c);
 
+	public abstract void interactWith(Zone z);
+	
 	public void interactWith(Delimitation d)
 	{
 		switch (d.getType())
@@ -257,19 +280,9 @@ public abstract class Creature
 		return alive;
 	}
 
-	public double getX()
+	public Ellipse2D getHitBox()
 	{
-		return x;
-	}
-
-	public double getY()
-	{
-		return y;
-	}
-
-	public double getSize()
-	{
-		return size;
+		return hitbox;
 	}
 
 	public Individu getBrain()

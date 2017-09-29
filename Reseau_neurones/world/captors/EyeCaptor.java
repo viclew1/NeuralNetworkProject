@@ -2,11 +2,6 @@ package captors;
 
 import static utils.Constantes.*;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 import collectables.Collectable;
@@ -15,12 +10,12 @@ import limitations.Delimitation;
 import limitations.DelimitationBox;
 import utils.DistanceChecker;
 import utils.IntersectionsChecker;
+import zones.Zone;
 
 public class EyeCaptor extends Captor
 {
 
 	private final double orientation,widthAngle;
-	private Line2D line1,line2;
 
 	public EyeCaptor(double orientation, double range, double widthAngle)
 	{
@@ -32,37 +27,24 @@ public class EyeCaptor extends Captor
 	@Override
 	public void update(double x, double y, double sz, double deltaOrientation)
 	{
-		double xCenter = x + sz/2;
-		double yCenter = y + sz/2;
-		Point2D p1 = new Point2D.Double(xCenter, yCenter);
-		double x1Front = xCenter + Math.cos(orientation+widthAngle/2+deltaOrientation)*range;
-		double y1Front = yCenter - Math.sin(orientation+widthAngle/2+deltaOrientation)*range;
-		double x2Front = xCenter + Math.cos(orientation-widthAngle/2+deltaOrientation)*range;
-		double y2Front = yCenter - Math.sin(orientation-widthAngle/2+deltaOrientation)*range;
-		Point2D p2 = new Point2D.Double(x1Front, y1Front);
-		Point2D p3 = new Point2D.Double(x2Front, y2Front);
-		line1 = new Line2D.Double(p1, p2);
-		line2 = new Line2D.Double(p1, p3);
-		around = new Rectangle2D.Double(line1.getX1()-range,line1.getY1()-range,range*2,range*2);
+		double x1 = x + sz/2;
+		double y1 = y + sz/2;
+		double x2 = x1 + Math.cos(orientation+widthAngle/2+deltaOrientation)*range;
+		double y2 = y1 - Math.sin(orientation+widthAngle/2+deltaOrientation)*range;
+		double x3 = x1 + Math.cos(orientation-widthAngle/2+deltaOrientation)*range;
+		double y3 = y1 - Math.sin(orientation-widthAngle/2+deltaOrientation)*range;
+		this.x = new double[] {x1,x2,x3};
+		this.y = new double[] {y1,y2,y3};
+		
+		hitbox.reset();
+		hitbox.moveTo(this.x[0], this.y[0]);
+		for(int i = 1; i < this.x.length; ++i)
+			hitbox.lineTo(this.x[i], this.y[i]);
+		hitbox.closePath();
+		
+		around = hitbox.getBounds2D();
 	}
 
-	@Override
-	public void draw(Graphics g)
-	{
-		Color color = g.getColor();
-		g.setColor(Color.BLACK);
-		g.drawLine((int)(line1.getX1()*SIZE+SCROLL_X),
-				(int)(line1.getY1()*SIZE+SCROLL_Y), 
-				(int)(line1.getX2()*SIZE+SCROLL_X), 
-				(int)(line1.getY2()*SIZE+SCROLL_Y));
-		g.drawLine((int)(line2.getX1()*SIZE+SCROLL_X),
-				(int)(line2.getY1()*SIZE+SCROLL_Y), 
-				(int)(line2.getX2()*SIZE+SCROLL_X), 
-				(int)(line2.getY2()*SIZE+SCROLL_Y));
-		g.setColor(Color.RED);
-		g.drawRect((int)(around.getX()*SIZE+SCROLL_X), (int)(around.getY()*SIZE+SCROLL_Y), (int)(around.getWidth()*SIZE), (int)(around.getHeight()*SIZE));
-		g.setColor(color);
-	}
 
 	@Override
 	protected void detectCreatures(List<Creature> creatures)
@@ -77,37 +59,37 @@ public class EyeCaptor extends Captor
 		for (int i=0; i<creatures.size();i++)
 		{
 			Creature c = creatures.get(i);
-			if (c==null || !around.contains(c.getX()+c.getSize()/2,c.getSize()+c.getSize()/2))
+			if (c==null || !around.contains(c.getHitBox().getBounds2D()))
 				continue;
 			switch (c.getType())
 			{
 			case BEE:
-				if (IntersectionsChecker.intersects(line1,line2,c))
+				if (IntersectionsChecker.intersects(this,c))
 					if ((dist = DistanceChecker.distance(creature, c))<resultBees)
 						resultBees=dist;
 				break;
 			case WASP:
-				if (IntersectionsChecker.intersects(line1,line2,c))
+				if (IntersectionsChecker.intersects(this,c))
 					if ((dist = DistanceChecker.distance(creature, c))<resultWasps)
 						resultWasps=dist;
 				break;
 			case SOLDIER:
-				if (IntersectionsChecker.intersects(line1,line2,c))
+				if (IntersectionsChecker.intersects(this,c))
 					if ((dist = DistanceChecker.distance(creature, c))<resultSoldier)
 						resultSoldier=dist;
 				break;
 			case TANK:
-				if (IntersectionsChecker.intersects(line1,line2,c))
+				if (IntersectionsChecker.intersects(this,c))
 					if ((dist = DistanceChecker.distance(creature, c))<resultTank)
 						resultTank=dist;
 				break;
 			case COMPLEXDODGER:
-				if (IntersectionsChecker.intersects(line1,line2,c))
+				if (IntersectionsChecker.intersects(this,c))
 					if ((dist = DistanceChecker.distance(creature, c))<resultComplexDodger)
 						resultComplexDodger=dist;
 				break;
 			case SIMPLEDODGER:
-				if (IntersectionsChecker.intersects(line1,line2,c))
+				if (IntersectionsChecker.intersects(this,c))
 					if ((dist = DistanceChecker.distance(creature, c))<resultSimpleDodger)
 						resultSimpleDodger=dist;
 				break;
@@ -138,6 +120,13 @@ public class EyeCaptor extends Captor
 	}
 
 	@Override
+	protected void detectZones(List<Zone> zones)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
 	protected void detectCollectables(List<Collectable> collectables)
 	{
 		resultVegetable = Double.MAX_VALUE;
@@ -148,26 +137,26 @@ public class EyeCaptor extends Captor
 		for (int i=0;i<collectables.size();i++)
 		{
 			Collectable c = collectables.get(i);
-			if (c==null || !around.contains(c.getX()+c.getSize()/2,c.getSize()+c.getSize()/2))
+			if (c==null || !around.contains(c.getHitBox().getBounds2D()))
 				continue;
 			switch (c.getType())
 			{
 			case VEGETABLE:
-				if (IntersectionsChecker.intersects(line1,line2,c))
+				if (IntersectionsChecker.intersects(this,c))
 					if ((dist = DistanceChecker.distance(creature, c))<resultVegetable)
 						resultVegetable=dist;
 				break;
 			case MEAT:
-				if (IntersectionsChecker.intersects(line1,line2,c))
+				if (IntersectionsChecker.intersects(this,c))
 					if ((dist = DistanceChecker.distance(creature, c))<resultMeat)
 						resultMeat=dist;
 			case FUEL:
-				if (IntersectionsChecker.intersects(line1,line2,c))
+				if (IntersectionsChecker.intersects(this,c))
 					if ((dist = DistanceChecker.distance(creature, c))<resultFuel)
 						resultFuel=dist;
 				break;
 			case POWERUP:
-				if (IntersectionsChecker.intersects(line1,line2,c))
+				if (IntersectionsChecker.intersects(this,c))
 					if ((dist = DistanceChecker.distance(creature, c))<resultPowerUp)
 						resultPowerUp=dist;
 				break;
@@ -201,24 +190,23 @@ public class EyeCaptor extends Captor
 		for (int i=0;i<delimitations.size();i++)
 		{
 			Delimitation d = delimitations.get(i);
-			if (d==null || !around.contains(d.getX()+d.getW()/2,d.getY()+d.getH()/2))
+			if (d==null || !around.contains(d.getHitBox()))
 				continue;
 			switch (d.getType())
 			{
 			case PROJECTILE:
-				if (IntersectionsChecker.intersects(line1,line2,d))
+				if (IntersectionsChecker.intersects(this,d))
 					if ((dist = DistanceChecker.distance(creature, d))<resultProjectile)
 						resultProjectile=dist;
 				break;
 			case FIREBALL:
-				if (IntersectionsChecker.intersects(line1,line2,d))
+				if (IntersectionsChecker.intersects(this,d))
 					if ((dist = DistanceChecker.distance(creature, d))<resultFireBall)
 						resultFireBall=dist;
 			case WALL:
-				if (IntersectionsChecker.intersects(line1, line2, box))
-					if (IntersectionsChecker.intersects(line1,line2,d))
-						if ((dist = DistanceChecker.distance(creature, d))<resultWall)
-							resultWall=dist;
+				if (IntersectionsChecker.intersects(this,d))
+					if ((dist = DistanceChecker.distance(creature, d))<resultWall)
+						resultWall=dist;
 				break;
 			default:
 				System.out.println("EyeCaptor.detectDelimitations - Delimitation inconnue");

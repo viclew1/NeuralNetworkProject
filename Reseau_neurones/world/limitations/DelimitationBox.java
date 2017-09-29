@@ -5,6 +5,8 @@ import java.awt.geom.Rectangle2D;
 public class DelimitationBox extends Rectangle2D.Double
 {
 
+	private static final long serialVersionUID = -7544589978257213899L;
+	
 	private WallDelimitation[] walls;
 
 	public DelimitationBox(int x, int y, int w, int h)

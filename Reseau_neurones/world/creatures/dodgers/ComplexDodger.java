@@ -1,23 +1,16 @@
 package creatures.dodgers;
 
 import java.awt.Color;
-import java.util.List;
-
+import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
-import collectables.Collectable;
-import creatures.Creature;
 import genetics.Individu;
-import limitations.Delimitation;
-import limitations.DelimitationBox;
-
 import static utils.Constantes.*;
 
 public class ComplexDodger extends DodgerCreature
 {
 
-	public ComplexDodger(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations,
-			DelimitationBox box)
+	public ComplexDodger(double x, double y, Individu brain, World world)
 	{
 		super(x, y, 1, 1, 1, 0, new Captor[]{
 				new EyeCaptor(Math.PI/7,10,Math.PI/3),
@@ -25,10 +18,9 @@ public class ComplexDodger extends DodgerCreature
 				new EyeCaptor(-Math.PI,6,Math.PI/4),
 				new EyeCaptor(Math.PI/2,7,Math.PI/2),
 				new EyeCaptor(-Math.PI/2,7,Math.PI/2),
-		}, brain, COMPLEXDODGER, Color.GREEN, LAYERS_SIZES_COMPLEXDODGER[0], creatures,
-				collectables, delimitations, box);
+		}, brain, COMPLEXDODGER, Color.GREEN, LAYERS_SIZES_COMPLEXDODGER[0], world);
 	}
-	
+
 	@Override
 	protected void applyDecisions(double[] decisions)
 	{

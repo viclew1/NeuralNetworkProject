@@ -3,20 +3,17 @@ package creatures.insects;
 import static utils.Constantes.*;
 
 import java.awt.Color;
-import java.util.List;
-
+import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
 import collectables.Collectable;
 import creatures.Creature;
 import genetics.Individu;
-import limitations.Delimitation;
-import limitations.DelimitationBox;
 
 public class Wasp extends InsectCreature
 {
 
-	public Wasp(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
+	public Wasp(double x, double y, Individu brain, World world)
 	{
 		super(x, y, 2, 400, 0.35,1,
 				new Captor[]{
@@ -25,7 +22,7 @@ public class Wasp extends InsectCreature
 						new EyeCaptor(-Math.PI,6,Math.PI/4),
 				},
 				brain, WASP, Color.ORANGE, LAYERS_SIZES_WASP[0],
-				creatures,collectables,delimitations, box);
+				world);
 	}
 
 	@Override

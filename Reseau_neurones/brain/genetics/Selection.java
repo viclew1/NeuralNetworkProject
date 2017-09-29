@@ -4,13 +4,13 @@ import java.util.Random;
 
 public class Selection
 {
-	public Epreuve epreuve;
-	public int nombreIndividus;
-	public int nombreGenerations;
+	public final Epreuve epreuve;
+	public final int nombreIndividus;
+	public final int nombreGenerations;
+	public final String type;
 	public Individu[] population;
 	public Individu meilleurTrouvé;
 	public double meilleureFitness=Double.MIN_VALUE;
-	public String type;
 
 	public Selection(Epreuve epreuve, int nombreIndividus, int nombreGenerations, String type)
 	{
@@ -48,7 +48,7 @@ public class Selection
 		return meilleurIndividu();
 	}
 	
-	private void tournamentSelection()
+	public void tournamentSelection()
 	{
 		for (int i = 0 ; i < nombreIndividus-1 ; i++)
 		{
