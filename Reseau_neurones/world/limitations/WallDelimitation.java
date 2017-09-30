@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import creatures.Creature;
+import creatures.shooters.ShooterCreature;
 
 public class WallDelimitation extends Delimitation
 {
@@ -25,7 +26,7 @@ public class WallDelimitation extends Delimitation
 	}
 
 	@Override
-	public void updatePosition()
+	public void update()
 	{
 		// TODO Auto-generated method stub
 		

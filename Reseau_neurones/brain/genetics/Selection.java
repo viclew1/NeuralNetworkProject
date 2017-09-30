@@ -9,7 +9,7 @@ public class Selection
 	public final int nombreGenerations;
 	public final String type;
 	public Individu[] population;
-	public Individu meilleurTrouvé;
+	public Individu meilleurTrouve;
 	public double meilleureFitness=Double.MIN_VALUE;
 
 	public Selection(Epreuve epreuve, int nombreIndividus, int nombreGenerations, String type)
@@ -35,9 +35,9 @@ public class Selection
 			if (meilleurScore>meilleureFitness)
 			{
 				meilleureFitness=meilleurScore;
-				meilleurTrouvé=meilleurIndividu().deepCopy();
-				System.out.println("Génération : "+(i+1));
-				System.out.println("Meilleure trouvaille : "+meilleurTrouvé+"\nFitness : "+meilleureFitness);
+				meilleurTrouve=meilleurIndividu().deepCopy();
+				System.out.println("Generation : "+(i+1));
+				System.out.println("Meilleure trouvaille : "+meilleurTrouve+"\nFitness : "+meilleureFitness);
 			}
 			shuffleArray(population);
 			//rouletteSelection();

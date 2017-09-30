@@ -2,11 +2,14 @@ package creatures.dodgers;
 
 import static utils.Constantes.FIREBALL;
 import java.awt.Color;
-import UI.World;
+import java.util.List;
+
 import captors.Captor;
 import collectables.Collectable;
 import creatures.Creature;
 import genetics.Individu;
+import limitations.Delimitation;
+import limitations.DelimitationBox;
 import zones.Zone;
 
 public abstract class DodgerCreature extends Creature
@@ -16,11 +19,13 @@ public abstract class DodgerCreature extends Creature
 
 	public DodgerCreature(double x, double y, double size, double hpMax, double speed, double hpLostPerInstant,
 			Captor[] captors, Individu brain, int type, Color color, int nbInput,
-			World world)
+			List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations,
+			DelimitationBox box)
 	{
 		super(x, y, size, hpMax, speed, hpLostPerInstant, captors, new int[] {
 				FIREBALL
-		}, brain, type, color, nbInput, world);
+		}, brain, type, color, nbInput, creatures,
+				collectables, delimitations, box);
 	}
 
 	@Override
@@ -34,11 +39,10 @@ public abstract class DodgerCreature extends Creature
 	{
 		
 	}
-	
+
 	@Override
 	public void interactWith(Zone z)
 	{
 		
 	}
-
 }

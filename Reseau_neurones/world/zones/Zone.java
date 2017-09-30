@@ -16,6 +16,7 @@ public abstract class Zone
 	protected boolean consumed;
 	private final int type;
 	private Color color;
+	
 	private Path2D hitbox;
 	
 	public Zone(double[] x, double[] y, int timeToLive, int type, Color color)
@@ -27,6 +28,12 @@ public abstract class Zone
 		this.color=color;
 		this.timeToLive = timeToLive;
 		hitbox = new Path2D.Double();
+
+		hitbox.moveTo(x[0], y[0]);
+		for(int i = 1; i < x.length; ++i) {
+		   hitbox.lineTo(x[i], y[i]);
+		}
+		hitbox.closePath();
 	}
 	
 	public void update()
@@ -36,15 +43,7 @@ public abstract class Zone
 			timeSpent=0;
 		if (timeSpent>=timeToLive)
 			expire();
-		
-		hitbox.reset();
-		hitbox.moveTo(x[0], y[0]);
-		for(int i = 1; i < x.length; i++) {
-			hitbox.lineTo(x[i], y[i]);
-		}
-		hitbox.closePath();
 	}
-	
 	
 	public void draw(Graphics g)
 	{
@@ -96,9 +95,18 @@ public abstract class Zone
 		return type;
 	}
 	
-	public Path2D getHitBox()
+	public double[] getXPoints()
 	{
-		return hitbox;
+		return x;
 	}
 	
+	public double[] getYPoints()
+	{
+		return y;
+	}
+	
+	public Path2D getHitBox()
+	{
+		return this.hitbox;
+	}
 }

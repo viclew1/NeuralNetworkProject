@@ -34,7 +34,7 @@ public abstract class Individu
 
 	public double getScore()
 	{
-		return score;
+		return Math.max(0, score);
 	}
 
 	public void resetScore()

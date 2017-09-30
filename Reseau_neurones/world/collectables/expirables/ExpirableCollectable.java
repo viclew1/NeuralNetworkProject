@@ -1,15 +1,13 @@
 package collectables.expirables;
 
-import java.awt.Color;
-
 import collectables.Collectable;
 
 public abstract class ExpirableCollectable extends Collectable {
 
 	private int lifetime;
 	
-	public ExpirableCollectable(double x, double y, double size, int type, int lifetime, Color color) {
-		super(x, y, size, type,color);
+	public ExpirableCollectable(double x, double y, double size, int type, int lifetime) {
+		super(x, y, size, type);
 		this.lifetime=lifetime;
 	}
 

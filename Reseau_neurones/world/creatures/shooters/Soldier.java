@@ -3,17 +3,20 @@ package creatures.shooters;
 import static utils.Constantes.*;
 
 import java.awt.Color;
-import UI.World;
+import java.util.List;
+
 import captors.Captor;
 import captors.EyeCaptor;
 import collectables.Collectable;
 import creatures.Creature;
 import genetics.Individu;
+import limitations.Delimitation;
+import limitations.DelimitationBox;
 
 public class Soldier extends ShooterCreature
 {
 
-	public Soldier(double x, double y, Individu brain, World world)
+	public Soldier(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
 		super(x, y, 1.5, 500, 0.40,0.05,
 				0.4,1,60,Color.RED,
@@ -22,7 +25,7 @@ public class Soldier extends ShooterCreature
 						new EyeCaptor(-Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI,5,Math.PI/2),
 		}, brain, SOLDIER, Color.CYAN, LAYERS_SIZES_SOLDIER[0],
-				world);
+				creatures,collectables,delimitations, box);
 	}
 
 	@Override

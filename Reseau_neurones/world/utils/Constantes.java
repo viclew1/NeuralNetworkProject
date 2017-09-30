@@ -26,24 +26,13 @@ public class Constantes
 	public static final double SIZE_MAX = 100;
 	public static double SCROLL_X = 0,SCROLL_Y = 0;
 
-	public static int GENERATION_LENGTH;
-
-	public static int FOOD_AMOUNT=1000;
-	public static int FUEL_AMOUNT=250;
-	
-	public static boolean DRAW_CAPTORS = false;
-	public static boolean DRAW_HP = false;
-	public static boolean SLOW_MO_MODE = false;
-	public static final long SLOW_MO_TIME = 1000/120;
-	public static boolean DRAW_ALL = true;
-	public static boolean PAUSE = false;
-	
 	public static final int BEE  = 1;
 	public static final int WASP = 2;
 	public static final int TANK = 3;
 	public static final int SOLDIER = 4;
 	public static final int COMPLEXDODGER = 5;
 	public static final int SIMPLEDODGER = 6;
+	
 	
 	public static final int VEGETABLE = 11;
 	public static final int MEAT = 12;
@@ -54,8 +43,8 @@ public class Constantes
 	public static final int FIREBALL = 23;
 	public static final int WALL = 24;
 	
-	public static final int WATER = 31;
-	public static final int LAVA = 32;
+	public static final int LAVA = 31;
+	public static final int WATER = 32;
 
 	public static final String TYPE_BEE = "BEE";
 	public static final String TYPE_WASP = "WASP";
@@ -64,12 +53,24 @@ public class Constantes
 	public static final String TYPE_COMPLEXDODGER = "COMPLEX DODGER";
 	public static final String TYPE_SIMPLEDODGER = "SIMPLE DODGER";
 	
+	public static int GENERATION_LENGTH;
+	
 	public static final int[] LAYERS_SIZES_BEE = new int[] {20,12,6,12,1};
 	public static final int[] LAYERS_SIZES_TANK = new int[] {23,15,7,15,4};
 	public static final int[] LAYERS_SIZES_WASP = new int[] {20,12,6,12,1};
 	public static final int[] LAYERS_SIZES_SOLDIER = new int[] {23,15,7,15,4};
 	public static final int[] LAYERS_SIZES_COMPLEXDODGER = new int[] {15,14,6,14,2};
 	public static final int[] LAYERS_SIZES_SIMPLEDODGER = new int[] {21,14,6,14,2};
+	
+	public static int FOOD_AMOUNT=1000;
+	public static int FUEL_AMOUNT=250;
+	
+	public static boolean DRAW_CAPTORS = false;
+	public static boolean DRAW_HP = false;
+	public static boolean SLOW_MO_MODE = false;
+	public static final long SLOW_MO_TIME = 1000/120;
+	public static boolean DRAW_ALL = true;
+	public static boolean PAUSE = false;
 	
 	public static final String[] creatures = new String[] {"Abeilles","Guepes","Soldats","Tanks","Complex Dodger", "Simple Dodger"};
 	

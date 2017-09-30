@@ -125,20 +125,6 @@ public abstract class World extends JPanel implements Epreuve
 		fuelCount=0;
 		powerUpCount=0;
 
-		for (int i=0 ; i<zones.size() ; i++)
-		{
-			Zone z = zones.get(i);
-			if (z==null)
-				continue;
-			if (z.isExpired() || !IntersectionsChecker.contains(box, z))
-			{
-				zones.remove(i);
-				i--;
-			}
-			else
-				z.update();
-		}
-
 		for (int i=0;i<delimitations.size();i++)
 		{
 			Delimitation d = delimitations.get(i);
@@ -153,16 +139,20 @@ public abstract class World extends JPanel implements Epreuve
 				d.update();
 		}
 
+		for (int i=0;i<zones.size();i++)
+		{
+			Zone z = zones.get(i);
+			if (z.isExpired() || !IntersectionsChecker.contains(box, z))
+				zones.remove(i--);
+			else
+				z.update();
+		}
+
 		for (int i=0;i<collectables.size();i++)
 		{
 			Collectable c = collectables.get(i);
-			if (c==null)
-				continue;
 			if (c.isConsumed() || !IntersectionsChecker.contains(box, c))
-			{
-				collectables.remove(i);
-				i--;
-			}
+				collectables.remove(i--);
 			else
 			{
 				c.update();
@@ -182,7 +172,6 @@ public abstract class World extends JPanel implements Epreuve
 					break;
 				default:
 					System.out.println("World.sleepAndRefresh - Collectable inconnu");
-					System.exit(0);
 				}
 			}
 		}
@@ -196,12 +185,9 @@ public abstract class World extends JPanel implements Epreuve
 		for (int i=0; i<creatures.size() ;i++)
 		{
 			Creature creature1 = creatures.get(i);
-			if (creature1==null)
-				continue;
-			if (!creature1.isAlive() || !IntersectionsChecker.contains(box, creature1))
+			if (creature1==null || !creature1.isAlive() || !IntersectionsChecker.contains(box, creature1))
 			{
-				creatures.remove(i);
-				i--;
+				creatures.remove(i--);
 				continue;
 			}
 			creature1.detect();
@@ -224,11 +210,11 @@ public abstract class World extends JPanel implements Epreuve
 			}
 			for (int j=0;j<zones.size();j++)
 			{
-				Zone zone = zones.get(j);
-				if (zone!=null)
-					if (!zone.isExpired())
-						if (IntersectionsChecker.intersects(creature1,zone))
-							new CreaZoneInteraction(creature1,zone).process();
+				Zone z = zones.get(j);
+				if (z!=null)
+					if (!z.isExpired())
+						if (IntersectionsChecker.intersects(creature1,z))
+							new CreaZoneInteraction(creature1,z).process();
 			}
 			for (int j=i+1; j<creatures.size() ;j++)
 			{
@@ -337,37 +323,37 @@ public abstract class World extends JPanel implements Epreuve
 	public void generateBee(Individu intelligence)
 	{
 		creatures.add(new Bee(3+new Random().nextDouble()*(box.getWidth()/3), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
-				this));
+				creatures,collectables,delimitations, box));
 	}
 
 	public void generateWasp(Individu intelligence)
 	{
 		creatures.add(new Wasp(box.getWidth()*2/3+new Random().nextDouble()*(box.getWidth()/3-3), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
-				this));
+				creatures,collectables,delimitations, box));
 	}
 
 	public void generateSoldier(Individu intelligence)
 	{
 		creatures.add(new Soldier(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
-				this));
+				creatures,collectables,delimitations, box));
 	}
 
 	public void generateTank(Individu intelligence)
 	{
 		creatures.add(new Tank(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
-				this));
+				creatures,collectables,delimitations, box));
 	}
 
 	public void generateComplexDodger(Individu intelligence)
 	{
 		creatures.add(new ComplexDodger(box.getWidth()/2, box.getHeight()/2, intelligence,
-				this));
+				creatures,collectables,delimitations, box));
 	}
 
 	public void generateSimpleDodger(Individu intelligence)
 	{
 		creatures.add(new SimpleDodger(box.getWidth()/2, box.getHeight()/2, intelligence,
-				this));
+				creatures,collectables,delimitations, box));
 	}
 
 
@@ -544,42 +530,18 @@ public abstract class World extends JPanel implements Epreuve
 		for (int i=0;i<creatures.size();i++)
 		{
 			Creature c = creatures.get(i);
-			if (c.getHitBox().contains(realX,realY))
-			{
-				selectedCreature=c;
-				return;
-			}
+			double c_x  = c.getX();
+			double c_y  = c.getY();
+			double c_sz = c.getSize();
+			if (c_x>realX) continue;
+			if (c_y>realY) continue;
+			if (c_x+c_sz<realX) continue;
+			if (c_y+c_sz<realY) continue;
+			selectedCreature=c;
+			return;
 		}
 		selectedCreature=null;
 	}
 
-	/**
-	 * GETTERS
-	 */
-	
-	public List<Delimitation> getDelimitations()
-	{
-		return delimitations;
-	}
-
-	public List<Creature> getCreatures()
-	{
-		return creatures;
-	}
-
-	public List<Collectable> getCollectables()
-	{
-		return collectables;
-	}
-
-	public List<Zone> getZones()
-	{
-		return zones;
-	}
-
-	public DelimitationBox getDelimitationBox()
-	{
-		return box;
-	}
 
 }

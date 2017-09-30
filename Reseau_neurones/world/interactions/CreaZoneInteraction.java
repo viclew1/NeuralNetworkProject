@@ -15,6 +15,7 @@ public class CreaZoneInteraction extends Interaction
 	public void process()
 	{
 		((Creature)o1).interactWith((Zone)o2);
+
 	}
 
 }

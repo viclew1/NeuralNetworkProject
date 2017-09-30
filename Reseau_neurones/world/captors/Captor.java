@@ -4,7 +4,6 @@ import static utils.Constantes.*;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -14,10 +13,11 @@ import collectables.Collectable;
 import creatures.Creature;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
-import zones.Zone;
 
 public abstract class Captor
 {
+	protected double[] x,y;
+	protected final Path2D hitbox;
 	protected Creature creature;
 	protected double resultBees,resultWasps,resultVegetable,resultMeat,
 	resultSoldier,resultTank,resultProjectile,resultFuel,resultPowerUp, 
@@ -25,14 +25,11 @@ public abstract class Captor
 	protected final double range;
 	private int[] thingsToSee;
 	protected Rectangle2D around;
-	protected Path2D hitbox;
-	protected double[] x,y;
-	
-	
+
 	public Captor(double range)
 	{
 		this.range=range;
-		hitbox = new Path2D.Double();
+		this.hitbox = new Path2D.Double();
 	}
 
 	public void setCreature(Creature creature)
@@ -49,35 +46,30 @@ public abstract class Captor
 
 	public void draw(Graphics g)
 	{
-		int[] xPoints = new int[x.length];
-		int[] yPoints = new int[x.length];
-		for (int i=0;i<x.length;i++)
-		{
-			xPoints[i] = (int)(x[i]*SIZE+SCROLL_X);
-			yPoints[i] = (int)(y[i]*SIZE+SCROLL_Y);
-		}
 		Color color = g.getColor();
 		g.setColor(Color.BLACK);
-		Path2D hitboxOnScreen = new Path2D.Double();
-		hitboxOnScreen.moveTo(xPoints[0], yPoints[0]);
-		for(int i = 1; i < xPoints.length; ++i)
-			hitboxOnScreen.lineTo(xPoints[i], yPoints[i]);
-		hitboxOnScreen.closePath();
-		((Graphics2D)g).draw(hitboxOnScreen);
+		int[] xFinal = new int[x.length];
+		int[] yFinal = new int[y.length];
+		for (int i=0 ; i<x.length ; i++)
+		{
+			xFinal[i] = (int) (x[i]*SIZE+SCROLL_X);
+			yFinal[i] = (int) (y[i]*SIZE+SCROLL_Y);
+		}
+		g.drawPolygon(xFinal, yFinal, x.length);
+		g.setColor(Color.RED);
+		g.drawRect((int)(around.getX()*SIZE+SCROLL_X), (int)(around.getY()*SIZE+SCROLL_Y), (int)(around.getWidth()*SIZE), (int)(around.getHeight()*SIZE));
 		g.setColor(color);
 	}
 
-	public void detect(List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, List<Zone> zones, DelimitationBox box)
+	public void detect(List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
 		detectCreatures(creatures);
 		detectCollectables(collectables);
-		detectZones(zones);
 		detectDelimitations(delimitations, box);
 	}
 
 	protected abstract void detectCreatures(List<Creature> creatures);
 	protected abstract void detectCollectables(List<Collectable> collectables);
-	protected abstract void detectZones(List<Zone> zones);
 	protected abstract void detectDelimitations(List<Delimitation> delimitations, DelimitationBox box);
 
 	public List<Double> getResults()
@@ -121,9 +113,4 @@ public abstract class Captor
 		return false;
 	}
 
-	public Path2D getHitBox()
-	{
-		return hitbox;
-	}
-	
 }
