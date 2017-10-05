@@ -26,8 +26,8 @@ public abstract class ShooterCreature extends Creature
 			Captor[] captors, Individu brain, int type, Color color, int nbInput, List<Creature> creatures,
 			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
-		super(x, y, size, hpMax, speed, hpLostPerInstant, captors,
-				new int[] {SOLDIER,TANK,PROJECTILE,FUEL,POWERUP},
+		super(x, y, size, hpMax, speed, 3, hpLostPerInstant, captors,
+				new int[] {SOLDIER,TANK,PROJECTILE,FUEL,POWERUP,WALL},
 				brain, type, color, nbInput, creatures, collectables,
 				delimitations, box);
 		

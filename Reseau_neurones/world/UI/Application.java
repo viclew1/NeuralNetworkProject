@@ -1,14 +1,17 @@
 package UI;
 
-import javax.swing.JFrame;
-
-import UI.worldsIMPL.WorldOfDodge;
-
-import static utils.Constantes.*;
+import static utils.Constantes.SCROLL_X;
+import static utils.Constantes.SCROLL_Y;
+import static utils.Constantes.TITRE_APPLICATION;
 
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
+
+import javax.swing.JFrame;
+
+import UI.worldsIMPL.WorldBeesWasps;
+import UI.worldsIMPL.WorldOfDodge;
 
 
 public class Application extends JFrame{

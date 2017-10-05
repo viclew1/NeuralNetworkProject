@@ -31,7 +31,7 @@ public class WorldController extends Controller
 	@Override
 	public void mousePressed(MouseEvent e)
 	{
-		world.grabFocus();
+		//world.grabFocus();
 		clicType=e.getButton();
 		if (clicType==MouseEvent.BUTTON1)
 			lastClicLocation = e.getPoint();

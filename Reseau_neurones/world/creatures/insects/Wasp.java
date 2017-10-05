@@ -18,7 +18,7 @@ public class Wasp extends InsectCreature
 
 	public Wasp(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
-		super(x, y, 2, 400, 0.35,1,
+		super(x, y, 2, 400, 1.6, 2, 1,
 				new Captor[]{
 						new EyeCaptor(Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI/7,10,Math.PI/3),

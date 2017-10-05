@@ -53,36 +53,32 @@ public class IntersectionsChecker
 		return delimRect.intersectsLine(captorLine);
 	}
 	
-	public static boolean intersects(Line2D captorLine1, Line2D captorLine2, Creature creature)
+	public static boolean intersects(Path2D captorHitbox, Creature creature)
 	{
 		Rectangle2D creatureRect = new Rectangle2D.Double(creature.getX(), creature.getY(), creature.getSize(), creature.getSize());
-		return intersects(captorLine1,captorLine2,creatureRect);
+		return intersects(captorHitbox,creatureRect);
 	}
 	
-	public static boolean intersects(Line2D captorLine1, Line2D captorLine2, Collectable collec)
+	public static boolean intersects(Path2D captorHitbox, Collectable collec)
 	{
 		Rectangle2D collecRect = new Rectangle2D.Double(collec.getX(), collec.getY(), collec.getSize(), collec.getSize());
-		return intersects(captorLine1,captorLine2,collecRect);
+		return intersects(captorHitbox,collecRect);
 	}
 	
-	public static boolean intersects(Line2D captorLine1, Line2D captorLine2, Delimitation delim)
+	public static boolean intersects(Path2D captorHitbox, Delimitation delim)
 	{
 		Rectangle2D delimRect = new Rectangle2D.Double(delim.getX(), delim.getY(), delim.getW(), delim.getH());
-		return intersects(captorLine1,captorLine2,delimRect);
+		return intersects(captorHitbox,delimRect);
 	}
 	
-	private static boolean intersects(Line2D line1, Line2D line2, Rectangle2D rect)
+	public static boolean intersects(Path2D captorHitbox, Zone zone)
 	{
-		double[] xPoints=new double[] {line1.getX1(),line1.getX2(),line2.getX2()};
-		double[] yPoints=new double[] {line1.getY1(),line1.getY2(),line2.getY2()};
-		Path2D path = new Path2D.Double();
-
-		path.moveTo(xPoints[0], yPoints[0]);
-		for(int i = 1; i < xPoints.length; ++i) {
-		   path.lineTo(xPoints[i], yPoints[i]);
-		}
-		path.closePath();
-		return path.intersects(rect);
+		return intersects(captorHitbox,zone.getHitBox().getBounds2D());
+	}
+	
+	private static boolean intersects(Path2D captorHitbox, Rectangle2D rect)
+	{
+		return captorHitbox.intersects(rect);
 	}
 	
 	public static boolean intersects(Line2D line1, Line2D line2, DelimitationBox delim)

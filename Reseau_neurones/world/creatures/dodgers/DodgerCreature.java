@@ -1,6 +1,6 @@
 package creatures.dodgers;
 
-import static utils.Constantes.FIREBALL;
+import static utils.Constantes.*;
 import java.awt.Color;
 import java.util.List;
 
@@ -22,12 +22,13 @@ public abstract class DodgerCreature extends Creature
 			List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations,
 			DelimitationBox box)
 	{
-		super(x, y, size, hpMax, speed, hpLostPerInstant, captors, new int[] {
-				FIREBALL
+		super(x, y, size, hpMax, speed, 3, hpLostPerInstant, captors, new int[] {
+				FIREBALL,
+				WALL
 		}, brain, type, color, nbInput, creatures,
 				collectables, delimitations, box);
 	}
-
+	
 	@Override
 	public void interactWith(Collectable c)
 	{

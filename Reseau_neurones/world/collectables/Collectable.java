@@ -10,9 +10,9 @@ public abstract class Collectable
 {
 
 	protected double x,y;
+	private double size;
 	protected boolean consumed;
 	private final int type;
-	private double size;
 	
 	public Collectable(double x, double y, double size, int type)
 	{

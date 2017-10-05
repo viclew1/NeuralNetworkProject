@@ -1,6 +1,6 @@
 package genetics;
 import java.util.Random;
-
+import static genetics.Utils.*;
 
 public class Selection
 {
@@ -69,10 +69,10 @@ public class Selection
 			}
 			
 			int rdm=new Random().nextInt(100);
-			if (rdm>=100-Const.chancesCrossOver)
+			if (rdm>=100-Utils.chancesCrossOver)
 				loser.crossOver(winner);
 			rdm=new Random().nextInt(100);
-			if (rdm>=100-Const.chancesMutation)
+			if (rdm>=100-Utils.chancesMutation)
 				loser.mutate();
 		}
 	}
@@ -103,28 +103,28 @@ public class Selection
 		double fitnessSum = 0;
 		for (Individu i : population)
 			fitnessSum+=epreuve.fitness(i);
-		Individu[] parents1 = stochasticNewPopulationGenerator(fitnessSum);
-		Individu[] parents2 = stochasticNewPopulationGenerator(fitnessSum);
-		shuffleArray(parents1);
-		shuffleArray(parents2);
+
+		Random r = new Random();
+		
+		Individu[] matingPopulation = stochasticNewPopulationGenerator(fitnessSum);
 		
 		Individu[] newPopulation = new Individu[nombreIndividus];
 		for (int i=0;i<nombreIndividus;i++)
-			newPopulation[i] = breed(parents1[i],parents2[i]);
+			newPopulation[i] = breed(matingPopulation[r.nextInt(nombreIndividus)],matingPopulation[r.nextInt(nombreIndividus)]);
 		population = newPopulation;
-	}
-	
-	private void shuffleArray(Object[] pop)
-	{
-		  for (int i=nombreIndividus-1 ; i>= 1 ; i--)
-		  {
-			  int j = new Random().nextInt(i+1);
-			  Object temp = pop[j];
-			  pop[j] = pop[i];
-			  pop[i] = temp;
-		  }
-	}
 
+		/*bubbleSort(population);
+		int n = population.length;
+		for (int i = 0 ; i < n/2 ; i++)
+		{
+			int rdm = r.nextInt(100);
+			if (rdm>=100-Utils.chancesCrossOver)
+				population[i].crossOver(population[n-1-i]);
+			rdm = r.nextInt(100);
+			if (rdm>=100-Utils.chancesMutation)
+				population[i].mutate();
+		}*/
+	}
 	
 	public void rouletteSelection()
 	{
@@ -182,10 +182,10 @@ public class Selection
 		Individu child = parent1.deepCopy();
 
 		int rdm=new Random().nextInt(100);
-		if (rdm>=100-Const.chancesCrossOver)
+		if (rdm>=100-Utils.chancesCrossOver)
 			child.crossOver(parent2);
 		rdm=new Random().nextInt(100);
-		if (rdm>=100-Const.chancesMutation)
+		if (rdm>=100-Utils.chancesMutation)
 			child.mutate();
 
 

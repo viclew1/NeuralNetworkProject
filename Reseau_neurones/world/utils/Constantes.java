@@ -8,12 +8,12 @@ public class Constantes
 	private static int FRAME_RATE;
 	public static long TimeBetweenTwoComputes;
 	
-	public static final int POPULATION_SIZE_BEE = 100;
-	public static final int POPULATION_SIZE_WASP = 100;
-	public static final int POPULATION_SIZE_TANK = 100;
-	public static final int POPULATION_SIZE_SOLDIER = 100;
-	public static final int POPULATION_SIZE_COMPLEXDODGER = 100;
-	public static final int POPULATION_SIZE_SIMPLEDODGER = 100;
+	public static final int POPULATION_SIZE_BEE = 500;
+	public static final int POPULATION_SIZE_WASP = 50;
+	public static final int POPULATION_SIZE_TANK = 300;
+	public static final int POPULATION_SIZE_SOLDIER = 300;
+	public static final int POPULATION_SIZE_COMPLEXDODGER = 300;
+	public static final int POPULATION_SIZE_SIMPLEDODGER = 300;
 	
 	public static final int GENERATION_COUNT = 100000;
 
@@ -55,11 +55,11 @@ public class Constantes
 	
 	public static int GENERATION_LENGTH;
 	
-	public static final int[] LAYERS_SIZES_BEE = new int[] {20,12,6,12,1};
+	public static final int[] LAYERS_SIZES_BEE = new int[] {17,12,6,12,2};
 	public static final int[] LAYERS_SIZES_TANK = new int[] {23,15,7,15,4};
-	public static final int[] LAYERS_SIZES_WASP = new int[] {20,12,6,12,1};
+	public static final int[] LAYERS_SIZES_WASP = new int[] {17,12,6,12,2};
 	public static final int[] LAYERS_SIZES_SOLDIER = new int[] {23,15,7,15,4};
-	public static final int[] LAYERS_SIZES_COMPLEXDODGER = new int[] {15,14,6,14,2};
+	public static final int[] LAYERS_SIZES_COMPLEXDODGER = new int[] {21,14,6,14,2};
 	public static final int[] LAYERS_SIZES_SIMPLEDODGER = new int[] {21,14,6,14,2};
 	
 	public static int FOOD_AMOUNT=1000;

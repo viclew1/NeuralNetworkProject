@@ -23,7 +23,7 @@ public abstract class Creature
 	protected double y;
 	protected final double size;
 	protected double orientation=0;
-	protected final double dOrientation = 3*Math.PI/40;
+	protected final double dOrientation;
 	protected final double orientationMin=0;
 	protected final double orientationMax=2*Math.PI;
 	protected final double speed;
@@ -42,7 +42,7 @@ public abstract class Creature
 	protected List<Delimitation> delimitations;
 	protected DelimitationBox box;
 
-	public Creature(double x, double y, double size, double hpMax, double speed, double hpLostPerInstant, Captor[] captors,
+	public Creature(double x, double y, double size, double hpMax, double speed, double rotationSpeed, double hpLostPerInstant, Captor[] captors,
 			int[] thingsToSee, Individu brain, int type, Color color, int nbInput, List<Creature> creatures, 
 			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
@@ -52,6 +52,7 @@ public abstract class Creature
 		this.hpMax=hpMax;
 		this.hp=hpMax;
 		this.speed=speed;
+		this.dOrientation = rotationSpeed * Math.PI/40;
 		this.hpLostPerInstant=hpLostPerInstant;
 		this.captors=captors;
 		this.brain=brain;
@@ -121,22 +122,28 @@ public abstract class Creature
 	{
 		updatePosition();
 		updateCaptors();
+		updateScore();
 	}
 
-	protected void initCaptors(int[] thingsToSee)
+	private void updateScore()
+	{
+		brain.addScore(0.01);
+	}
+
+	private void initCaptors(int[] thingsToSee)
 	{
 		for (Captor c : captors)
 		{
 			c.setCreature(this);
 			c.setThingsToSee(thingsToSee);
-			c.update(x, y, size, orientation);
+			c.update(x+size/2, y+size/2, orientation);
 		}
 	}
 
 	public void updateCaptors()
 	{
 		for (Captor c : captors)
-			c.update(x, y, size, orientation);
+			c.update(x+size/2, y+size/2, orientation);
 	}
 
 	public void detect()
@@ -147,17 +154,20 @@ public abstract class Creature
 
 	private void updatePosition()
 	{
-		brain.addScore(0.01);
 		hp-=hpLostPerInstant;
 		if (hp<=0)
+		{
 			alive=false;
+			hp = 0;
+			return;
+		}
 		double[] inputs = new double[nbInput];
 		int cpt=0;
 		for (int i=0;i<captors.length;i++)
 		{
-			List<Double> results = captors[i].getResults();
-			for (int j=0;j<results.size();j++)
-				inputs[cpt++] = results.get(j);
+			double[] results = captors[i].getResults();
+			for (int j=0;j<results.length;j++)
+				inputs[cpt++] = results[j];
 		}
 		inputs[cpt++]=hp/hpMax;
 		double xCenter = box.width/2;
@@ -204,7 +214,7 @@ public abstract class Creature
 	public abstract void interactWith(Creature c);
 
 	public abstract void interactWith(Zone z);
-	
+
 	public void interactWith(Delimitation d)
 	{
 		switch (d.getType())

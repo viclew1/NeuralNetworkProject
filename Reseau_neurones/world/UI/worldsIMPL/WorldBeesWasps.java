@@ -16,7 +16,7 @@ public class WorldBeesWasps extends World
 	@Override
 	protected void initSelections()
 	{
-		GENERATION_LENGTH = 80000;
+		GENERATION_LENGTH = 8000;
 		collectableAmount = FOOD_AMOUNT;
 		initSelection(POPULATION_SIZE_BEE, GENERATION_COUNT, TYPE_BEE);
 		initSelection(POPULATION_SIZE_WASP, GENERATION_COUNT, TYPE_WASP);
@@ -25,16 +25,16 @@ public class WorldBeesWasps extends World
 	@Override
 	protected void generateCollectables()
 	{
-		if (meatCount > vegetableCount)
+		/*if (meatCount > vegetableCount)
 		{
-			vegetableCount++;
+			vegetableCount++;*/
 			collectables.add(new Vegetable(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6)));
-		}
+		/*}
 		else
 		{
 			meatCount++;
 			collectables.add(new Meat(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6)));
-		}
+		}*/
 	}
 
 	@Override
