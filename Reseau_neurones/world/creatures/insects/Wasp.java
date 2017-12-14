@@ -20,6 +20,7 @@ public class Wasp extends InsectCreature
 	{
 		super(x, y, 2, 400, 1.6, 2, 1,
 				new Captor[]{
+						new EyeCaptor(0,45,0.001),
 						new EyeCaptor(Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI,6,Math.PI/4),
@@ -56,7 +57,7 @@ public class Wasp extends InsectCreature
 
 			break;
 		case BEE:
-			brain.addScore(50);
+			brain.addScore(500);
 			hp+=50;
 			if (hp>hpMax)
 				hp=hpMax;
@@ -64,5 +65,28 @@ public class Wasp extends InsectCreature
 		default:
 			break;
 		}
+	}
+
+	@Override
+	protected void applySeenFitness(List<Integer> seenThings)
+	{
+		for (int type : seenThings)
+		{
+			switch (type)
+			{
+			case BEE:
+				brain.addScore(1);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	@Override
+	protected void updateScore()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

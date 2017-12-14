@@ -16,11 +16,11 @@ import static utils.Constantes.*;
 public abstract class InsectCreature extends Creature
 {
 
-	public InsectCreature(double x, double y, double size, double hpMax, double speed, double rotationSpeed, double hpLostPerInstant,
+	public InsectCreature(double x, double y, double radius, double hpMax, double speed, double rotationSpeed, double hpLostPerInstant,
 			Captor[] captors, Individu brain, int type, Color color, int nbInput, List<Creature> creatures,
 			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
-		super(x, y, size, hpMax, speed, rotationSpeed, hpLostPerInstant, captors,
+		super(x, y, radius, hpMax, speed, rotationSpeed, hpLostPerInstant, captors,
 				new int[] {WASP,BEE,VEGETABLE,WALL},
 				brain, type, color, nbInput, creatures, collectables,
 				delimitations, box);

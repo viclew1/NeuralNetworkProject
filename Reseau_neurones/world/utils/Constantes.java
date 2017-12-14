@@ -55,12 +55,12 @@ public class Constantes
 	
 	public static int GENERATION_LENGTH;
 	
-	public static final int[] LAYERS_SIZES_BEE = new int[] {17,12,6,12,2};
+	public static final int[] LAYERS_SIZES_BEE = new int[] {17,12,15,13,12,6,12,13,15,12,2};
 	public static final int[] LAYERS_SIZES_TANK = new int[] {23,15,7,15,4};
-	public static final int[] LAYERS_SIZES_WASP = new int[] {17,12,6,12,2};
+	public static final int[] LAYERS_SIZES_WASP = new int[] {21,12,15,13,6,13,15,12,2};
 	public static final int[] LAYERS_SIZES_SOLDIER = new int[] {23,15,7,15,4};
-	public static final int[] LAYERS_SIZES_COMPLEXDODGER = new int[] {21,14,6,14,2};
-	public static final int[] LAYERS_SIZES_SIMPLEDODGER = new int[] {21,14,6,14,2};
+	public static final int[] LAYERS_SIZES_COMPLEXDODGER = new int[] {21,12,15,13,6,13,15,12,2};
+	public static final int[] LAYERS_SIZES_SIMPLEDODGER = new int[] {21,12,13,6,13,12,2};
 	
 	public static int FOOD_AMOUNT=1000;
 	public static int FUEL_AMOUNT=250;

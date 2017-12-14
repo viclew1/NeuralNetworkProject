@@ -21,7 +21,7 @@ public abstract class Creature
 	protected final double hpMax;
 	protected double hp;
 	protected double y;
-	protected final double size;
+	protected final double radius;
 	protected double orientation=0;
 	protected final double dOrientation;
 	protected final double orientationMin=0;
@@ -42,13 +42,13 @@ public abstract class Creature
 	protected List<Delimitation> delimitations;
 	protected DelimitationBox box;
 
-	public Creature(double x, double y, double size, double hpMax, double speed, double rotationSpeed, double hpLostPerInstant, Captor[] captors,
+	public Creature(double x, double y, double radius, double hpMax, double speed, double rotationSpeed, double hpLostPerInstant, Captor[] captors,
 			int[] thingsToSee, Individu brain, int type, Color color, int nbInput, List<Creature> creatures, 
 			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
 		this.x=x;
 		this.y=y;
-		this.size=size;
+		this.radius=radius;
 		this.hpMax=hpMax;
 		this.hp=hpMax;
 		this.speed=speed;
@@ -81,10 +81,10 @@ public abstract class Creature
 	{
 		Color oldColor = g.getColor();
 		int xF = xFinal();
-		int yF = (int)((y-size/2)*SIZE+SCROLL_Y);
+		int yF = (int)((y-radius/2)*SIZE+SCROLL_Y);
 		int szF = sizeFinal();
 		int hpSzF = (int)(szF*hp/hpMax);
-		int hF = (int)((size/5)*SIZE);
+		int hF = (int)((radius/5)*SIZE);
 
 		g.setColor(Color.GREEN);
 		g.fillRect(xF, yF, hpSzF, hF);
@@ -125,10 +125,7 @@ public abstract class Creature
 		updateScore();
 	}
 
-	private void updateScore()
-	{
-		brain.addScore(0.01);
-	}
+	protected abstract void updateScore();
 
 	private void initCaptors(int[] thingsToSee)
 	{
@@ -136,14 +133,14 @@ public abstract class Creature
 		{
 			c.setCreature(this);
 			c.setThingsToSee(thingsToSee);
-			c.update(x+size/2, y+size/2, orientation);
+			c.update(x+radius/2, y+radius/2, orientation);
 		}
 	}
 
 	public void updateCaptors()
 	{
 		for (Captor c : captors)
-			c.update(x+size/2, y+size/2, orientation);
+			c.update(x+radius/2, y+radius/2, orientation);
 	}
 
 	public void detect()
@@ -168,6 +165,8 @@ public abstract class Creature
 			double[] results = captors[i].getResults();
 			for (int j=0;j<results.length;j++)
 				inputs[cpt++] = results[j];
+			List<Integer> seenThings = captors[i].getThingsInSight();
+			applySeenFitness(seenThings);
 		}
 		inputs[cpt++]=hp/hpMax;
 		double xCenter = box.width/2;
@@ -182,6 +181,8 @@ public abstract class Creature
 		applyDecisions(decisions);
 	}
 
+	protected abstract void applySeenFitness(List<Integer> seenThings);
+	
 	protected abstract void applyDecisions(double[] decisions);
 
 	protected void moveFront(double intensity)
@@ -253,7 +254,7 @@ public abstract class Creature
 
 	protected int sizeFinal()
 	{
-		return (int) (size*SIZE);
+		return (int) (radius*SIZE);
 	}
 
 	/**
@@ -282,7 +283,7 @@ public abstract class Creature
 
 	public double getSize()
 	{
-		return size;
+		return radius;
 	}
 
 	public Individu getBrain()

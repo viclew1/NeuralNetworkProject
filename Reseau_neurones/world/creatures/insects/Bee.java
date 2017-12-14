@@ -36,7 +36,7 @@ public class Bee extends InsectCreature
 		switch (c.getType())
 		{
 		case VEGETABLE:
-			brain.addScore(50);
+			brain.addScore(500);
 			hp+=50;
 			if (hp>hpMax)
 				hp=hpMax;
@@ -53,10 +53,34 @@ public class Bee extends InsectCreature
 		switch (c.getType())
 		{
 		case WASP:
+			brain.addScore(-brain.getScore()*3/4);
 			alive=false;
 			break;
 		default:
 			break;
 		}
+	}
+
+	@Override
+	protected void applySeenFitness(List<Integer> seenThings)
+	{
+		for (int type : seenThings)
+		{
+			switch (type)
+			{
+			case VEGETABLE:
+				brain.addScore(1);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	@Override
+	protected void updateScore()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

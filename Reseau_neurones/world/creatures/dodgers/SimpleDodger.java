@@ -46,4 +46,17 @@ public class SimpleDodger extends DodgerCreature
 		move(intensityX, intensityY);
 	}
 
+	@Override
+	protected void applySeenFitness(List<Integer> seenThings)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void updateScore()
+	{
+		brain.addScore(0.01);
+	}
+
 }

@@ -130,6 +130,7 @@ public abstract class World extends JPanel implements Epreuve
 			Delimitation d = delimitations.get(i);
 			if (d==null)
 				continue;
+			//TODO contains sur GPU
 			if (d.isExpired() || !IntersectionsChecker.contains(box, d))
 			{
 				delimitations.remove(i);
@@ -142,6 +143,7 @@ public abstract class World extends JPanel implements Epreuve
 		for (int i=0;i<zones.size();i++)
 		{
 			Zone z = zones.get(i);
+			//TODO contains sur GPU
 			if (z.isExpired() || !IntersectionsChecker.contains(box, z))
 				zones.remove(i--);
 			else
@@ -151,6 +153,7 @@ public abstract class World extends JPanel implements Epreuve
 		for (int i=0;i<collectables.size();i++)
 		{
 			Collectable c = collectables.get(i);
+			//TODO contains sur GPU
 			if (c.isConsumed() || !IntersectionsChecker.contains(box, c))
 				collectables.remove(i--);
 			else
@@ -322,13 +325,13 @@ public abstract class World extends JPanel implements Epreuve
 
 	public void generateBee(Individu intelligence)
 	{
-		creatures.add(new Bee(3+new Random().nextDouble()*(box.getWidth()/3), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
+		creatures.add(new Bee(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
 				creatures,collectables,delimitations, box));
 	}
 
 	public void generateWasp(Individu intelligence)
 	{
-		creatures.add(new Wasp(box.getWidth()*2/3+new Random().nextDouble()*(box.getWidth()/3-3), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
+		creatures.add(new Wasp(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
 				creatures,collectables,delimitations, box));
 	}
 

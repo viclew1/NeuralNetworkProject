@@ -39,4 +39,17 @@ public class ComplexDodger extends DodgerCreature
 		moveFront(2*(0.5-decisions[1]));
 	}
 
+	@Override
+	protected void applySeenFitness(List<Integer> seenThings)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void updateScore()
+	{
+		brain.addScore(0.01);
+	}
+
 }

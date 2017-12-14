@@ -68,4 +68,18 @@ public class Soldier extends ShooterCreature
 			break;
 		}
 	}
+
+	@Override
+	protected void applySeenFitness(List<Integer> seenThings)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void updateScore()
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

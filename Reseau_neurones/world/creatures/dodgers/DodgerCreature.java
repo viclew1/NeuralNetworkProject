@@ -17,12 +17,12 @@ public abstract class DodgerCreature extends Creature
 
 	
 
-	public DodgerCreature(double x, double y, double size, double hpMax, double speed, double hpLostPerInstant,
+	public DodgerCreature(double x, double y, double radius, double hpMax, double speed, double hpLostPerInstant,
 			Captor[] captors, Individu brain, int type, Color color, int nbInput,
 			List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations,
 			DelimitationBox box)
 	{
-		super(x, y, size, hpMax, speed, 3, hpLostPerInstant, captors, new int[] {
+		super(x, y, radius, hpMax, speed, 3, hpLostPerInstant, captors, new int[] {
 				FIREBALL,
 				WALL
 		}, brain, type, color, nbInput, creatures,

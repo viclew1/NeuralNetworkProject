@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.List;
 
 import collectables.Collectable;
@@ -212,5 +213,16 @@ public abstract class Captor
 		}
 
 		return ponderatedResults;
+	}
+	
+	public List<Integer> getThingsInSight()
+	{
+		List<Integer> seen = new ArrayList<>();
+		for (int i = 0 ; i < results.length ; i++)
+		{
+			if (results[i] != 0)
+				seen.add(thingsToSee[i]);
+		}
+		return seen;
 	}
 }

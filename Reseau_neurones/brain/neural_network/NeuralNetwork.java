@@ -56,7 +56,7 @@ public class NeuralNetwork extends Individu
 		Neuron[] inputNeurons = layers[0].getNeurons();
 		for (int i = 0 ; i < inputNeurons.length ; i++)
 			inputNeurons[i].setValue(inputs[i]);
-		
+
 		for (int i = 0 ; i < layersSizes.length - 1 ; i++)
 		{
 			Neuron[] from = layers[i].getNeurons();
@@ -111,7 +111,9 @@ public class NeuralNetwork extends Individu
 	@Override
 	public void mutate()
 	{
-		connections[new Random().nextInt(connections.length)].mutate();
+		int mutationCount = Math.max(1, connections.length/50);
+		for (int i = 0 ; i < mutationCount ; i++)
+			connections[new Random().nextInt(connections.length)].mutate();
 	}
 
 	public String toString()
