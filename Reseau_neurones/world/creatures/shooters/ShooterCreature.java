@@ -20,9 +20,10 @@ public abstract class ShooterCreature extends Creature
 	private double projSpeed,projSize,projDamages;
 	protected int cdShoot = 0;
 	private Color projColor;
+	private int cooldown;
 
 	public ShooterCreature(double x, double y, double radius, double hpMax, double speed, double hpLostPerInstant,
-			double projSpeed, double projSize, double projDamages, Color projColor,
+			double projSpeed, double projSize, double projDamages, int cooldown, Color projColor,
 			Captor[] captors, Individu brain, int type, Color color, int nbInput, List<Creature> creatures,
 			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
@@ -35,6 +36,7 @@ public abstract class ShooterCreature extends Creature
 		this.projSize=projSize;
 		this.projSpeed=projSpeed;
 		this.projColor=projColor;
+		this.cooldown=cooldown;
 	}
 
 
@@ -45,7 +47,7 @@ public abstract class ShooterCreature extends Creature
 		if (cdShoot<=0)
 		{
 			delimitations.add(new Projectile(x, y, projSize, projSpeed, orientation, projDamages, this, projColor));
-			cdShoot=150;
+			cdShoot=cooldown;
 		}
 	}
 	

@@ -19,7 +19,7 @@ public class Soldier extends ShooterCreature
 	public Soldier(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
 		super(x, y, 1.5, 500, 0.40,0.05,
-				0.4,1,60,Color.RED,
+				0.4,1,60, 150, Color.RED,
 				new Captor[] {
 						new EyeCaptor(Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI/7,10,Math.PI/3),
