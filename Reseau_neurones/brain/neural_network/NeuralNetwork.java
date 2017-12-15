@@ -15,9 +15,9 @@ public class NeuralNetwork extends Individu
 	private Connection[] connections;
 
 
-	public NeuralNetwork(String name, int[] layersSizes)
+	public NeuralNetwork(String name, int index, int[] layersSizes)
 	{
-		super(name);
+		super(name, index);
 		this.layersSizes=layersSizes;
 		initLayers();
 		int connectionsSz = 0 ;
@@ -31,7 +31,7 @@ public class NeuralNetwork extends Individu
 
 	private NeuralNetwork(NeuralNetwork nn)
 	{
-		super(nn.name);
+		super(nn.name, nn.index);
 		this.layersSizes=nn.layersSizes;
 		initLayers();
 		connections = new Connection[nn.connections.length];

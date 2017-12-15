@@ -7,6 +7,7 @@ import captors.Captor;
 import collectables.Collectable;
 import creatures.Creature;
 import genetics.Individu;
+import genetics.Selection;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
 import limitations.throwables.Projectile;
@@ -23,12 +24,12 @@ public abstract class ShooterCreature extends Creature
 
 	public ShooterCreature(double x, double y, double radius, double hpMax, double speed, double hpLostPerInstant,
 			double projSpeed, double projSize, double projDamages, Color projColor,
-			Captor[] captors, Individu brain, int type, Color color, int nbInput, List<Creature> creatures,
+			Captor[] captors, Individu brain, Selection selec, int type, Color color, int nbInput, List<Creature> creatures,
 			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
 		super(x, y, radius, hpMax, speed, 3, hpLostPerInstant, captors,
 				new int[] {SOLDIER,TANK,PROJECTILE,FUEL,POWERUP,WALL},
-				brain, type, color, nbInput, creatures, collectables,
+				brain, selec, type, color, nbInput, creatures, collectables,
 				delimitations, box);
 		
 		this.projDamages=projDamages;

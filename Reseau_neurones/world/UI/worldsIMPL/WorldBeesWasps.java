@@ -16,7 +16,7 @@ public class WorldBeesWasps extends World
 	@Override
 	protected void initSelections()
 	{
-		GENERATION_LENGTH = 8000;
+		GENERATION_LENGTH = 10000000;
 		collectableAmount = FOOD_AMOUNT;
 		initSelection(POPULATION_SIZE_BEE, GENERATION_COUNT, TYPE_BEE);
 		initSelection(POPULATION_SIZE_WASP, GENERATION_COUNT, TYPE_WASP);

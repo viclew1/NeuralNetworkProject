@@ -9,6 +9,7 @@ import java.util.List;
 import captors.Captor;
 import collectables.Collectable;
 import genetics.Individu;
+import genetics.Selection;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
 import limitations.throwables.Projectile;
@@ -16,6 +17,13 @@ import zones.Zone;
 
 public abstract class Creature
 {
+	private final double xInit, yInit;
+	private final Selection selec;
+
+
+	private boolean invincible = true;
+	private int invincibleTime = 60;
+	private int invincibleTimeLeft = 60;
 
 	protected double x;
 	protected final double hpMax;
@@ -43,9 +51,14 @@ public abstract class Creature
 	protected DelimitationBox box;
 
 	public Creature(double x, double y, double radius, double hpMax, double speed, double rotationSpeed, double hpLostPerInstant, Captor[] captors,
-			int[] thingsToSee, Individu brain, int type, Color color, int nbInput, List<Creature> creatures, 
+			int[] thingsToSee, Individu brain, Selection selec, int type, Color color, int nbInput, List<Creature> creatures, 
 			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
+
+		this.xInit = x;
+		this.yInit = y;
+		this.selec = selec;
+
 		this.x=x;
 		this.y=y;
 		this.radius=radius;
@@ -65,6 +78,19 @@ public abstract class Creature
 		this.delimitations=delimitations;
 		this.box=box;
 		initCaptors(thingsToSee);
+	}
+
+	public void reset(double x, double y)
+	{
+		this.x = x;
+		this.y = y;
+		this.hp = hpMax;
+		Individu newBrain = selec.getOffspring(this.brain);
+		this.brain = newBrain;
+		this.alive = true;
+		invincibleTimeLeft = invincibleTime;
+		invincible = true;
+
 	}
 
 	public void draw(Graphics g, boolean selected)
@@ -120,11 +146,28 @@ public abstract class Creature
 
 	public void update()
 	{
+		updateInvincibility();
 		updatePosition();
 		updateCaptors();
 		updateScore();
 	}
 
+	private void updateInvincibility()
+	{
+		if (invincibleTimeLeft>0)
+		{
+			invincibleTimeLeft--;
+			if (invincibleTimeLeft <= 0)
+				invincible = false;
+		}
+	}
+
+	protected void loseHp(double damages)
+	{
+		if (!isInvincible())
+			hp -= damages;
+	}
+	
 	protected abstract void updateScore();
 
 	private void initCaptors(int[] thingsToSee)
@@ -182,7 +225,7 @@ public abstract class Creature
 	}
 
 	protected abstract void applySeenFitness(List<Integer> seenThings);
-	
+
 	protected abstract void applyDecisions(double[] decisions);
 
 	protected void moveFront(double intensity)
@@ -227,13 +270,16 @@ public abstract class Creature
 		case FIREBALL:
 			break;
 		case WALL:
-			break;
+			hp -= d.getDamages();
+			if (hp<=0)
+				alive=false;
+			return;
 		default:
 			System.out.println("Creature.interactWith(Delimitation d) - Delimitation inconnue : "+d.getType());
 			System.exit(0);
 			break;
 		}
-		hp-=d.getDamages();
+		loseHp(d.getDamages());
 		if (hp<=0)
 			alive=false;
 	}
@@ -289,6 +335,11 @@ public abstract class Creature
 	public Individu getBrain()
 	{
 		return brain;
+	}
+
+	public boolean isInvincible()
+	{
+		return invincible;
 	}
 
 }

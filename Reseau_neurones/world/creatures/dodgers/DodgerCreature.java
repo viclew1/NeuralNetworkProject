@@ -8,6 +8,7 @@ import captors.Captor;
 import collectables.Collectable;
 import creatures.Creature;
 import genetics.Individu;
+import genetics.Selection;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
 import zones.Zone;
@@ -18,14 +19,14 @@ public abstract class DodgerCreature extends Creature
 	
 
 	public DodgerCreature(double x, double y, double radius, double hpMax, double speed, double hpLostPerInstant,
-			Captor[] captors, Individu brain, int type, Color color, int nbInput,
+			Captor[] captors, Individu brain, Selection selec, int type, Color color, int nbInput,
 			List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations,
 			DelimitationBox box)
 	{
 		super(x, y, radius, hpMax, speed, 3, hpLostPerInstant, captors, new int[] {
 				FIREBALL,
 				WALL
-		}, brain, type, color, nbInput, creatures,
+		}, brain, selec, type, color, nbInput, creatures,
 				collectables, delimitations, box);
 	}
 	

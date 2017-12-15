@@ -9,6 +9,9 @@ public class Selection
 	public final int nombreGenerations;
 	public final String type;
 	public Individu[] population;
+	public Individu[] deads;
+	public int deadCount = 0;
+	public int deadIndex = 0;
 	public Individu meilleurTrouve;
 	public double meilleureFitness=Double.MIN_VALUE;
 
@@ -16,6 +19,7 @@ public class Selection
 	{
 		this.epreuve=epreuve;
 		this.nombreIndividus=nombreIndividus;
+		deads = new Individu[nombreIndividus*3];
 		this.nombreGenerations=nombreGenerations;
 		this.type=type;
 	}
@@ -27,7 +31,7 @@ public class Selection
 		for (int i=0;i<nombreGenerations;i++)
 		{
 			//System.out.println("------ DEBUT GENERATION "+(i+1)+" ------");
-			epreuve.lancerEpreuve(population,type);
+			epreuve.lancerEpreuve(this,population,type);
 			if (found)
 				return meilleurIndividu();
 			double meilleurScore = epreuve.fitness(meilleurIndividu());
@@ -47,7 +51,7 @@ public class Selection
 
 		return meilleurIndividu();
 	}
-	
+
 	public void tournamentSelection()
 	{
 		for (int i = 0 ; i < nombreIndividus-1 ; i++)
@@ -67,7 +71,7 @@ public class Selection
 				winner = opponent;
 				loser = challenger;
 			}
-			
+
 			int rdm=new Random().nextInt(100);
 			if (rdm>=100-Utils.chancesCrossOver)
 				loser.crossOver(winner);
@@ -76,28 +80,28 @@ public class Selection
 				loser.mutate();
 		}
 	}
-	
-	public Individu[] stochasticNewPopulationGenerator(double fitnessSum)
+
+	public Individu[] stochasticNewPopulationGenerator(Individu[] popRef, double fitnessSum)
 	{
-		double deltaP = fitnessSum/nombreIndividus;
+		double deltaP = fitnessSum/popRef.length;
 		double start = new Random().nextDouble()*deltaP;
-		double[] pointers = new double[nombreIndividus];
+		double[] pointers = new double[popRef.length];
 		for (int i = 0 ; i<pointers.length ; i++)
 			pointers[i] = start + i*deltaP;
-		
-		Individu[] newPopulation = new Individu[nombreIndividus];
-		for (int pointerCpt=0 ; pointerCpt<nombreIndividus ; pointerCpt++)
+
+		Individu[] newPopulation = new Individu[popRef.length];
+		for (int pointerCpt=0 ; pointerCpt<popRef.length ; pointerCpt++)
 		{
 			double p = pointers[pointerCpt];
 			int i = 0;
 			double partialFitnessSum = 0;
-			while ((partialFitnessSum += epreuve.fitness(population[i])) < p)
+			while ((partialFitnessSum += popRef[i].getScore()) < p)
 				i++;
-			newPopulation[pointerCpt] = population[i];
+			newPopulation[pointerCpt] = popRef[i];
 		}
 		return newPopulation;
 	}
-	
+
 	public void stochasticUniversalSamplingSelection()
 	{
 		double fitnessSum = 0;
@@ -105,9 +109,9 @@ public class Selection
 			fitnessSum+=epreuve.fitness(i);
 
 		Random r = new Random();
-		
-		Individu[] matingPopulation = stochasticNewPopulationGenerator(fitnessSum);
-		
+
+		Individu[] matingPopulation = stochasticNewPopulationGenerator(population, fitnessSum);
+
 		Individu[] newPopulation = new Individu[nombreIndividus];
 		for (int i=0;i<nombreIndividus;i++)
 			newPopulation[i] = breed(matingPopulation[r.nextInt(nombreIndividus)],matingPopulation[r.nextInt(nombreIndividus)]);
@@ -125,7 +129,7 @@ public class Selection
 				population[i].mutate();
 		}*/
 	}
-	
+
 	public void rouletteSelection()
 	{
 		double fitnessSum = 0;
@@ -206,6 +210,28 @@ public class Selection
 			}
 		}
 		return meilleurIndividu;
+	}
+
+	public Individu getOffspring(Individu deadOne)
+	{
+		double fitness = deadOne.getScore();
+		if (fitness > meilleureFitness)
+		{
+			meilleureFitness = fitness;
+			meilleurTrouve = deadOne;
+			if (fitness > 10)
+				System.out.println("Meilleure trouvaille : "+meilleurTrouve+"\nFitness : "+meilleureFitness);
+		}
+		double fitnessSum = 0;
+		for (Individu i : population)
+			fitnessSum+=i.getScore();
+		Random r = new Random();
+
+		Individu[] matingPopulation = stochasticNewPopulationGenerator(population, fitnessSum);
+		Individu offspring = breed(matingPopulation[r.nextInt(nombreIndividus)],matingPopulation[r.nextInt(nombreIndividus)]);
+		offspring.setIndex(deadOne.index);
+		population[deadOne.index] = offspring;
+		return offspring;
 	}
 
 }

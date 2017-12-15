@@ -15,7 +15,7 @@ public class WorldOfTanks extends World
 	@Override
 	protected void initSelections()
 	{
-		GENERATION_LENGTH = 80000;
+		GENERATION_LENGTH = 10000000;
 		collectableAmount = FUEL_AMOUNT;
 		//initSelection(POPULATION_SIZE_SOLDIER, GENERATION_COUNT, TYPE_SOLDIER);
 		initSelection(POPULATION_SIZE_TANK, GENERATION_COUNT, TYPE_TANK);

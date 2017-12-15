@@ -115,4 +115,19 @@ public class IntersectionsChecker
 		return new Rectangle2D.Double(box.getX(), box.getY(), box.getWidth(), box.getHeight())
 				.contains(z.getHitBox().getBounds2D());
 	}
+
+	public static boolean preciseIntersects(Creature creature1, Collectable collect)
+	{
+		return DistanceChecker.distance(creature1, collect) == 0;
+	}
+	
+	public static boolean preciseIntersects(Creature creature1, Creature creature2)
+	{
+		return DistanceChecker.distance(creature1, creature2) == 0;
+	}
+	
+	public static boolean preciseIntersects(Creature creature1, Delimitation delim)
+	{
+		return DistanceChecker.distance(creature1, delim) == 0;
+	}
 }

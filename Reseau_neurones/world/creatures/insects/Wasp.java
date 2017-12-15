@@ -10,13 +10,14 @@ import captors.EyeCaptor;
 import collectables.Collectable;
 import creatures.Creature;
 import genetics.Individu;
+import genetics.Selection;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
 
 public class Wasp extends InsectCreature
 {
 
-	public Wasp(double x, double y, Individu brain, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
+	public Wasp(double x, double y, Individu brain, Selection selec, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
 		super(x, y, 2, 400, 1.6, 2, 1,
 				new Captor[]{
@@ -24,8 +25,8 @@ public class Wasp extends InsectCreature
 						new EyeCaptor(Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI,6,Math.PI/4),
-				},
-				brain, WASP, Color.ORANGE, LAYERS_SIZES_WASP[0],
+		},
+				brain, selec, WASP, Color.ORANGE, LAYERS_SIZES_WASP[0],
 				creatures,collectables,delimitations, box);
 	}
 
@@ -57,10 +58,13 @@ public class Wasp extends InsectCreature
 
 			break;
 		case BEE:
-			brain.addScore(500);
-			hp+=50;
-			if (hp>hpMax)
-				hp=hpMax;
+			if (!c.isInvincible())
+			{
+				brain.addScore(500);
+				hp+=50;
+				if (hp>hpMax)
+					hp=hpMax;
+			}
 			break;
 		default:
 			break;
@@ -87,6 +91,6 @@ public class Wasp extends InsectCreature
 	protected void updateScore()
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 }

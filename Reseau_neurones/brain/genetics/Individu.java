@@ -5,12 +5,24 @@ import java.awt.Graphics;
 public abstract class Individu
 {
 	protected double score=0;
+	protected int index;
 	protected boolean incroyable=false;
 	protected String name;
 	
-	public Individu(String name)
+	public Individu(String name, int index)
 	{
-		this.name=name;
+		this.name = name;
+		this.index = index;
+	}
+	
+	public void setIndex(int index)
+	{
+		this.index = index;
+	}
+	
+	public int getIndex()
+	{
+		return index;
 	}
 	
 	public abstract void crossOver(Individu individu);

@@ -18,7 +18,7 @@ public class WorldOfDodge extends World
 	@Override
 	protected void initSelections()
 	{
-		GENERATION_LENGTH = 200000;
+		GENERATION_LENGTH = 10000000;
 		initSelection(POPULATION_SIZE_COMPLEXDODGER, GENERATION_COUNT, TYPE_COMPLEXDODGER);
 	}
 

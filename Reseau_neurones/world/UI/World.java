@@ -113,7 +113,7 @@ public abstract class World extends JPanel implements Epreuve
 			return false;
 
 		refreshCount++;
-		if (creatures.isEmpty() || refreshCount >= GENERATION_LENGTH)
+		if (/*creatures.isEmpty() ||*/ refreshCount >= GENERATION_LENGTH)
 		{
 			sleepAndRefreshStop=true;
 			finTest();
@@ -190,8 +190,7 @@ public abstract class World extends JPanel implements Epreuve
 			Creature creature1 = creatures.get(i);
 			if (creature1==null || !creature1.isAlive() || !IntersectionsChecker.contains(box, creature1))
 			{
-				creatures.remove(i--);
-				continue;
+				creature1.reset(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6));
 			}
 			creature1.detect();
 			creature1.update();
@@ -200,7 +199,8 @@ public abstract class World extends JPanel implements Epreuve
 				Collectable collect = collectables.get(j);
 				if (collect!=null)
 					if (!collect.isConsumed())
-						if (IntersectionsChecker.intersects(creature1,collect))
+						//if (IntersectionsChecker.intersects(creature1,collect))
+						if (IntersectionsChecker.preciseIntersects(creature1,collect))
 							new CreaCollecInteraction(creature1,collect).process();
 			}
 			for (int j=0;j<delimitations.size();j++)
@@ -208,7 +208,8 @@ public abstract class World extends JPanel implements Epreuve
 				Delimitation delim = delimitations.get(j);
 				if (delim!=null)
 					if (!delim.isExpired())
-						if (IntersectionsChecker.intersects(creature1,delim))
+						//if (IntersectionsChecker.intersects(creature1,delim))
+						if (IntersectionsChecker.preciseIntersects(creature1,delim))
 							new CreaDelimInteraction(creature1,delim).process();
 			}
 			for (int j=0;j<zones.size();j++)
@@ -224,7 +225,8 @@ public abstract class World extends JPanel implements Epreuve
 				Creature creature2 = creatures.get(j);
 				if (creature2!=null)
 					if (creature2.isAlive())
-						if (IntersectionsChecker.intersects(creature1,creature2))
+						//if (IntersectionsChecker.intersects(creature1,creature2))
+						if (IntersectionsChecker.preciseIntersects(creature1,creature2))
 							new CreaCreaInteraction(creature1,creature2).process();
 			}
 		}
@@ -323,39 +325,39 @@ public abstract class World extends JPanel implements Epreuve
 	 * Générateurs de créatures
 	 */
 
-	public void generateBee(Individu intelligence)
+	public void generateBee(Individu intelligence, Selection selec)
 	{
-		creatures.add(new Bee(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
+		creatures.add(new Bee(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
 				creatures,collectables,delimitations, box));
 	}
 
-	public void generateWasp(Individu intelligence)
+	public void generateWasp(Individu intelligence, Selection selec)
 	{
-		creatures.add(new Wasp(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
+		creatures.add(new Wasp(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
 				creatures,collectables,delimitations, box));
 	}
 
-	public void generateSoldier(Individu intelligence)
+	public void generateSoldier(Individu intelligence, Selection selec)
 	{
-		creatures.add(new Soldier(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
+		creatures.add(new Soldier(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
 				creatures,collectables,delimitations, box));
 	}
 
-	public void generateTank(Individu intelligence)
+	public void generateTank(Individu intelligence, Selection selec)
 	{
-		creatures.add(new Tank(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence,
+		creatures.add(new Tank(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
 				creatures,collectables,delimitations, box));
 	}
 
-	public void generateComplexDodger(Individu intelligence)
+	public void generateComplexDodger(Individu intelligence, Selection selec)
 	{
-		creatures.add(new ComplexDodger(box.getWidth()/2, box.getHeight()/2, intelligence,
+		creatures.add(new ComplexDodger(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
 				creatures,collectables,delimitations, box));
 	}
 
-	public void generateSimpleDodger(Individu intelligence)
+	public void generateSimpleDodger(Individu intelligence, Selection selec)
 	{
-		creatures.add(new SimpleDodger(box.getWidth()/2, box.getHeight()/2, intelligence,
+		creatures.add(new SimpleDodger(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
 				creatures,collectables,delimitations, box));
 	}
 
@@ -365,7 +367,7 @@ public abstract class World extends JPanel implements Epreuve
 	 */
 
 	@Override
-	public synchronized void lancerEpreuve(Individu[] population, String type)
+	public synchronized void lancerEpreuve(Selection selec, Individu[] population, String type)
 	{
 		for (Individu i : population)
 		{
@@ -373,22 +375,22 @@ public abstract class World extends JPanel implements Epreuve
 			switch (type)
 			{
 			case TYPE_WASP:
-				generateWasp(i);
+				generateWasp(i, selec);
 				break;
 			case TYPE_BEE:
-				generateBee(i);
+				generateBee(i, selec);
 				break;
 			case TYPE_TANK:
-				generateTank(i);
+				generateTank(i, selec);
 				break;
 			case TYPE_SOLDIER:
-				generateSoldier(i);
+				generateSoldier(i, selec);
 				break;
 			case TYPE_COMPLEXDODGER:
-				generateComplexDodger(i);
+				generateComplexDodger(i, selec);
 				break;
 			case TYPE_SIMPLEDODGER:
-				generateSimpleDodger(i);
+				generateSimpleDodger(i, selec);
 				break;
 			default:
 				System.out.println("World.lancerEpreuve : Type non défini");
@@ -447,7 +449,7 @@ public abstract class World extends JPanel implements Epreuve
 					System.exit(0);
 				}
 				for (int i=0;i<selection.nombreIndividus;i++)
-					selection.population[i]=new NeuralNetwork(type,layersSize);
+					selection.population[i]=new NeuralNetwork(type,i,layersSize);
 				Individu leDieu=selection.lancerSelection();
 				System.out.println(leDieu);
 			}

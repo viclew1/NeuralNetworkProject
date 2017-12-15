@@ -10,13 +10,14 @@ import captors.EyeCaptor;
 import collectables.Collectable;
 import creatures.Creature;
 import genetics.Individu;
+import genetics.Selection;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
 
 public class SimpleDodger extends DodgerCreature
 {
 
-	public SimpleDodger(double x, double y, Individu brain, List<Creature> creatures,
+	public SimpleDodger(double x, double y, Individu brain, Selection selec, List<Creature> creatures,
 			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
 		super(x, y, 1, 1, 1, 0, new Captor[]{
@@ -28,7 +29,7 @@ public class SimpleDodger extends DodgerCreature
 				new EyeCaptor(-Math.PI/4,8,Math.PI/3.6),
 				new EyeCaptor(-Math.PI*3/4,8,Math.PI/3.6),
 				new EyeCaptor(Math.PI*3/4,8,Math.PI/3.6),
-		}, brain, SIMPLEDODGER, Color.GREEN, LAYERS_SIZES_SIMPLEDODGER[0], creatures,
+		}, brain, selec, SIMPLEDODGER, Color.GREEN, LAYERS_SIZES_SIMPLEDODGER[0], creatures,
 				collectables, delimitations, box);
 	}
 	
