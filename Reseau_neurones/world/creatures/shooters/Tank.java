@@ -20,7 +20,7 @@ public class Tank extends ShooterCreature
 	public Tank(double x, double y, Individu brain, Selection selec, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
 		super(x, y, 3, 500, 0.15,0.05,
-				0.2,1.2,150,Color.BLACK,
+				0.2,1.2,150, 150, Color.BLACK,
 				new Captor[] {
 				new EyeCaptor(Math.PI/7,16,Math.PI/3),
 				new EyeCaptor(-Math.PI/7,16,Math.PI/3),
