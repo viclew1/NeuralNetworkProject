@@ -16,9 +16,7 @@ import zones.Zone;
 import static utils.Constantes.*;
 
 public class Slug extends SlugsCreature {
-
-	public Slug(double x, double y, Captor[] captors, int[] thingsToSee, Individu brain, Selection selec, int nbInput, 
-			List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box) {
+	public Slug(double x, double y, Individu brain, Selection selec, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box) {
 		super(x, y, 2, 500, 0.3, 3, 1, 
 				new Captor[]{
 						new EyeCaptor(Math.PI/7,8,Math.PI/3),
@@ -27,10 +25,13 @@ public class Slug extends SlugsCreature {
 				}, 
 				new int[] {
 						BOMB,
-						HEDGEHOG
+						HEDGEHOG,
+						SLUG,
+						VEGETABLE,
+						WALL
 				},
-				brain, selec, SLUG, Color.GREEN, 
-				LAYERS_SIZES_SLUG[0], //Définir la tete du résal de neurones dans les constantes
+				brain, selec, SLUG, Color.ORANGE, 
+				LAYERS_SIZES_SLUG[0],
 				creatures, collectables, delimitations, box);
 	}
 
@@ -42,6 +43,13 @@ public class Slug extends SlugsCreature {
 		switch (c.getType())
 		{
 		case BOMB:
+			break;
+		case VEGETABLE:
+			brain.addScore(200);
+			hp+=50;
+			if (hp>hpMax)
+				hp=hpMax;
+			c.consume();
 			break;
 			
 		default:
@@ -70,11 +78,6 @@ public class Slug extends SlugsCreature {
 
 	@Override
 	protected void applySeenFitness(List<Integer> seenThings) {
-		
-	}
-
-	@Override
-	protected void applyDecisions(double[] decisions) {
 		
 	}
 	

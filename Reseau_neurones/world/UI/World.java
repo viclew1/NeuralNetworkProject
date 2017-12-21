@@ -15,14 +15,17 @@ import javax.swing.JPanel;
 
 import UI.controls.Controller;
 import UI.controls.WorldController;
+import captors.Captor;
 import collectables.Collectable;
 import creatures.Creature;
 import creatures.dodgers.ComplexDodger;
 import creatures.dodgers.SimpleDodger;
 import creatures.insects.Bee;
 import creatures.insects.Wasp;
+import creatures.shooters.Hedgehog;
 import creatures.shooters.Soldier;
 import creatures.shooters.Tank;
+import creatures.slugs.Slug;
 import genetics.Epreuve;
 import genetics.Individu;
 import genetics.Selection;
@@ -52,7 +55,7 @@ public abstract class World implements Epreuve
 	protected List<Zone> zones;
 	protected DelimitationBox box;
 	protected int collectableAmount;
-	protected int meatCount,vegetableCount, powerUpCount, fuelCount;
+	protected int meatCount,vegetableCount, powerUpCount, fuelCount, bombCount;
 
 	private Creature selectedCreature;
 	
@@ -240,6 +243,9 @@ public abstract class World implements Epreuve
 				case POWERUP :
 					powerUpCount++;
 					break;
+				case BOMB :
+					bombCount++;
+					break;
 				default:
 					System.out.println("World.sleepAndRefresh - Collectable inconnu");
 				}
@@ -335,6 +341,18 @@ public abstract class World implements Epreuve
 		creatures.add(new SimpleDodger(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
 				creatures,collectables,delimitations, box));
 	}
+	
+	public void generateSlug(Individu intelligence, Selection selec)
+	{
+		creatures.add(new Slug(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
+				creatures,collectables,delimitations, box));
+	}
+	
+	public void generateHedgehog(Individu intelligence, Selection selec)
+	{
+		creatures.add(new Hedgehog(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
+				creatures,collectables,delimitations, box));
+	}
 
 
 	/**
@@ -366,6 +384,12 @@ public abstract class World implements Epreuve
 				break;
 			case TYPE_SIMPLEDODGER:
 				generateSimpleDodger(i, selec);
+				break;
+			case TYPE_SLUG:
+				generateSlug(i, selec);
+				break;
+			case TYPE_HEDGEHOG:
+				generateHedgehog(i, selec);
 				break;
 			default:
 				System.out.println("World.lancerEpreuve : Type non défini");
@@ -400,6 +424,12 @@ public abstract class World implements Epreuve
 			break;
 		case TYPE_SIMPLEDODGER:
 			layersSize=LAYERS_SIZES_SIMPLEDODGER;
+			break;
+		case TYPE_SLUG:
+			layersSize=LAYERS_SIZES_SLUG;
+			break;
+		case TYPE_HEDGEHOG:
+			layersSize=LAYERS_SIZES_HEDGEHOG;
 			break;
 		default:
 			System.out.println("World.initSelection - Type inconnu");

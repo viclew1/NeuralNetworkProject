@@ -42,5 +42,11 @@ public abstract class SlugsCreature extends Creature {
 			collectables.add(new Bomb(x,y));
 		}
 	}
+	
+	@Override
+	protected void applyDecisions(double[] decisions) {
+		turn(2*(0.5-decisions[0]));
+		moveFront(decisions[1]);
+	}
 
 }
