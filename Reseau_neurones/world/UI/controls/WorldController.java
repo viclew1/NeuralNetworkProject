@@ -117,6 +117,9 @@ public class WorldController extends Controller
 		case KeyEvent.VK_G:
 			world.changeShowAll();
 			break;
+		case KeyEvent.VK_V:
+			world.changeSlowMo();
+			break;
 		default:
 			break;
 		}

@@ -48,7 +48,7 @@ public abstract class World implements Epreuve
 	private JPanel jp;
 
 	private int fpsToDraw = 0;
-	
+
 	protected List<Delimitation> delimitations;
 	protected List<Creature> creatures;
 	protected List<Collectable> collectables;
@@ -58,7 +58,7 @@ public abstract class World implements Epreuve
 	protected int meatCount,vegetableCount, powerUpCount, fuelCount, bombCount;
 
 	private Creature selectedCreature;
-	
+
 
 	/**
 	 * Crée un environnement avec une image de la taille de l'écran
@@ -103,11 +103,11 @@ public abstract class World implements Epreuve
 		collectables = new ArrayList<>(1000);
 		delimitations = new ArrayList<>(1000);
 		zones = new ArrayList<>(1000);
-		
+
 		jf = new JFrame(name);
 		jf.setSize(w, h);
 		jp = new JPanel() {
-			
+
 			public void paint(Graphics g)
 			{
 				super.getRootPane().updateUI();
@@ -119,7 +119,7 @@ public abstract class World implements Epreuve
 				}
 				draftman.drawInfos(infosToPrint(), g);	
 			}
-			
+
 		};
 		jf.add(jp);
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -141,12 +141,17 @@ public abstract class World implements Epreuve
 		for (Delimitation delim : box.getWalls())
 			delimitations.add(delim);
 		initSelections();
+		long timeRefFps = System.nanoTime();
 		long timeRefRecount = System.nanoTime();
 		while (true)
 		{
-			if (!PAUSE)
-				sleepAndRefresh();
-			fps++;
+			if (!SLOW_MO || System.nanoTime() - timeRefFps > TIME_TO_WAIT)
+			{
+				timeRefFps = System.nanoTime();
+				if (!PAUSE)
+					sleepAndRefresh();
+				fps++;
+			}
 			if (System.nanoTime() - timeRefRecount > 1000000000)
 			{
 				timeRefRecount = System.nanoTime();
@@ -160,17 +165,18 @@ public abstract class World implements Epreuve
 	}
 
 
-	
+
 	/**
 	 * Dessinateur
 	 */
-	
+
 	private List<String> infosToPrint()
 	{
 		List<String> infos = new ArrayList<>();
 		infos.add((DRAW_CAPTORS?"Cacher":"Afficher")+" capteurs : S");
 		infos.add((DRAW_HP?"Cacher":"Afficher")+" points de vie : H");
 		infos.add((DRAW_ALL?"Cacher":"Afficher")+" la simulation : G");
+		infos.add((SLOW_MO?"Désactiver":"Activer")+" le slow motion : V");
 		infos.add((!PAUSE?"Mettre en pause":"Quitter la pause")+" : SPACE");
 		return infos;
 	}
@@ -468,6 +474,11 @@ public abstract class World implements Epreuve
 	public void changeShowAll()
 	{
 		DRAW_ALL=!DRAW_ALL;
+	}
+	
+	public void changeSlowMo()
+	{
+		SLOW_MO=!SLOW_MO;
 	}
 
 	public void selectCreature(Point point)

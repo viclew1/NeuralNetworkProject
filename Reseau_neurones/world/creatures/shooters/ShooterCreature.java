@@ -29,7 +29,7 @@ public abstract class ShooterCreature extends Creature
 			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
 		super(x, y, radius, hpMax, speed, 3, hpLostPerInstant, captors,
-				new int[] {SOLDIER,TANK,PROJECTILE,FUEL,POWERUP,WALL},
+				new int[] {SOLDIER,TANK,PROJECTILE,FUEL,POWERUP},
 				brain, selec, type, color, nbInput, creatures, collectables,
 				delimitations, box);
 		

@@ -75,5 +75,7 @@ public class Constantes
 	public static boolean DRAW_HP = false;
 	public static boolean DRAW_ALL = true;
 	public static boolean PAUSE = false;
+	public static boolean SLOW_MO = false;
+	public static long TIME_TO_WAIT = 1000000000 / 30;;
 	
 }

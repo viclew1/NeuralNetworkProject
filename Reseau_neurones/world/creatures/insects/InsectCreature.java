@@ -22,7 +22,7 @@ public abstract class InsectCreature extends Creature
 			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
 		super(x, y, radius, hpMax, speed, rotationSpeed, hpLostPerInstant, captors,
-				new int[] {WASP,BEE,VEGETABLE,WALL},
+				new int[] {WASP,BEE,VEGETABLE},
 				brain, selec, type, color, nbInput, creatures, collectables,
 				delimitations, box);
 		// TODO Auto-generated constructor stub
