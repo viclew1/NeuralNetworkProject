@@ -347,6 +347,10 @@ public abstract class Creature
 	{
 		return brain;
 	}
+	
+	public double getHp() {
+		return hp;
+	}
 
 	public boolean isInvincible()
 	{

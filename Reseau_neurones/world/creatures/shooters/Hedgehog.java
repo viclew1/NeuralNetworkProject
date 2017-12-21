@@ -20,7 +20,7 @@ public class Hedgehog extends ShooterCreature{
 	
 	public Hedgehog(double x, double y, Individu brain, Selection selec, 
 			List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box) {
-		super(x, y, 3, 300, 0.7, 0.5, 0.5, 1, 60, 80, brown,
+		super(x, y, 3, 300, 0.7, 0.5, 0.5, 1, 2000, 40, brown,
 				new Captor[]{
 						new EyeCaptor(Math.PI/7,18,Math.PI/3),
 						new EyeCaptor(-Math.PI/7,18,Math.PI/3),
@@ -41,7 +41,7 @@ public class Hedgehog extends ShooterCreature{
 			alive=false;
 			break;
 		case VEGETABLE:
-			brain.addScore(200);
+			brain.addScore(50);
 			hp+=50;
 			if (hp>hpMax)
 				hp=hpMax;
@@ -58,8 +58,13 @@ public class Hedgehog extends ShooterCreature{
 		switch (c.getType())
 		{
 		case SLUG:
+			brain.addScore(1000);
+			break;
+		case HEDGEHOG:
 			//brain.addScore(-brain.getScore()*3/4);
-			alive=false;
+			if (c.getHp()>this.hp) {
+				alive=false;
+			}
 			break;
 		default:
 			break;
@@ -71,7 +76,7 @@ public class Hedgehog extends ShooterCreature{
 		switch (targetType)
 		{
 		case SLUG:
-			brain.addScore(5);
+			brain.addScore(100);
 			break;
 		case BOMB:
 			brain.addScore(5);

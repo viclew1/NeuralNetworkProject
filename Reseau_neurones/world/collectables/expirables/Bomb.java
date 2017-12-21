@@ -3,10 +3,15 @@ package collectables.expirables;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import creatures.slugs.Slug;
+
 public class Bomb extends ExpirableCollectable {
 	
-	public Bomb(double x, double y) {
+	Slug owner;
+	
+	public Bomb(double x, double y, Slug o) {
 		super(x, y, 1, utils.Constantes.BOMB,250);
+		this.owner=o;
 	}
 
 	@Override
@@ -17,5 +22,11 @@ public class Bomb extends ExpirableCollectable {
 		g.setColor(Color.BLACK);
 		g.drawOval(xFinal(), yFinal(), sizeFinal(), sizeFinal());
 		g.setColor(oldColor);
+	}
+	
+	public void consumedByKill()
+	{
+		owner.addScore(1000);
+		consumed=true;
 	}
 }

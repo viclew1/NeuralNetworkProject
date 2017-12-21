@@ -6,6 +6,7 @@ import java.util.List;
 import captors.Captor;
 import captors.EyeCaptor;
 import collectables.Collectable;
+import collectables.expirables.Bomb;
 import creatures.Creature;
 import genetics.Individu;
 import genetics.Selection;
@@ -57,11 +58,36 @@ public class Slug extends SlugsCreature {
 		}
 		
 	}
+	
+	protected void moveFront(double intensity)
+	{
+		x+=Math.cos(orientation)*speed*intensity;
+		y-=Math.sin(orientation)*speed*intensity;
+		
+		bombCooldown--;
+		if(bombCooldown<=0) {
+			bombCooldown = 20;
+			collectables.add(new Bomb(x,y,this));
+		}
+	}
 
+	public void addScore(double i) {
+		brain.addScore(i);
+	}
+	
 	@Override
 	public void interactWith(Creature c) {
-		// TODO Auto-generated method stub
-		
+		switch (c.getType())
+		{
+		case HEDGEHOG:
+			//brain.addScore(-brain.getScore()*3/4);
+			alive=false;
+			break;
+		case SLUG:
+			break;
+		default:
+			break;
+		}		
 	}
 	
 
