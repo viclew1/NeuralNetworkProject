@@ -1,10 +1,6 @@
 package captors;
 
-import static utils.Constantes.*;
-
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,27 +10,21 @@ import creatures.Creature;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
 import utils.DistanceChecker;
-import utils.IntersectionsChecker;
 import zones.Zone;
 
 public abstract class Captor
 {
-	protected double[] xPoints,yPoints;
 	protected final double range;
 	protected Creature creature;
 	
 	private int[] thingsToSee;
 	private double[] results;
-	
-	protected final Path2D hitbox;
-	protected Rectangle2D around;
 
-	public Captor(double range, int nbPoints)
+	protected Rectangle2D around;
+	
+	public Captor(double range)
 	{
-		xPoints = new double[nbPoints];
-		yPoints = new double[nbPoints];
 		this.range=range;
-		this.hitbox = new Path2D.Double();
 	}
 
 	public void setCreature(Creature creature)
@@ -50,38 +40,19 @@ public abstract class Captor
 
 	public abstract void update(double x, double y, double deltaOrientation);
 
-	public void draw(Graphics g)
-	{
-		Color color = g.getColor();
-		g.setColor(Color.BLACK);
-		int[] xFinal = new int[xPoints.length];
-		int[] yFinal = new int[yPoints.length];
-		for (int i=0 ; i<xPoints.length ; i++)
-		{
-			xFinal[i] = (int) (xPoints[i]*SIZE+SCROLL_X);
-			yFinal[i] = (int) (yPoints[i]*SIZE+SCROLL_Y);
-		}
-		g.drawPolygon(xFinal, yFinal, xPoints.length);
-		g.setColor(Color.RED);
-		g.drawRect((int)(around.getX()*SIZE+SCROLL_X), (int)(around.getY()*SIZE+SCROLL_Y), (int)(around.getWidth()*SIZE), (int)(around.getHeight()*SIZE));
-		g.setColor(color);
-	}
+	public abstract void draw(Graphics g);
 
 	public void detect(List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
-		hitbox.reset();
-		hitbox.moveTo(xPoints[0], yPoints[0]);
-		for(int i = 1; i < xPoints.length; ++i) {
-			hitbox.lineTo(xPoints[i], yPoints[i]);
-		}
-		hitbox.closePath();
-		around = new Rectangle2D.Double(xPoints[0]-range,yPoints[0]-range,range*2,range*2);
+		updateHitbox();
 		for (int i=0;i<results.length;i++)
 			results[i] = Double.MAX_VALUE;
 		detectCreatures(creatures);
 		detectCollectables(collectables);
 		detectDelimitations(delimitations);
 	}
+	
+	protected abstract void updateHitbox();
 
 	private void detectCreatures(List<Creature> creatures)
 	{
@@ -136,7 +107,7 @@ public abstract class Captor
 				break;
 			}
 		}
-		if (index==-1 || !IntersectionsChecker.intersects(hitbox,c))
+		if (index==-1 || !checkIntersection(c))
 			return;
 		double value = DistanceChecker.distance(creature, c);
 		if (results[index] > value)
@@ -155,7 +126,7 @@ public abstract class Captor
 				break;
 			}
 		}
-		if (index==-1 || !IntersectionsChecker.intersects(hitbox,c))
+		if (index==-1 || !checkIntersection(c))
 			return;
 		double value = DistanceChecker.distance(creature, c);
 		if (results[index] > value)
@@ -174,7 +145,7 @@ public abstract class Captor
 				break;
 			}
 		}
-		if (index==-1 || !IntersectionsChecker.intersects(hitbox,d))
+		if (index==-1 || !checkIntersection(d))
 			return;
 		double value = DistanceChecker.distance(creature, d);
 		if (results[index] > value)
@@ -193,7 +164,7 @@ public abstract class Captor
 				break;
 			}
 		}
-		if (index==-1 || !IntersectionsChecker.intersects(hitbox,z))
+		if (index==-1 || !checkIntersection(z))
 			return;
 		double value = DistanceChecker.distance(creature, z);
 		if (results[index] > value)
@@ -214,6 +185,11 @@ public abstract class Captor
 
 		return ponderatedResults;
 	}
+	
+	protected abstract boolean checkIntersection(Creature c);
+	protected abstract boolean checkIntersection(Collectable c);
+	protected abstract boolean checkIntersection(Delimitation d);
+	protected abstract boolean checkIntersection(Zone z);
 	
 	public List<Integer> getThingsInSight()
 	{

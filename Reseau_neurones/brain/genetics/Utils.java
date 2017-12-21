@@ -10,14 +10,24 @@ public abstract class Utils
 	
 	private static final Random r = new Random();
 
-	public static void bubbleSort(Individu array[]) {
+	public static void bubbleSortAsc(Individu array[]) 
+	{
 		int n = array.length;
 		for (int m = n; m >= 0; m--)
 			for (int i = 0; i < n - 1; i++) 
 				if (array[i].getScore() > array[i+1].getScore())
 					swapNumbers(i, i+1, array);
 	}
-
+	
+	public static void bubbleSortDesc(Individu array[]) 
+	{
+		int n = array.length;
+		for (int m = n; m >= 0; m--)
+			for (int i = 0; i < n - 1; i++) 
+				if (array[i].getScore() < array[i+1].getScore())
+					swapNumbers(i, i+1, array);
+	}
+	
 	private static void swapNumbers(int i, int j, Object[] array) 
 	{
 		Object temp;

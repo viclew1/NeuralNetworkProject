@@ -36,6 +36,11 @@ public class Connection
 		return weight;
 	}
 	
+	public void setWeight(double weight)
+	{
+		this.weight = weight;
+	}
+	
 	public Connection deepCopy()
 	{
 		return new Connection(this);

@@ -25,9 +25,10 @@ public abstract class Individu
 		return index;
 	}
 	
-	public abstract void crossOver(Individu individu);
-	
-	public abstract void mutate();
+	public abstract void crossOverPriorities(Individu individu);
+	public abstract void crossOverProduction(Individu individu);
+	public abstract void mutatePriorities();
+	public abstract void mutateProduction();
 	
 	public abstract Individu deepCopy();
 

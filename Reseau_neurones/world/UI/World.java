@@ -5,9 +5,12 @@ import static utils.Constantes.*;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import UI.controls.Controller;
@@ -26,7 +29,6 @@ import genetics.Selection;
 import interactions.CreaCollecInteraction;
 import interactions.CreaCreaInteraction;
 import interactions.CreaDelimInteraction;
-import interactions.CreaZoneInteraction;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
 import neural_network.NeuralNetwork;
@@ -34,12 +36,16 @@ import utils.Draftman;
 import utils.IntersectionsChecker;
 import zones.Zone;
 
-public abstract class World extends JPanel implements Epreuve
+public abstract class World implements Epreuve
 {
-	private static final long serialVersionUID = 6616688571724528064L;
 
-	private Controller controller;
+	private final String name;
 
+	private JFrame jf;
+	private JPanel jp;
+
+	private int fpsToDraw = 0;
+	
 	protected List<Delimitation> delimitations;
 	protected List<Creature> creatures;
 	protected List<Collectable> collectables;
@@ -47,50 +53,125 @@ public abstract class World extends JPanel implements Epreuve
 	protected DelimitationBox box;
 	protected int collectableAmount;
 	protected int meatCount,vegetableCount, powerUpCount, fuelCount;
-	protected int generationCount=1;
-
-	private long timeStartCompute;
-
-	private boolean done;
-	private int refreshCount;
-
-	private double[] fpsHistory = new double[500];
-	private int fpsCount=0;
-
-	private boolean sleepAndRefreshStop = true;
 
 	private Creature selectedCreature;
+	
 
-	public World()
+	/**
+	 * Crée un environnement avec une image de la taille de l'écran
+	 */
+	public World(String name)
 	{
-		resetAllConstantes();
-		controller = new WorldController(this);
-		addMouseListener(controller);
-		addKeyListener(controller);
-		addMouseWheelListener(controller);
-		addMouseMotionListener(controller);
-		setFocusable(true);
+		this.name = name;
+		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+		init((int)(d.getWidth()), (int)(d.getHeight()));
+	}
 
-		this.setSize(new Dimension(100000, 100000));
+	/**
+	 * Crée un environnement avec une image de la taille de la dimension passée en argument
+	 * @param dimension Dimension de l'image
+	 */
+	public World(String name, Dimension dimension)
+	{
+		this.name = name;
+		init((int)(dimension.getWidth()), (int)(dimension.getHeight()));
+	}
+
+	/**
+	 * Crée un environnement avec pour largeur et hauteur d'image les arguments passés
+	 * @param w largeur de l'image
+	 * @param h hauteur de l'image
+	 */
+	public World(String name, int w, int h)
+	{
+		this.name = name;
+		init(w,h);
+	}
+
+	/**
+	 * Initialise l'image en fonction de la largeur / hauteur passés en argument
+	 * Initialise les Kernels utilsés pour le calcul et le dessin
+	 * @param w largeur
+	 * @param h hauteur
+	 */
+	private void init(int w, int h)
+	{
 		creatures = new ArrayList<>(1000);
 		collectables = new ArrayList<>(1000);
 		delimitations = new ArrayList<>(1000);
 		zones = new ArrayList<>(1000);
+		
+		jf = new JFrame(name);
+		jf.setSize(w, h);
+		jp = new JPanel() {
+			
+			public void paint(Graphics g)
+			{
+				super.getRootPane().updateUI();
+				Draftman draftman = new Draftman();
+				if (DRAW_ALL)
+				{
+					draftman.drawWorld(selectedCreature, creatures, collectables, delimitations, g);
+					g.drawString("FPS : " + fpsToDraw, 10, 15);
+				}
+				draftman.drawInfos(infosToPrint(), g);	
+			}
+			
+		};
+		jf.add(jp);
+		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		Controller ctrl = new WorldController(this);
+		jp.addMouseListener(ctrl);
+		jp.addMouseMotionListener(ctrl);
+		jp.addKeyListener(ctrl);
+		jp.addMouseWheelListener(ctrl);
+		jp.setFocusable(true);
+
 	}
 
-	/**
-	 * Démarre la sélection
-	 */
-
-	public void start(int x, int y)
+	public void start(int x, int y, boolean visible)
 	{
-
+		jf.setVisible(visible);
+		int fps = 0;
 		box=new DelimitationBox(0, 0, x, y);
 		for (Delimitation delim : box.getWalls())
 			delimitations.add(delim);
 		initSelections();
-		initComputeThread();
+		long timeRefRecount = System.nanoTime();
+		while (true)
+		{
+			if (!PAUSE)
+				sleepAndRefresh();
+			fps++;
+			if (System.nanoTime() - timeRefRecount > 1000000000)
+			{
+				timeRefRecount = System.nanoTime();
+				if (!visible)
+					System.out.println("FPS : " + fps);
+				else
+					fpsToDraw = fps;
+				fps = 0;
+			}
+		}
 	}
+
+
+	
+	/**
+	 * Dessinateur
+	 */
+	
+	private List<String> infosToPrint()
+	{
+		List<String> infos = new ArrayList<>();
+		infos.add((DRAW_CAPTORS?"Cacher":"Afficher")+" capteurs : S");
+		infos.add((DRAW_HP?"Cacher":"Afficher")+" points de vie : H");
+		infos.add((DRAW_ALL?"Cacher":"Afficher")+" la simulation : G");
+		infos.add((!PAUSE?"Mettre en pause":"Quitter la pause")+" : SPACE");
+		return infos;
+	}
+
 
 	/**
 	 * Méthodes à implémenter pour personnaliser le monde
@@ -104,22 +185,8 @@ public abstract class World extends JPanel implements Epreuve
 	 * Méthodes de calcul de position des objets
 	 */
 
-	private boolean sleepAndRefresh()
+	private void sleepAndRefresh()
 	{
-		timeStartCompute = System.currentTimeMillis();
-		if (sleepAndRefreshStop)
-			return false;
-		if (PAUSE)
-			return false;
-
-		refreshCount++;
-		if (/*creatures.isEmpty() ||*/ refreshCount >= GENERATION_LENGTH)
-		{
-			sleepAndRefreshStop=true;
-			finTest();
-			return false;
-		}
-
 		meatCount=0;
 		vegetableCount=0;
 		fuelCount=0;
@@ -140,7 +207,7 @@ public abstract class World extends JPanel implements Epreuve
 				d.update();
 		}
 
-		for (int i=0;i<zones.size();i++)
+		/*for (int i=0;i<zones.size();i++)
 		{
 			Zone z = zones.get(i);
 			//TODO contains sur GPU
@@ -148,7 +215,7 @@ public abstract class World extends JPanel implements Epreuve
 				zones.remove(i--);
 			else
 				z.update();
-		}
+		}*/
 
 		for (int i=0;i<collectables.size();i++)
 		{
@@ -199,7 +266,6 @@ public abstract class World extends JPanel implements Epreuve
 				Collectable collect = collectables.get(j);
 				if (collect!=null)
 					if (!collect.isConsumed())
-						//if (IntersectionsChecker.intersects(creature1,collect))
 						if (IntersectionsChecker.preciseIntersects(creature1,collect))
 							new CreaCollecInteraction(creature1,collect).process();
 			}
@@ -208,117 +274,26 @@ public abstract class World extends JPanel implements Epreuve
 				Delimitation delim = delimitations.get(j);
 				if (delim!=null)
 					if (!delim.isExpired())
-						//if (IntersectionsChecker.intersects(creature1,delim))
 						if (IntersectionsChecker.preciseIntersects(creature1,delim))
 							new CreaDelimInteraction(creature1,delim).process();
 			}
-			for (int j=0;j<zones.size();j++)
+			/*for (int j=0;j<zones.size();j++)
 			{
 				Zone z = zones.get(j);
 				if (z!=null)
 					if (!z.isExpired())
 						if (IntersectionsChecker.intersects(creature1,z))
 							new CreaZoneInteraction(creature1,z).process();
-			}
+			}*/
 			for (int j=i+1; j<creatures.size() ;j++)
 			{
 				Creature creature2 = creatures.get(j);
 				if (creature2!=null)
 					if (creature2.isAlive())
-						//if (IntersectionsChecker.intersects(creature1,creature2))
 						if (IntersectionsChecker.preciseIntersects(creature1,creature2))
 							new CreaCreaInteraction(creature1,creature2).process();
 			}
 		}
-
-
-		long timeToWait = SLOW_MO_TIME-(System.currentTimeMillis()-timeStartCompute);
-		if (SLOW_MO_MODE && timeToWait>0)
-		{
-			try
-			{
-				Thread.sleep(timeToWait);
-			} catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-		}
-
-
-		fpsHistory[fpsCount]=System.currentTimeMillis()-timeStartCompute;
-		fpsCount++;
-		if (fpsCount==fpsHistory.length)
-			fpsCount=0;
-
-		return true;
-	}
-
-	private void initComputeThread()
-	{
-		new Thread(new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-				while (true)
-				{
-					if (!sleepAndRefresh())
-					{
-						try
-						{
-							Thread.sleep(1);
-
-						} catch (InterruptedException e)
-						{
-							e.printStackTrace();
-						}
-					}			
-				}
-			}
-		}).start();
-	}
-
-	private int currentFrameRate()
-	{
-		double average=0;
-		for (int i=0;i<fpsHistory.length;i++)
-			average+=fpsHistory[i];
-		average/=fpsHistory.length;
-		if (average==0)
-			return Integer.MAX_VALUE;
-		return (int)(1000/average);
-	}
-
-	/**
-	 * Dessinateur
-	 */
-
-	public void paint(Graphics g)
-	{
-		super.getRootPane().updateUI();
-
-		Draftman draftman = new Draftman();
-		if (DRAW_ALL && !sleepAndRefreshStop)
-		{
-			draftman.drawWorld(selectedCreature, creatures, collectables, delimitations, g);
-			draftman.drawFPS(currentFrameRate(), g);
-		}
-		draftman.drawInfos(infosToPrint(), g);
-		draftman.drawAvancement(refreshCount, GENERATION_LENGTH, g);
-	}
-
-	private List<String> infosToPrint()
-	{
-		List<String> infos = new ArrayList<>();
-		infos.add("Génération : "+generationCount);
-		infos.add((SLOW_MO_MODE?"Désactiver":"Activer")+" slow motion : V");
-		infos.add((DRAW_CAPTORS?"Cacher":"Afficher")+" capteurs : S");
-		infos.add((DRAW_HP?"Cacher":"Afficher")+" points de vie : H");
-		infos.add((DRAW_ALL?"Cacher":"Afficher")+" la simulation : G");
-		infos.add((!PAUSE?"Mettre en pause":"Quitter la pause")+" : SPACE");
-		infos.add("Tuer cette génération entière : K");
-		return infos;
 	}
 
 	/**
@@ -367,7 +342,7 @@ public abstract class World extends JPanel implements Epreuve
 	 */
 
 	@Override
-	public synchronized void lancerEpreuve(Selection selec, Individu[] population, String type)
+	public void lancerEpreuve(Selection selec, Individu[] population, String type)
 	{
 		for (Individu i : population)
 		{
@@ -398,88 +373,47 @@ public abstract class World extends JPanel implements Epreuve
 				break;
 			}
 		}
-		sleepAndRefreshStop=false;
-		done=false;
-		while (!done)
-		{
-			try
-			{
-				wait();
-			} catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-		}
 	}
 
 	@Override
 	public void initSelection(int nbIndiv, int nbGen, String type)
 	{
-		new Thread(new Runnable()
+		Selection selection=new Selection(World.this, nbIndiv, nbGen, type);
+		selection.population=new Individu[selection.nombreIndividus];
+		int[] layersSize = null;
+		switch (type)
 		{
-
-			@Override
-			public void run()
-			{
-				Selection selection=new Selection(World.this, nbIndiv, nbGen, type);
-				selection.population=new Individu[selection.nombreIndividus];
-				int[] layersSize = null;
-				switch (type)
-				{
-				case TYPE_BEE:
-					layersSize=LAYERS_SIZES_BEE;
-					break;
-				case TYPE_TANK:
-					layersSize=LAYERS_SIZES_TANK;
-					break;
-				case TYPE_WASP:
-					layersSize=LAYERS_SIZES_WASP;
-					break;
-				case TYPE_SOLDIER:
-					layersSize=LAYERS_SIZES_SOLDIER;
-					break;
-				case TYPE_COMPLEXDODGER:
-					layersSize=LAYERS_SIZES_COMPLEXDODGER;
-					break;
-				case TYPE_SIMPLEDODGER:
-					layersSize=LAYERS_SIZES_SIMPLEDODGER;
-					break;
-				default:
-					System.out.println("World.initSelection - Type inconnu");
-					System.exit(0);
-				}
-				for (int i=0;i<selection.nombreIndividus;i++)
-					selection.population[i]=new NeuralNetwork(type,i,layersSize);
-				Individu leDieu=selection.lancerSelection();
-				System.out.println(leDieu);
-			}
-		}).start();
-
+		case TYPE_BEE:
+			layersSize=LAYERS_SIZES_BEE;
+			break;
+		case TYPE_TANK:
+			layersSize=LAYERS_SIZES_TANK;
+			break;
+		case TYPE_WASP:
+			layersSize=LAYERS_SIZES_WASP;
+			break;
+		case TYPE_SOLDIER:
+			layersSize=LAYERS_SIZES_SOLDIER;
+			break;
+		case TYPE_COMPLEXDODGER:
+			layersSize=LAYERS_SIZES_COMPLEXDODGER;
+			break;
+		case TYPE_SIMPLEDODGER:
+			layersSize=LAYERS_SIZES_SIMPLEDODGER;
+			break;
+		default:
+			System.out.println("World.initSelection - Type inconnu");
+			System.exit(0);
+		}
+		for (int i=0;i<selection.nombreIndividus;i++)
+			selection.population[i]=new NeuralNetwork(type,i,layersSize);
+		lancerEpreuve(selection, selection.population, type);
 	}
 
 	@Override
 	public double fitness(Individu individu)
 	{
 		return individu.getScore();
-	}
-
-	public synchronized void finTest()
-	{
-		refreshCount = 0;
-		for (int i = 0 ; i < delimitations.size() ; i ++)
-		{
-			Delimitation d = delimitations.get(i);
-			if (d!=null)
-				if (d.getType()!=WALL)
-				{
-					delimitations.remove(i);
-					i--;
-				}
-		}
-		collectables.clear();
-		done=true;
-		generationCount++;
-		notifyAll();
 	}
 
 	/**
@@ -501,28 +435,9 @@ public abstract class World extends JPanel implements Epreuve
 		DRAW_HP=!DRAW_HP;
 	}
 
-	public void changeSlowMo()
-	{
-		SLOW_MO_MODE=!SLOW_MO_MODE;
-	}
-
 	public void changeShowAll()
 	{
 		DRAW_ALL=!DRAW_ALL;
-	}
-
-	public void genocide()
-	{
-		sleepAndRefreshStop=true;
-		try
-		{
-			Thread.sleep(1000);
-		} catch (InterruptedException e)
-		{
-			e.printStackTrace();
-		}
-		creatures.clear();
-		sleepAndRefreshStop=false;
 	}
 
 	public void selectCreature(Point point)

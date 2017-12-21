@@ -2,6 +2,7 @@ package UI.worldsIMPL;
 
 import static utils.Constantes.*;
 
+import java.awt.Dimension;
 import java.util.Random;
 
 import UI.World;
@@ -10,12 +11,25 @@ import collectables.expirables.Fuel;
 public class WorldOfTanks extends World
 {
 
-	private static final long serialVersionUID = -8366677204022090143L;
 
+	public WorldOfTanks(String name)
+	{
+		super(name);
+	}
+	
+	public WorldOfTanks(String name, Dimension dimensions)
+	{
+		super(name, dimensions);
+	}
+	
+	public WorldOfTanks(String name, int w, int h)
+	{
+		super(name, w, h);
+	}
+	
 	@Override
 	protected void initSelections()
 	{
-		GENERATION_LENGTH = 10000000;
 		collectableAmount = FUEL_AMOUNT;
 		//initSelection(POPULATION_SIZE_SOLDIER, GENERATION_COUNT, TYPE_SOLDIER);
 		initSelection(POPULATION_SIZE_TANK, GENERATION_COUNT, TYPE_TANK);

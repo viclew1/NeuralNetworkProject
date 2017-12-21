@@ -74,10 +74,16 @@ public class Selection
 
 			int rdm=new Random().nextInt(100);
 			if (rdm>=100-Utils.chancesCrossOver)
-				loser.crossOver(winner);
+				if (new Random().nextBoolean())
+					loser.crossOverPriorities(winner);
+				else
+					loser.crossOverProduction(winner);
 			rdm=new Random().nextInt(100);
 			if (rdm>=100-Utils.chancesMutation)
-				loser.mutate();
+				if (new Random().nextBoolean())
+					loser.mutatePriorities();
+				else
+					loser.mutateProduction();
 		}
 	}
 
@@ -173,7 +179,8 @@ public class Selection
 	private Individu breed(Individu i1, Individu i2)
 	{
 		Individu parent1,parent2;
-		if (new Random().nextBoolean())
+		Random r = new Random();
+		if (r.nextBoolean())
 		{
 			parent1 = i1;
 			parent2 = i2;
@@ -185,12 +192,18 @@ public class Selection
 		}
 		Individu child = parent1.deepCopy();
 
-		int rdm=new Random().nextInt(100);
+		int rdm=r.nextInt(100);
 		if (rdm>=100-Utils.chancesCrossOver)
-			child.crossOver(parent2);
-		rdm=new Random().nextInt(100);
+			if (r.nextBoolean())
+				child.crossOverPriorities(parent2);
+			else
+				child.crossOverProduction(parent2);
+		rdm=r.nextInt(100);
 		if (rdm>=100-Utils.chancesMutation)
-			child.mutate();
+			if (r.nextBoolean())
+				child.mutatePriorities();
+			else
+				child.mutateProduction();
 
 
 		return child;
@@ -226,6 +239,10 @@ public class Selection
 		for (Individu i : population)
 			fitnessSum+=i.getScore();
 		Random r = new Random();
+
+		/*Individu[] sortedPopulation = population.clone();
+		bubbleSortDesc(sortedPopulation);
+		Individu offspring = breed(sortedPopulation[r.nextInt(nombreIndividus/5)],sortedPopulation[r.nextInt(nombreIndividus/5)]);*/
 
 		Individu[] matingPopulation = stochasticNewPopulationGenerator(population, fitnessSum);
 		Individu offspring = breed(matingPopulation[r.nextInt(nombreIndividus)],matingPopulation[r.nextInt(nombreIndividus)]);

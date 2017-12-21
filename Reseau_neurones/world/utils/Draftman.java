@@ -57,7 +57,7 @@ public class Draftman
 		Graphics2D g2 = (Graphics2D) g;
 
 		for (int i=0;i<list.size();i++)
-			g2.drawString(list.get(i), 10, 15+15*i);
+			g2.drawString(list.get(i), 10, 40+15*i);
 	}
 	
 	public void drawAvancement(double currentLength, double generationLength, Graphics g)

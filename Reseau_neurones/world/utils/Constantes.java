@@ -5,15 +5,13 @@ public class Constantes
 
 	public final static String TITRE_APPLICATION = "Neural Network Project";
 
-	private static int FRAME_RATE;
-	public static long TimeBetweenTwoComputes;
 	
 	public static final int POPULATION_SIZE_BEE = 500;
 	public static final int POPULATION_SIZE_WASP = 50;
 	public static final int POPULATION_SIZE_TANK = 300;
 	public static final int POPULATION_SIZE_SOLDIER = 300;
-	public static final int POPULATION_SIZE_COMPLEXDODGER = 300;
-	public static final int POPULATION_SIZE_SIMPLEDODGER = 300;
+	public static final int POPULATION_SIZE_COMPLEXDODGER = 180;
+	public static final int POPULATION_SIZE_SIMPLEDODGER = 180;
 	
 	public static final int GENERATION_COUNT = 100000;
 
@@ -57,7 +55,6 @@ public class Constantes
 	public static final String TYPE_SIMPLEDODGER = "SIMPLE DODGER";
 	public static final String TYPE_SLUG = "SLUG";
 	
-	public static int GENERATION_LENGTH;
 	
 	public static final int[] LAYERS_SIZES_BEE = new int[] {17,12,15,13,12,6,12,13,15,12,2};
 	public static final int[] LAYERS_SIZES_TANK = new int[] {23,15,7,15,4};
@@ -73,37 +70,7 @@ public class Constantes
 	
 	public static boolean DRAW_CAPTORS = false;
 	public static boolean DRAW_HP = false;
-	public static boolean SLOW_MO_MODE = false;
-	public static final long SLOW_MO_TIME = 1000/120;
 	public static boolean DRAW_ALL = true;
 	public static boolean PAUSE = false;
 	
-	public static final String[] creatures = new String[] {"Abeilles","Guepes","Soldats","Tanks","Complex Dodger", "Simple Dodger"};
-	
-	
-	
-	public static void changePositionComputesPerSecond(int newFrequency) throws FrameRateTooLowException 
-	{
-		if (newFrequency < 5)
-			throw new FrameRateTooLowException(5);
-		FRAME_RATE = newFrequency;
-		TimeBetweenTwoComputes = (long) (1000/FRAME_RATE);
-	}
-	
-	public static void resetAllConstantes()
-	{
-		SIZE = 60;
-		FRAME_RATE=1000;
-		SCROLL_X = 0;
-		SCROLL_Y = 0;
-		DRAW_CAPTORS = false;
-		PAUSE = false;
-		try
-		{
-			changePositionComputesPerSecond(FRAME_RATE);
-		} catch (FrameRateTooLowException e)
-		{
-			e.printStackTrace();
-		}
-	}
 }

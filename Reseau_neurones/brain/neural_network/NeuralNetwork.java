@@ -94,7 +94,7 @@ public class NeuralNetwork extends Individu
 	}
 
 	@Override
-	public void crossOver(Individu individu)
+	public void crossOverPriorities(Individu individu)
 	{
 		NeuralNetwork nn = (NeuralNetwork) individu;
 		if (nn.connections.length!=connections.length)
@@ -109,7 +109,37 @@ public class NeuralNetwork extends Individu
 	}
 
 	@Override
-	public void mutate()
+	public void mutatePriorities()
+	{
+		int mutationCount = Math.max(1, connections.length/50);
+		for (int i = 0 ; i < mutationCount ; i++)
+		{
+			int index1 = new Random().nextInt(connections.length);
+			int index2 = new Random().nextInt(connections.length);
+			double temp = connections[index1].getWeight();
+			connections[index1].setWeight(connections[index2].getWeight());
+			connections[index2].setWeight(temp);
+		}
+	}
+
+	@Override
+	public void crossOverProduction(Individu individu)
+	{
+		NeuralNetwork nn = (NeuralNetwork) individu;
+		if (nn.connections.length!=connections.length)
+			return;
+		Random r = new Random();
+		int index = r.nextInt(connections.length);
+		if (r.nextBoolean())
+			for (int i=index;i<connections.length;i++)
+				connections[i]=nn.connections[r.nextInt(nn.connections.length)].deepCopy();
+		else
+			for (int i=0;i<index;i++)
+				connections[i]=nn.connections[r.nextInt(nn.connections.length)].deepCopy();
+	}
+
+	@Override
+	public void mutateProduction()
 	{
 		int mutationCount = Math.max(1, connections.length/50);
 		for (int i = 0 ; i < mutationCount ; i++)

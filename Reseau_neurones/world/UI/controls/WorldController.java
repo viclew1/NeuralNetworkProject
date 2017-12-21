@@ -108,17 +108,11 @@ public class WorldController extends Controller
 		case KeyEvent.VK_SPACE:
 			world.pause();
 			break;
-		case KeyEvent.VK_V:
-			world.changeSlowMo();
-			break;
 		case KeyEvent.VK_S:
 			world.changeShowCaptors();
 			break;
 		case KeyEvent.VK_H:
 			world.changeShowHP();
-			break;
-		case KeyEvent.VK_K:
-			world.genocide();
 			break;
 		case KeyEvent.VK_G:
 			world.changeShowAll();

@@ -2,6 +2,7 @@ package UI.worldsIMPL;
 
 import static utils.Constantes.*;
 
+import java.awt.Dimension;
 import java.util.Random;
 
 import UI.World;
@@ -9,17 +10,31 @@ import limitations.throwables.FireBall;
 
 public class WorldOfDodge extends World
 {
-	
-	private static final long serialVersionUID = -5324916435284951987L;
-	
-	private int cdFireBall=10;
+
+	private int cdFireBall=7;
 	private int cdAvancement=0;
+
+
+	public WorldOfDodge(String name)
+	{
+		super(name);
+	}
+
+	public WorldOfDodge(String name, Dimension dimensions)
+	{
+		super(name, dimensions);
+	}
+
+	public WorldOfDodge(String name, int w, int h)
+	{
+		super(name, w, h);
+	}
 
 	@Override
 	protected void initSelections()
 	{
-		GENERATION_LENGTH = 10000000;
 		initSelection(POPULATION_SIZE_COMPLEXDODGER, GENERATION_COUNT, TYPE_COMPLEXDODGER);
+		//initSelection(POPULATION_SIZE_SIMPLEDODGER, GENERATION_COUNT, TYPE_SIMPLEDODGER);
 	}
 
 	@Override
@@ -32,14 +47,15 @@ public class WorldOfDodge extends World
 	@Override
 	protected void generateDelimitations()
 	{
+		Random r = new Random();
 		cdAvancement++;
 		if (cdAvancement>=cdFireBall)
 		{
 			cdAvancement=0;
-			if (new Random().nextBoolean())
-			delimitations.add(new FireBall(0, new Random().nextDouble()*box.getHeight(), 0));
+			if (r.nextBoolean())
+				delimitations.add(new FireBall(0, r.nextDouble()*box.getHeight(), -Math.PI/8 + r.nextDouble()*Math.PI/4));
 			else
-				delimitations.add(new FireBall(box.getWidth()-5, new Random().nextDouble()*box.getHeight(), Math.PI));
+				delimitations.add(new FireBall(box.getWidth()-5, r.nextDouble()*box.getHeight(), Math.PI - Math.PI/8 + r.nextDouble()*Math.PI/4));
 		}
 	}
 }

@@ -4,6 +4,7 @@ import static utils.Constantes.*;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import captors.Captor;
@@ -96,11 +97,21 @@ public abstract class Creature
 	public void draw(Graphics g, boolean selected)
 	{
 		this.selected=selected;
+		if (selected)
+			drawScore(g);
 		if (selected || DRAW_HP)
 			drawHP(g);
 		if (selected || DRAW_CAPTORS)
 			drawCaptors(g);
 		drawCreature(g);
+	}
+	
+	private void drawScore(Graphics g)
+	{
+		Color oldColor = g.getColor();
+		g.setColor(Color.BLACK);
+		g.drawString("Score créature : "+new DecimalFormat("##.##").format(brain.getScore()),10, 150);
+		g.setColor(oldColor);
 	}
 
 	private void drawHP(Graphics g)
