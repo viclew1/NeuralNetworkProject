@@ -31,6 +31,7 @@ public class EyeCaptor extends Captor
 		this.orientation=orientation;
 		this.widthAngle=widthAngle;
 		this.hitbox = new Path2D.Double();
+		this.around = new Rectangle2D.Double(xPoints[0]-range,yPoints[0]-range,range*2,range*2);
 	}
 
 	@Override
@@ -95,7 +96,7 @@ public class EyeCaptor extends Captor
 			hitbox.lineTo(xPoints[i], yPoints[i]);
 		}
 		hitbox.closePath();
-		around = new Rectangle2D.Double(xPoints[0]-range,yPoints[0]-range,range*2,range*2);
+		around.setFrame(xPoints[0]-range,yPoints[0]-range,range*2,range*2);
 	}
 	
 	

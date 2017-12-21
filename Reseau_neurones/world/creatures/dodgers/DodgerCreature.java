@@ -25,7 +25,6 @@ public abstract class DodgerCreature extends Creature
 	{
 		super(x, y, radius, hpMax, speed, 3, hpLostPerInstant, captors, new int[] {
 				FIREBALL,
-				WALL
 		}, brain, selec, type, color, nbInput, creatures,
 				collectables, delimitations, box);
 	}
