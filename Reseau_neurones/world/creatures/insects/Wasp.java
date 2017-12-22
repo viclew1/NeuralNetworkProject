@@ -55,7 +55,10 @@ public class Wasp extends InsectCreature
 		switch (c.getType())
 		{
 		case WASP:
-
+			if (hp/hpMax < 0.5)
+			{
+				
+			}
 			break;
 		case BEE:
 			if (!c.isInvincible())

@@ -21,14 +21,14 @@ public class ComplexDodger extends DodgerCreature
 			DelimitationBox box)
 	{
 		super(x, y, 1, 1, 1, 0, new Captor[]{
-				new EyeCaptor(Math.PI/2,8,Math.PI/3.6),
-				new EyeCaptor(-Math.PI/2,8,Math.PI/3.6),
-				new EyeCaptor(-Math.PI,8,Math.PI/3.6),
-				new EyeCaptor(0,8,Math.PI/3.6),
-				new EyeCaptor(Math.PI/4,8,Math.PI/3.6),
-				new EyeCaptor(-Math.PI/4,8,Math.PI/3.6),
-				new EyeCaptor(-Math.PI*3/4,8,Math.PI/3.6),
-				new EyeCaptor(Math.PI*3/4,8,Math.PI/3.6),
+				new EyeCaptor(Math.PI/2,15,Math.PI/3.6),
+				new EyeCaptor(-Math.PI/2,15,Math.PI/3.6),
+				new EyeCaptor(-Math.PI,15,Math.PI/3.6),
+				new EyeCaptor(0,15,Math.PI/3.6),
+				new EyeCaptor(Math.PI/4,15,Math.PI/3.6),
+				new EyeCaptor(-Math.PI/4,15,Math.PI/3.6),
+				new EyeCaptor(-Math.PI*3/4,15,Math.PI/3.6),
+				new EyeCaptor(Math.PI*3/4,15,Math.PI/3.6),
 		}, brain, selec, COMPLEXDODGER, Color.GREEN, LAYERS_SIZES_COMPLEXDODGER[0], creatures,
 				collectables, delimitations, box);
 	}

@@ -7,6 +7,7 @@ import java.util.List;
 import collectables.Collectable;
 import creatures.Creature;
 import limitations.Delimitation;
+import limitations.DelimitationBox;
 
 public class Draftman
 {
@@ -29,7 +30,13 @@ public class Draftman
 			d.draw(g);
 	}
 	
-	public void drawWorld(Creature selectedCreature, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, Graphics g)
+	public void drawBox(DelimitationBox box, Graphics g)
+	{
+		if (box!=null)
+			box.draw(g);
+	}
+	
+	public void drawWorld(Creature selectedCreature, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box, Graphics g)
 	{
 		try
 		{
@@ -46,6 +53,8 @@ public class Draftman
 			for (int i=0;i<delimitations.size();i++)
 				drawDelimitation(delimitations.get(i), g);
 			
+			drawBox(box, g);
+			
 			if (selectedCreature!=null && selectedCreature.isAlive())
 				selectedCreature.drawBrain(g);
 		}
@@ -60,16 +69,4 @@ public class Draftman
 			g2.drawString(list.get(i), 10, 40+15*i);
 	}
 	
-	public void drawAvancement(double currentLength, double generationLength, Graphics g)
-	{
-		Graphics2D g2 = (Graphics2D) g;
-		int avancement = (int) (currentLength*100/generationLength);
-		g2.drawString(avancement + "%", 10, 300);
-	}
-	
-	public void drawFPS(int currentFrameRate, Graphics g)
-	{
-		Graphics2D g2 = (Graphics2D) g;
-		g2.drawString("FPS : "+ currentFrameRate, 10, 400);
-	}
 }

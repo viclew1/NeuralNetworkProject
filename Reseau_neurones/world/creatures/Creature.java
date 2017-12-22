@@ -222,7 +222,7 @@ public abstract class Creature
 			List<Integer> seenThings = captors[i].getThingsInSight();
 			applySeenFitness(seenThings);
 		}
-		inputs[cpt++]=hp/hpMax;
+		inputs[cpt++]=1-hp/hpMax;
 		double xCenter = box.width/2;
 		double yCenter = box.height/2;
 		double xRatio = x - xCenter;
@@ -280,11 +280,6 @@ public abstract class Creature
 			break;
 		case FIREBALL:
 			break;
-		case WALL:
-			hp -= d.getDamages();
-			if (hp<=0)
-				alive=false;
-			return;
 		default:
 			System.out.println("Creature.interactWith(Delimitation d) - Delimitation inconnue : "+d.getType());
 			System.exit(0);

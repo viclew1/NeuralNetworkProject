@@ -49,7 +49,7 @@ public class ThrowableDelimitation extends Delimitation
 			if (sender!=null)
 				sender.targetReport(o1.getType());
 			if (expireOnTouch)
-			expire();
+				expire();
 		}
 	}
 

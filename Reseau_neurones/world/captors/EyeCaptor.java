@@ -12,6 +12,7 @@ import java.awt.geom.Rectangle2D;
 import collectables.Collectable;
 import creatures.Creature;
 import limitations.Delimitation;
+import limitations.DelimitationBox;
 import utils.DistanceChecker;
 import utils.IntersectionsChecker;
 import zones.Zone;
@@ -97,6 +98,18 @@ public class EyeCaptor extends Captor
 		}
 		hitbox.closePath();
 		around.setFrame(xPoints[0]-range,yPoints[0]-range,range*2,range*2);
+	}
+
+	@Override
+	protected void detectWall(DelimitationBox box)
+	{
+		wallResult = 0;
+		for (int i = 0 ; i < xPoints.length ; i++)
+			if (!box.contains(xPoints[i],yPoints[i]))
+			{
+				wallResult = 1;
+				return;
+			}
 	}
 	
 	

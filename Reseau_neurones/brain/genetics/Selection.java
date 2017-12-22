@@ -19,7 +19,7 @@ public class Selection
 	{
 		this.epreuve=epreuve;
 		this.nombreIndividus=nombreIndividus;
-		deads = new Individu[nombreIndividus*3];
+		deads = new Individu[nombreIndividus*2];
 		this.nombreGenerations=nombreGenerations;
 		this.type=type;
 	}
@@ -235,16 +235,27 @@ public class Selection
 			if (fitness > 10)
 				System.out.println("Meilleure trouvaille : "+meilleurTrouve+"\nFitness : "+meilleureFitness);
 		}
+
+		deads[deadIndex++] = deadOne;
+		if (deadCount!=deads.length)
+			deadCount++;
+		if (deadIndex==deads.length)
+			deadIndex = 0;
+
+		Individu[] matingPopulation = new Individu[nombreIndividus + deadCount];
+		for (int i = 0 ; i < nombreIndividus ; i++)
+			matingPopulation[i] = population[i];
+		for (int i = 0 ; i < deadCount ; i++)
+			matingPopulation[i + nombreIndividus] = deads[i];
+
 		double fitnessSum = 0;
-		for (Individu i : population)
+		for (Individu i : matingPopulation)
 			fitnessSum+=i.getScore();
 		Random r = new Random();
 
-		/*Individu[] sortedPopulation = population.clone();
-		bubbleSortDesc(sortedPopulation);
-		Individu offspring = breed(sortedPopulation[r.nextInt(nombreIndividus/5)],sortedPopulation[r.nextInt(nombreIndividus/5)]);*/
 
-		Individu[] matingPopulation = stochasticNewPopulationGenerator(population, fitnessSum);
+
+		matingPopulation = stochasticNewPopulationGenerator(matingPopulation, fitnessSum);
 		Individu offspring = breed(matingPopulation[r.nextInt(nombreIndividus)],matingPopulation[r.nextInt(nombreIndividus)]);
 		offspring.setIndex(deadOne.index);
 		population[deadOne.index] = offspring;

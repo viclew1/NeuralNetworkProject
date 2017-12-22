@@ -25,6 +25,8 @@ public abstract class Individu
 		return index;
 	}
 	
+	public abstract void randomize();
+	
 	public abstract void crossOverPriorities(Individu individu);
 	public abstract void crossOverProduction(Individu individu);
 	public abstract void mutatePriorities();

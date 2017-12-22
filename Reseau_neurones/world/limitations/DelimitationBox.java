@@ -1,32 +1,30 @@
 package limitations;
 
+import static utils.Constantes.SCROLL_X;
+import static utils.Constantes.SCROLL_Y;
+import static utils.Constantes.SIZE;
+
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 
 public class DelimitationBox extends Rectangle2D.Double
 {
 
-	private WallDelimitation[] walls;
-
+	private final Color color = Color.RED;
+	
 	public DelimitationBox(int x, int y, int w, int h)
 	{
 		super(x,y,w,h);
-		walls = new WallDelimitation[w*4+h*4];
-		int cpt=0;
-		for (int i = 0 ; i < 2*w ; i ++)
-		{
-			walls[cpt++] = new WallDelimitation((double)i/2, 0);
-			walls[cpt++] = new WallDelimitation((double)i/2, h-0.5);
-		}
-		for (int i = 0 ; i < 2*h ; i ++)
-		{
-			walls[cpt++] = new WallDelimitation(0,(double)i/2);
-			walls[cpt++] = new WallDelimitation(w-0.5,(double)i/2);
-		}
+	}
+
+	public void draw(Graphics g)
+	{
+		Color oldColor = g.getColor();
+		g.setColor(color);
+		g.drawRect((int)(x*SIZE+SCROLL_X), (int)(y*SIZE+SCROLL_Y), (int)(width*SIZE), (int)(height*SIZE));
+		g.setColor(oldColor);
 	}
 	
-	public WallDelimitation[] getWalls()
-	{
-		return walls;
-	}
 
 }

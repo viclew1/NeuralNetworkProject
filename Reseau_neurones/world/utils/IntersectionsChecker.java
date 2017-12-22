@@ -4,6 +4,8 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+
+import captors.Captor;
 import collectables.Collectable;
 import creatures.Creature;
 import limitations.Delimitation;
@@ -81,17 +83,6 @@ public class IntersectionsChecker
 		return captorHitbox.intersects(rect);
 	}
 	
-	public static boolean intersects(Line2D line1, Line2D line2, DelimitationBox delim)
-	{
-		Point2D p1 = new Point2D.Double(line1.getX2(),line1.getY2());
-		Point2D p2 = new Point2D.Double(line2.getX2(),line2.getY2());
-		if (!delim.contains(p1))
-			return true;
-		if (!delim.contains(p2))
-			return true;
-		return false;
-	}
-	
 	public static boolean contains(DelimitationBox delim, Creature creature)
 	{
 		return new Rectangle2D.Double(delim.getX(), delim.getY(), delim.getWidth(), delim.getHeight())
@@ -130,4 +121,5 @@ public class IntersectionsChecker
 	{
 		return DistanceChecker.distance(creature1, delim) == 0;
 	}
+
 }

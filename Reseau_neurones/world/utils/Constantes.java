@@ -6,11 +6,11 @@ public class Constantes
 	public final static String TITRE_APPLICATION = "Neural Network Project";
 
 	
-	public static final int POPULATION_SIZE_BEE = 500;
+	public static final int POPULATION_SIZE_BEE = 250;
 	public static final int POPULATION_SIZE_WASP = 50;
 	public static final int POPULATION_SIZE_TANK = 300;
 	public static final int POPULATION_SIZE_SOLDIER = 300;
-	public static final int POPULATION_SIZE_COMPLEXDODGER = 180;
+	public static final int POPULATION_SIZE_COMPLEXDODGER = 100;
 	public static final int POPULATION_SIZE_SIMPLEDODGER = 180;
 	
 	public static final int GENERATION_COUNT = 100000;
@@ -42,7 +42,6 @@ public class Constantes
 	
 	public static final int PROJECTILE = 22;
 	public static final int FIREBALL = 23;
-	public static final int WALL = 24;
 	
 	public static final int LAVA = 31;
 	public static final int WATER = 32;
@@ -73,6 +72,6 @@ public class Constantes
 	public static boolean DRAW_ALL = true;
 	public static boolean PAUSE = false;
 	public static boolean SLOW_MO = false;
-	public static long TIME_TO_WAIT = 1000000000 / 30;;
+	public static long TIME_TO_WAIT = 1000000000 / 60;
 	
 }

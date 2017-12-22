@@ -10,18 +10,20 @@ import creatures.Creature;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
 import utils.DistanceChecker;
+import utils.IntersectionsChecker;
 import zones.Zone;
 
 public abstract class Captor
 {
 	protected final double range;
 	protected Creature creature;
-	
+
 	private int[] thingsToSee;
 	private double[] results;
+	protected double wallResult;
 
 	protected Rectangle2D around;
-	
+
 	public Captor(double range)
 	{
 		this.range=range;
@@ -50,8 +52,9 @@ public abstract class Captor
 		detectCreatures(creatures);
 		detectCollectables(collectables);
 		detectDelimitations(delimitations);
+		detectWall(box);
 	}
-	
+
 	protected abstract void updateHitbox();
 
 	private void detectCreatures(List<Creature> creatures)
@@ -83,6 +86,8 @@ public abstract class Captor
 				processDetection(d);
 		}
 	}
+
+	protected abstract void detectWall(DelimitationBox box);
 
 	private void detectZones(List<Zone> zones)
 	{
@@ -173,7 +178,7 @@ public abstract class Captor
 
 	public double[] getResults()
 	{
-		double[] ponderatedResults = new double[results.length];
+		double[] ponderatedResults = new double[results.length + 1];
 		for (int i=0 ; i<results.length ; i++)
 		{
 			double result = results[i];
@@ -182,15 +187,15 @@ public abstract class Captor
 			else result = 1 - result;
 			ponderatedResults[i] = result;
 		}
-
+		ponderatedResults[results.length] = wallResult;
 		return ponderatedResults;
 	}
-	
+
 	protected abstract boolean checkIntersection(Creature c);
 	protected abstract boolean checkIntersection(Collectable c);
 	protected abstract boolean checkIntersection(Delimitation d);
 	protected abstract boolean checkIntersection(Zone z);
-	
+
 	public List<Integer> getThingsInSight()
 	{
 		List<Integer> seen = new ArrayList<>();

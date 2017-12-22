@@ -111,7 +111,7 @@ public abstract class World implements Epreuve
 				Draftman draftman = new Draftman();
 				if (DRAW_ALL)
 				{
-					draftman.drawWorld(selectedCreature, creatures, collectables, delimitations, g);
+					draftman.drawWorld(selectedCreature, creatures, collectables, delimitations, box, g);
 					g.drawString("FPS : " + fpsToDraw, 10, 15);
 				}
 				draftman.drawInfos(infosToPrint(), g);	
@@ -135,8 +135,6 @@ public abstract class World implements Epreuve
 		jf.setVisible(visible);
 		int fps = 0;
 		box=new DelimitationBox(0, 0, x, y);
-		for (Delimitation delim : box.getWalls())
-			delimitations.add(delim);
 		initSelections();
 		long timeRefFps = System.nanoTime();
 		long timeRefRecount = System.nanoTime();
@@ -146,8 +144,17 @@ public abstract class World implements Epreuve
 			{
 				timeRefFps = System.nanoTime();
 				if (!PAUSE)
+				{
 					sleepAndRefresh();
-				fps++;
+					fps++;
+				} else
+					try
+					{
+						Thread.sleep(1);
+					} catch (InterruptedException e)
+					{
+						e.printStackTrace();
+					}
 			}
 			if (System.nanoTime() - timeRefRecount > 1000000000)
 			{
@@ -203,7 +210,6 @@ public abstract class World implements Epreuve
 			Delimitation d = delimitations.get(i);
 			if (d==null)
 				continue;
-			//TODO contains sur GPU
 			if (d.isExpired() || !IntersectionsChecker.contains(box, d))
 			{
 				delimitations.remove(i);
@@ -216,7 +222,6 @@ public abstract class World implements Epreuve
 		/*for (int i=0;i<zones.size();i++)
 		{
 			Zone z = zones.get(i);
-			//TODO contains sur GPU
 			if (z.isExpired() || !IntersectionsChecker.contains(box, z))
 				zones.remove(i--);
 			else
@@ -226,7 +231,6 @@ public abstract class World implements Epreuve
 		for (int i=0;i<collectables.size();i++)
 		{
 			Collectable c = collectables.get(i);
-			//TODO contains sur GPU
 			if (c.isConsumed() || !IntersectionsChecker.contains(box, c))
 				collectables.remove(i--);
 			else
@@ -265,8 +269,8 @@ public abstract class World implements Epreuve
 			{
 				creature1.reset(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6));
 			}
-			creature1.detect();
 			creature1.update();
+			creature1.detect();
 			for (int j=0;j<collectables.size();j++)
 			{
 				Collectable collect = collectables.get(j);
@@ -445,7 +449,7 @@ public abstract class World implements Epreuve
 	{
 		DRAW_ALL=!DRAW_ALL;
 	}
-	
+
 	public void changeSlowMo()
 	{
 		SLOW_MO=!SLOW_MO;

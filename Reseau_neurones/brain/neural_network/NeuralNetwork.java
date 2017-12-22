@@ -202,4 +202,11 @@ public class NeuralNetwork extends Individu
 
 		g.setColor(oldColor);
 	}
+
+	@Override
+	public void randomize()
+	{
+		for (int i = 0 ; i < connections.length ; i++)
+			connections[i].randomizeWeight();
+	}
 }
