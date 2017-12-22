@@ -18,16 +18,17 @@ public class Hedgehog extends ShooterCreature{
 
 	static Color brown = new Color(156, 93, 82);
 	
-	public Hedgehog(double x, double y, Captor[] captors, int[] thingsToSee, Individu brain, Selection selec, int nbInput, 
+	public Hedgehog(double x, double y, Individu brain, Selection selec, 
 			List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box) {
-		super(x, y, 2, 300, 0.7, 0.5, 0.5, 1, 60, 80, brown,
+		super(x, y, 3, 300, 0.7, 0.5, 0.5, 1, 2000, 40, brown,
 				new Captor[]{
 						new EyeCaptor(Math.PI/7,18,Math.PI/3),
 						new EyeCaptor(-Math.PI/7,18,Math.PI/3),
 						new EyeCaptor(-Math.PI,10,Math.PI/4),
 				},
+				new int[] {SLUG, BOMB, HEDGEHOG, VEGETABLE}, 
 				brain, selec, HEDGEHOG, brown, 
-				LAYERS_SIZES_HEDGEHOG[0], //Définir la tete du résal de neurones dans les constantes
+				LAYERS_SIZES_HEDGEHOG[0],
 				creatures, collectables, delimitations, box);
 	}
 
@@ -39,6 +40,14 @@ public class Hedgehog extends ShooterCreature{
 			//brain.addScore(-brain.getScore()*3/4);
 			alive=false;
 			break;
+		case VEGETABLE:
+			brain.addScore(50);
+			hp+=50;
+			if (hp>hpMax)
+				hp=hpMax;
+			c.consume();
+			break;
+			
 		default:
 			break;
 		}
@@ -49,8 +58,13 @@ public class Hedgehog extends ShooterCreature{
 		switch (c.getType())
 		{
 		case SLUG:
+			brain.addScore(1000);
+			break;
+		case HEDGEHOG:
 			//brain.addScore(-brain.getScore()*3/4);
-			alive=false;
+			if (c.getHp()>this.hp) {
+				alive=false;
+			}
 			break;
 		default:
 			break;
@@ -62,7 +76,7 @@ public class Hedgehog extends ShooterCreature{
 		switch (targetType)
 		{
 		case SLUG:
-			brain.addScore(5);
+			brain.addScore(100);
 			break;
 		case BOMB:
 			brain.addScore(5);
@@ -86,12 +100,11 @@ public class Hedgehog extends ShooterCreature{
 
 	@Override
 	protected void applyDecisions(double[] decisions) {
-		// TODO Auto-generated method stub
-		
+		cdShoot--;
+		turn(2*(0.5-decisions[0]));
+		moveFront(2*(0.5-decisions[1]));
+		straff(2*(0.5-decisions[2]));
+		if (decisions[3]>0.5)
+			shoot();		
 	}
-
-	
-	
-	
-
 }

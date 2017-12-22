@@ -173,7 +173,7 @@ public abstract class Creature
 		}
 	}
 
-	protected void loseHp(double damages)
+	public void loseHp(double damages)
 	{
 		if (!isInvincible())
 			hp -= damages;
@@ -341,6 +341,10 @@ public abstract class Creature
 	public Individu getBrain()
 	{
 		return brain;
+	}
+	
+	public double getHp() {
+		return hp;
 	}
 
 	public boolean isInvincible()

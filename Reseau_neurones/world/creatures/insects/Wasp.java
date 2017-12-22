@@ -19,7 +19,7 @@ public class Wasp extends InsectCreature
 
 	public Wasp(double x, double y, Individu brain, Selection selec, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
-		super(x, y, 2, 400, 1.6, 2, 1,
+		super(x, y, 2, 400, 0.8, 2, 1,
 				new Captor[]{
 						new EyeCaptor(0,45,0.001),
 						new EyeCaptor(Math.PI/7,10,Math.PI/3),
@@ -55,15 +55,18 @@ public class Wasp extends InsectCreature
 		switch (c.getType())
 		{
 		case WASP:
-			if (hp/hpMax < 0.5)
+			if (hp/hpMax < 0.5 && c.getHp()/hpMax > 0.5)
 			{
-				
+				c.loseHp(3);
+				this.hp += 3;
+				brain.addScore(5);
+				c.getBrain().addScore(5);
 			}
 			break;
 		case BEE:
 			if (!c.isInvincible())
 			{
-				brain.addScore(500);
+				brain.addScore(50);
 				hp+=50;
 				if (hp>hpMax)
 					hp=hpMax;
@@ -82,7 +85,6 @@ public class Wasp extends InsectCreature
 			switch (type)
 			{
 			case BEE:
-				brain.addScore(1);
 				break;
 			default:
 				break;

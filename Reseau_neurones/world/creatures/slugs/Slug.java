@@ -6,6 +6,7 @@ import java.util.List;
 import captors.Captor;
 import captors.EyeCaptor;
 import collectables.Collectable;
+import collectables.expirables.Bomb;
 import creatures.Creature;
 import genetics.Individu;
 import genetics.Selection;
@@ -16,9 +17,7 @@ import zones.Zone;
 import static utils.Constantes.*;
 
 public class Slug extends SlugsCreature {
-
-	public Slug(double x, double y, Captor[] captors, int[] thingsToSee, Individu brain, Selection selec, int nbInput, 
-			List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box) {
+	public Slug(double x, double y, Individu brain, Selection selec, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box) {
 		super(x, y, 2, 500, 0.3, 3, 1, 
 				new Captor[]{
 						new EyeCaptor(Math.PI/7,8,Math.PI/3),
@@ -27,10 +26,12 @@ public class Slug extends SlugsCreature {
 				}, 
 				new int[] {
 						BOMB,
-						HEDGEHOG
+						HEDGEHOG,
+						SLUG,
+						VEGETABLE,
 				},
-				brain, selec, SLUG, Color.GREEN, 
-				LAYERS_SIZES_SLUG[0], //Définir la tete du résal de neurones dans les constantes
+				brain, selec, SLUG, Color.ORANGE, 
+				LAYERS_SIZES_SLUG[0],
 				creatures, collectables, delimitations, box);
 	}
 
@@ -43,17 +44,49 @@ public class Slug extends SlugsCreature {
 		{
 		case BOMB:
 			break;
+		case VEGETABLE:
+			brain.addScore(200);
+			hp+=50;
+			if (hp>hpMax)
+				hp=hpMax;
+			c.consume();
+			break;
 			
 		default:
 			break;
 		}
 		
 	}
+	
+	protected void moveFront(double intensity)
+	{
+		x+=Math.cos(orientation)*speed*intensity;
+		y-=Math.sin(orientation)*speed*intensity;
+		
+		bombCooldown--;
+		if(bombCooldown<=0) {
+			bombCooldown = 20;
+			collectables.add(new Bomb(x,y,this));
+		}
+	}
 
+	public void addScore(double i) {
+		brain.addScore(i);
+	}
+	
 	@Override
 	public void interactWith(Creature c) {
-		// TODO Auto-generated method stub
-		
+		switch (c.getType())
+		{
+		case HEDGEHOG:
+			//brain.addScore(-brain.getScore()*3/4);
+			alive=false;
+			break;
+		case SLUG:
+			break;
+		default:
+			break;
+		}		
 	}
 	
 
@@ -70,11 +103,6 @@ public class Slug extends SlugsCreature {
 
 	@Override
 	protected void applySeenFitness(List<Integer> seenThings) {
-		
-	}
-
-	@Override
-	protected void applyDecisions(double[] decisions) {
 		
 	}
 	

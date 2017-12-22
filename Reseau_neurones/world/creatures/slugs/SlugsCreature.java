@@ -16,7 +16,7 @@ import zones.Zone;
 
 public abstract class SlugsCreature extends Creature {
 	
-	private int bombCooldown;
+	public int bombCooldown;
 
 	public SlugsCreature(double x, double y, double radius, double hpMax, double speed, double rotationSpeed,
 			double hpLostPerInstant, Captor[] captors, int[] thingsToSee, Individu brain, Selection selec, int type, Color color,
@@ -39,8 +39,14 @@ public abstract class SlugsCreature extends Creature {
 		bombCooldown--;
 		if(bombCooldown<=0) {
 			bombCooldown = 20;
-			collectables.add(new Bomb(x,y));
+			//collectables.add(new Bomb(x,y));
 		}
+	}
+	
+	@Override
+	protected void applyDecisions(double[] decisions) {
+		turn(2*(0.5-decisions[0]));
+		moveFront(decisions[1]);
 	}
 
 }
