@@ -17,7 +17,7 @@ import static utils.Constantes.*;
 public class Hedgehog extends ShooterCreature{
 
 	static Color brown = new Color(156, 93, 82);
-	
+
 	public Hedgehog(double x, double y, Individu brain, Selection selec, 
 			List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box) {
 		super(x, y, 3, 300, 0.7, 0.5, 0.5, 1, 2000, 40, brown,
@@ -25,7 +25,7 @@ public class Hedgehog extends ShooterCreature{
 						new EyeCaptor(Math.PI/7,18,Math.PI/3),
 						new EyeCaptor(-Math.PI/7,18,Math.PI/3),
 						new EyeCaptor(-Math.PI,10,Math.PI/4),
-				},
+		},
 				new int[] {SLUG, BOMB, HEDGEHOG, VEGETABLE}, 
 				brain, selec, HEDGEHOG, brown, 
 				LAYERS_SIZES_HEDGEHOG[0],
@@ -37,8 +37,8 @@ public class Hedgehog extends ShooterCreature{
 		switch (c.getType())
 		{
 		case BOMB:
-			//brain.addScore(-brain.getScore()*3/4);
-			alive=false;
+			if (!isInvincible())
+				alive=false;
 			break;
 		case VEGETABLE:
 			brain.addScore(50);
@@ -47,7 +47,7 @@ public class Hedgehog extends ShooterCreature{
 				hp=hpMax;
 			c.consume();
 			break;
-			
+
 		default:
 			break;
 		}
@@ -58,19 +58,16 @@ public class Hedgehog extends ShooterCreature{
 		switch (c.getType())
 		{
 		case SLUG:
-			brain.addScore(1000);
+			if (!c.isInvincible())
+				brain.addScore(1000);
 			break;
 		case HEDGEHOG:
-			//brain.addScore(-brain.getScore()*3/4);
-			if (c.getHp()>this.hp) {
-				alive=false;
-			}
 			break;
 		default:
 			break;
 		}
 	}
-	
+
 	@Override
 	public void targetReport(int targetType) {
 		switch (targetType)
@@ -89,13 +86,13 @@ public class Hedgehog extends ShooterCreature{
 	@Override
 	protected void updateScore() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	protected void applySeenFitness(List<Integer> seenThings) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

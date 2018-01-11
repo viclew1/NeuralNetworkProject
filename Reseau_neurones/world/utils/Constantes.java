@@ -6,14 +6,14 @@ public class Constantes
 	public final static String TITRE_APPLICATION = "Neural Network Project";
 
 	
-	public static final int POPULATION_SIZE_BEE = 250;
-	public static final int POPULATION_SIZE_WASP = 50;
+	public static final int POPULATION_SIZE_BEE = 100;
+	public static final int POPULATION_SIZE_WASP = 40;
 	public static final int POPULATION_SIZE_TANK = 300;
 	public static final int POPULATION_SIZE_SOLDIER = 300;
-	public static final int POPULATION_SIZE_COMPLEXDODGER = 100;
-	public static final int POPULATION_SIZE_SIMPLEDODGER = 180;
-	public static final int POPULATION_SIZE_SLUG = 20;
-	public static final int POPULATION_SIZE_HEDGEHOG = 5;
+	public static final int POPULATION_SIZE_COMPLEXDODGER = 120;
+	public static final int POPULATION_SIZE_SIMPLEDODGER = 0;
+	public static final int POPULATION_SIZE_SLUG = 30;
+	public static final int POPULATION_SIZE_HEDGEHOG = 20;
 	
 	public static final int GENERATION_COUNT = 100000;
 
@@ -58,12 +58,12 @@ public class Constantes
 	public static final String TYPE_HEDGEHOG = "HEDGEHOG";
 	
 	
-	public static final int[] LAYERS_SIZES_BEE = new int[] {17,12,15,13,12,6,12,13,15,12,2};
-	public static final int[] LAYERS_SIZES_TANK = new int[] {23,15,7,15,4};
-	public static final int[] LAYERS_SIZES_WASP = new int[] {21,12,15,13,6,13,15,12,2};
+	public static final int[] LAYERS_SIZES_BEE = new int[] {17,5,17,2};
+	public static final int[] LAYERS_SIZES_TANK = new int[] {23,6,23,4};
+	public static final int[] LAYERS_SIZES_WASP = new int[] {21,25,13,8,2};
 	public static final int[] LAYERS_SIZES_SOLDIER = new int[] {23,15,7,15,4};
-	public static final int[] LAYERS_SIZES_COMPLEXDODGER = new int[] {21,12,15,13,6,13,15,12,2};
-	public static final int[] LAYERS_SIZES_SIMPLEDODGER = new int[] {21,12,13,6,13,12,2};
+	public static final int[] LAYERS_SIZES_COMPLEXDODGER = new int[] {21,4,12,2};
+	public static final int[] LAYERS_SIZES_SIMPLEDODGER = new int[] {21,4,21,2};
 	public static final int[] LAYERS_SIZES_SLUG = new int[] {20,11,18,12,2};
 	public static final int[] LAYERS_SIZES_HEDGEHOG = new int[] {20,28,14,4};
 	

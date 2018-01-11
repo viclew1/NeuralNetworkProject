@@ -29,6 +29,23 @@ public class NeuralNetwork extends Individu
 			connections[i] = new Connection();
 	}
 
+	public NeuralNetwork(String name, int index, int[] layersSizes, double[] weights)
+	{
+		super(name, index);
+		this.layersSizes=layersSizes;
+		initLayers();
+		int connectionsSz = 0 ;
+		for (int i = 0 ; i < layersSizes.length - 1 ; i++)
+			connectionsSz += layersSizes[i] * layersSizes[i+1];
+
+		connections = new Connection[connectionsSz];
+		for (int i=0;i<connections.length;i++)
+		{
+			connections[i] = new Connection();
+			connections[i].setWeight(weights[i]);
+		}
+	}
+
 	private NeuralNetwork(NeuralNetwork nn)
 	{
 		super(nn.name, nn.index);

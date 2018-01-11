@@ -232,8 +232,6 @@ public class Selection
 		{
 			meilleureFitness = fitness;
 			meilleurTrouve = deadOne;
-			if (fitness > 10)
-				System.out.println("Meilleure trouvaille : "+meilleurTrouve+"\nFitness : "+meilleureFitness);
 		}
 
 		deads[deadIndex++] = deadOne;
@@ -260,6 +258,11 @@ public class Selection
 		offspring.setIndex(deadOne.index);
 		population[deadOne.index] = offspring;
 		return offspring;
+	}
+	
+	public void saveBest()
+	{
+		Utils.saveBest(meilleurTrouve);
 	}
 
 }

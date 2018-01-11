@@ -25,6 +25,11 @@ public abstract class Individu
 		return index;
 	}
 	
+	public String getName()
+	{
+		return name;
+	}
+	
 	public abstract void randomize();
 	
 	public abstract void crossOverPriorities(Individu individu);

@@ -23,13 +23,13 @@ public class Slug extends SlugsCreature {
 						new EyeCaptor(Math.PI/7,8,Math.PI/3),
 						new EyeCaptor(-Math.PI/7,8,Math.PI/3),
 						new EyeCaptor(-Math.PI,6,Math.PI/4),
-				}, 
+		}, 
 				new int[] {
 						BOMB,
 						HEDGEHOG,
 						SLUG,
 						VEGETABLE,
-				},
+		},
 				brain, selec, SLUG, Color.ORANGE, 
 				LAYERS_SIZES_SLUG[0],
 				creatures, collectables, delimitations, box);
@@ -51,18 +51,18 @@ public class Slug extends SlugsCreature {
 				hp=hpMax;
 			c.consume();
 			break;
-			
+
 		default:
 			break;
 		}
-		
+
 	}
-	
+
 	protected void moveFront(double intensity)
 	{
 		x+=Math.cos(orientation)*speed*intensity;
 		y-=Math.sin(orientation)*speed*intensity;
-		
+
 		bombCooldown--;
 		if(bombCooldown<=0) {
 			bombCooldown = 20;
@@ -73,14 +73,14 @@ public class Slug extends SlugsCreature {
 	public void addScore(double i) {
 		brain.addScore(i);
 	}
-	
+
 	@Override
 	public void interactWith(Creature c) {
 		switch (c.getType())
 		{
 		case HEDGEHOG:
-			//brain.addScore(-brain.getScore()*3/4);
-			alive=false;
+			if (!isInvincible())
+				alive=false;
 			break;
 		case SLUG:
 			break;
@@ -88,22 +88,22 @@ public class Slug extends SlugsCreature {
 			break;
 		}		
 	}
-	
+
 
 	@Override
 	public void interactWith(Zone z) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	@Override
 	protected void updateScore() {
-		
+
 	}
 
 	@Override
 	protected void applySeenFitness(List<Integer> seenThings) {
-		
+
 	}
-	
+
 }

@@ -1,13 +1,44 @@
 package UI;
 
-import static utils.Constantes.*;
+import static utils.Constantes.BOMB;
+import static utils.Constantes.DRAW_ALL;
+import static utils.Constantes.DRAW_CAPTORS;
+import static utils.Constantes.DRAW_HP;
+import static utils.Constantes.FUEL;
+import static utils.Constantes.LAYERS_SIZES_BEE;
+import static utils.Constantes.LAYERS_SIZES_COMPLEXDODGER;
+import static utils.Constantes.LAYERS_SIZES_HEDGEHOG;
+import static utils.Constantes.LAYERS_SIZES_SIMPLEDODGER;
+import static utils.Constantes.LAYERS_SIZES_SLUG;
+import static utils.Constantes.LAYERS_SIZES_SOLDIER;
+import static utils.Constantes.LAYERS_SIZES_TANK;
+import static utils.Constantes.LAYERS_SIZES_WASP;
+import static utils.Constantes.MEAT;
+import static utils.Constantes.PAUSE;
+import static utils.Constantes.POWERUP;
+import static utils.Constantes.SCROLL_X;
+import static utils.Constantes.SCROLL_Y;
+import static utils.Constantes.SIZE;
+import static utils.Constantes.SLOW_MO;
+import static utils.Constantes.TIME_TO_WAIT;
+import static utils.Constantes.TYPE_BEE;
+import static utils.Constantes.TYPE_COMPLEXDODGER;
+import static utils.Constantes.TYPE_HEDGEHOG;
+import static utils.Constantes.TYPE_SIMPLEDODGER;
+import static utils.Constantes.TYPE_SLUG;
+import static utils.Constantes.TYPE_SOLDIER;
+import static utils.Constantes.TYPE_TANK;
+import static utils.Constantes.TYPE_WASP;
+import static utils.Constantes.VEGETABLE;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -15,7 +46,6 @@ import javax.swing.JPanel;
 
 import UI.controls.Controller;
 import UI.controls.WorldController;
-import captors.Captor;
 import collectables.Collectable;
 import creatures.Creature;
 import creatures.dodgers.ComplexDodger;
@@ -29,6 +59,7 @@ import creatures.slugs.Slug;
 import genetics.Epreuve;
 import genetics.Individu;
 import genetics.Selection;
+import genetics.Utils;
 import interactions.CreaCollecInteraction;
 import interactions.CreaCreaInteraction;
 import interactions.CreaDelimInteraction;
@@ -44,10 +75,14 @@ public abstract class World implements Epreuve
 
 	private final String name;
 
+	private Map<String, double[]> weights;
+
 	private JFrame jf;
 	private JPanel jp;
 
 	private int fpsToDraw = 0;
+
+	private List<Selection> selections;
 
 	protected List<Delimitation> delimitations;
 	protected List<Creature> creatures;
@@ -97,16 +132,19 @@ public abstract class World implements Epreuve
 	 * @param w largeur
 	 * @param h hauteur
 	 */
+	@SuppressWarnings("serial")
 	private void init(int w, int h)
 	{
 		creatures = new ArrayList<>(1000);
 		collectables = new ArrayList<>(1000);
 		delimitations = new ArrayList<>(1000);
 		zones = new ArrayList<>(1000);
+		selections = new ArrayList<>();
 
 		jf = new JFrame(name);
 		jf.setSize(w, h);
-		jp = new JPanel() {
+		jp = new JPanel() 
+		{
 
 			public void paint(Graphics g)
 			{
@@ -133,11 +171,32 @@ public abstract class World implements Epreuve
 
 	}
 
+	public void start(int x, int y)
+	{
+		start(x, y, true, new String[] {}, new double[][] {});
+	}
+
 	public void start(int x, int y, boolean visible)
+	{
+		start(x, y, visible,new String[] {}, new double[][] {});
+	}
+
+	public void start(int x, int y, String[] types, double[][] weights)
+	{
+		start(x, y, true, types, weights);
+	}
+
+	public void start(int x, int y, boolean visible, String[] types, double[][] weights)
 	{
 		jf.setVisible(visible);
 		int fps = 0;
+		int saveDelta = 10000;
+		int saveIt = 0;
 		box=new DelimitationBox(0, 0, x, y);
+		this.weights = new HashMap<String, double[]>();
+		for (int i = 0 ; i < types.length ; i++)
+			this.weights.put(types[i], weights[i]);
+
 		initSelections();
 		long timeRefFps = System.nanoTime();
 		long timeRefRecount = System.nanoTime();
@@ -150,14 +209,22 @@ public abstract class World implements Epreuve
 				{
 					sleepAndRefresh();
 					fps++;
+					if (saveIt++ >= saveDelta)
+					{
+						saveIt = 0;
+						Utils.initSave();
+						for (Selection s : selections)
+							s.saveBest();
+						Utils.endSave();
+					}
 				} else
 					try
-					{
+				{
 						Thread.sleep(1);
-					} catch (InterruptedException e)
-					{
-						e.printStackTrace();
-					}
+				} catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
 			}
 			if (System.nanoTime() - timeRefRecount > 1000000000)
 			{
@@ -351,13 +418,13 @@ public abstract class World implements Epreuve
 		creatures.add(new SimpleDodger(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
 				creatures,collectables,delimitations, box));
 	}
-	
+
 	public void generateSlug(Individu intelligence, Selection selec)
 	{
 		creatures.add(new Slug(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
 				creatures,collectables,delimitations, box));
 	}
-	
+
 	public void generateHedgehog(Individu intelligence, Selection selec)
 	{
 		creatures.add(new Hedgehog(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
@@ -446,7 +513,15 @@ public abstract class World implements Epreuve
 			System.exit(0);
 		}
 		for (int i=0;i<selection.nombreIndividus;i++)
-			selection.population[i]=new NeuralNetwork(type,i,layersSize);
+		{
+			double[] wValues;
+			if ((wValues = weights.get(type)) == null)
+				selection.population[i]=new NeuralNetwork(type,i,layersSize);
+			else
+				selection.population[i]=new NeuralNetwork(type,i,layersSize,wValues);
+		}
+
+		selections.add(selection);
 		lancerEpreuve(selection, selection.population, type);
 	}
 

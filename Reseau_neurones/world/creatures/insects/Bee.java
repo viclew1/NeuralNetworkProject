@@ -54,7 +54,6 @@ public class Bee extends InsectCreature
 		switch (c.getType())
 		{
 		case WASP:
-			brain.addScore(-brain.getScore()*3/4);
 			if (!isInvincible())
 				alive = false;
 			break;
@@ -71,7 +70,6 @@ public class Bee extends InsectCreature
 			switch (type)
 			{
 			case VEGETABLE:
-				brain.addScore(1);
 				break;
 			default:
 				break;
