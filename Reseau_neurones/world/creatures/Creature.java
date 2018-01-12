@@ -227,14 +227,19 @@ public abstract class Creature
 		double yCenter = box.height/2;
 		double xRatio = x - xCenter;
 		double yRatio = y - yCenter;
+		inputs[cpt++] = (orientation >= Math.PI)?(orientation-Math.PI)/Math.PI:0;
+		inputs[cpt++] = (orientation < Math.PI)?orientation/Math.PI:0;
 		inputs[cpt++] = (xRatio>0)?xRatio/xCenter:0; 
 		inputs[cpt++] = (xRatio>0)?0:-xRatio/xCenter;
 		inputs[cpt++] = (yRatio>0)?yRatio/yCenter:0;
 		inputs[cpt++] = (yRatio>0)?0:-yRatio/yCenter;
+		addParticularInput(inputs, cpt);
 		double[] decisions = brain.getOutputs(inputs);
 		applyDecisions(decisions);
 	}
 
+	protected abstract void addParticularInput(double[] inputs, int currentCount);
+	
 	protected abstract void applySeenFitness(List<Integer> seenThings);
 
 	protected abstract void applyDecisions(double[] decisions);
@@ -249,9 +254,9 @@ public abstract class Creature
 	{
 		orientation+=dOrientation*intensity;
 		if (orientation>orientationMax)
-			orientation-=orientationMin;
+			orientation-=Math.PI * 2;
 		if (orientation<orientationMin)
-			orientation+=orientationMax;
+			orientation+=Math.PI * 2;
 	}
 
 	protected void straff(double intensity)

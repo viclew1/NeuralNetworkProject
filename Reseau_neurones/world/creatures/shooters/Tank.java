@@ -22,9 +22,9 @@ public class Tank extends ShooterCreature
 		super(x, y, 3, 500, 0.15,0.05,
 				0.2,1.2,150, 150, Color.BLACK,
 				new Captor[] {
-				new EyeCaptor(Math.PI/7,16,Math.PI/3),
-				new EyeCaptor(-Math.PI/7,16,Math.PI/3),
-				new EyeCaptor(-Math.PI,4,Math.PI/2),
+						new EyeCaptor(Math.PI/7,16,Math.PI/3),
+						new EyeCaptor(-Math.PI/7,16,Math.PI/3),
+						new EyeCaptor(-Math.PI,4,Math.PI/2),
 		}, brain, selec, TANK, Color.BLUE,	LAYERS_SIZES_TANK[0],
 				creatures,collectables,delimitations, box);
 	}
@@ -46,7 +46,7 @@ public class Tank extends ShooterCreature
 			c.consume();
 			break;
 		case POWERUP:
-			
+
 			break;
 		default:
 			break;
@@ -57,7 +57,7 @@ public class Tank extends ShooterCreature
 	public void interactWith(Creature c)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -91,13 +91,13 @@ public class Tank extends ShooterCreature
 	protected void applySeenFitness(List<Integer> seenThings)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	protected void updateScore()
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 }

@@ -46,4 +46,10 @@ public abstract class DodgerCreature extends Creature
 	{
 		
 	}
+	
+	@Override
+	protected void addParticularInput(double[] inputs, int currentCount)
+	{
+		
+	}
 }

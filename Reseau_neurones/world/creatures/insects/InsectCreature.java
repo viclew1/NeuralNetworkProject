@@ -40,4 +40,10 @@ public abstract class InsectCreature extends Creature
 	{
 		
 	}
+	
+	@Override
+	protected void addParticularInput(double[] inputs, int currentCount)
+	{
+		
+	}
 }

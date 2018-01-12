@@ -48,5 +48,12 @@ public abstract class SlugsCreature extends Creature {
 		turn(2*(0.5-decisions[0]));
 		moveFront(decisions[1]);
 	}
+	
+	@Override
+	protected void addParticularInput(double[] inputs, int currentCount)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 
 }

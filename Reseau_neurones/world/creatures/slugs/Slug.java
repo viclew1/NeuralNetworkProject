@@ -92,7 +92,6 @@ public class Slug extends SlugsCreature {
 
 	@Override
 	public void interactWith(Zone z) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -105,5 +104,4 @@ public class Slug extends SlugsCreature {
 	protected void applySeenFitness(List<Integer> seenThings) {
 
 	}
-
 }

@@ -18,10 +18,10 @@ import static utils.Constantes.*;
 public abstract class ShooterCreature extends Creature
 {
 
-	private double projSpeed,projSize,projDamages;
+	protected double projSpeed,projSize,projDamages;
 	protected int cdShoot = 0;
-	private Color projColor;
-	private int cooldown;
+	protected Color projColor;
+	protected int cooldown;
 
 	public ShooterCreature(double x, double y, double radius, double hpMax, double speed, double hpLostPerInstant,
 			double projSpeed, double projSize, double projDamages, int cooldown, Color projColor,
@@ -71,6 +71,12 @@ public abstract class ShooterCreature extends Creature
 	
 	@Override
 	public void interactWith(Zone z)
+	{
+		
+	}
+	
+	@Override
+	protected void addParticularInput(double[] inputs, int currentCount)
 	{
 		
 	}

@@ -10,7 +10,6 @@ import creatures.Creature;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
 import utils.DistanceChecker;
-import utils.IntersectionsChecker;
 import zones.Zone;
 
 public abstract class Captor

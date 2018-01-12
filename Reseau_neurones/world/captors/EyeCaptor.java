@@ -23,7 +23,7 @@ public class EyeCaptor extends Captor
 	private final double orientation,widthAngle;
 	protected double[] xPoints,yPoints;
 	protected final Path2D hitbox;
-	
+
 	public EyeCaptor(double orientation, double range, double widthAngle)
 	{
 		super(range);
@@ -111,6 +111,5 @@ public class EyeCaptor extends Captor
 				return;
 			}
 	}
-	
-	
+
 }
