@@ -29,6 +29,7 @@ public class WorldHappyTreeFriends extends World{
 		collectableAmount = FOOD_AMOUNT;
 		initSelection(POPULATION_SIZE_SLUG, GENERATION_COUNT, TYPE_SLUG);
 		initSelection(POPULATION_SIZE_HEDGEHOG, GENERATION_COUNT, TYPE_HEDGEHOG);
+		initSelection(POPULATION_SIZE_RHINOCEROS, GENERATION_COUNT, TYPE_RHINOCEROS);
 	}
 
 	protected void generateCollectables() {

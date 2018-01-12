@@ -17,7 +17,7 @@ public class Bomb extends ExpirableCollectable {
 	@Override
 	public void draw(Graphics g) {
 		Color oldColor = g.getColor();
-		g.setColor(Color.GRAY);
+		g.setColor(Color.BLACK);
 		g.fillOval(xFinal(), yFinal(), sizeFinal(), sizeFinal());
 		g.setColor(Color.BLACK);
 		g.drawOval(xFinal(), yFinal(), sizeFinal(), sizeFinal());

@@ -29,6 +29,7 @@ public class Slug extends SlugsCreature {
 						HEDGEHOG,
 						SLUG,
 						VEGETABLE,
+						RHINOCEROS,
 		},
 				brain, selec, SLUG, Color.ORANGE, 
 				LAYERS_SIZES_SLUG[0],
@@ -79,6 +80,10 @@ public class Slug extends SlugsCreature {
 		switch (c.getType())
 		{
 		case HEDGEHOG:
+			if (!isInvincible())
+				alive=false;
+			break;
+		case RHINOCEROS:
 			if (!isInvincible())
 				alive=false;
 			break;

@@ -14,6 +14,8 @@ public class Constantes
 	public static final int POPULATION_SIZE_SIMPLEDODGER = 0;
 	public static final int POPULATION_SIZE_SLUG = 30;
 	public static final int POPULATION_SIZE_HEDGEHOG = 20;
+	public static final int POPULATION_SIZE_RHINOCEROS = 5;
+
 	
 	public static final int GENERATION_COUNT = 100000;
 
@@ -34,6 +36,7 @@ public class Constantes
 	public static final int SIMPLEDODGER = 6;
 	public static final int SLUG = 7;
 	public static final int HEDGEHOG = 8;
+	public static final int RHINOCEROS = 9;
 	
 	public static final int DRAGON = 10;
 	
@@ -59,6 +62,7 @@ public class Constantes
 	public static final String TYPE_SLUG = "SLUG";
 	public static final String TYPE_HEDGEHOG = "HEDGEHOG";
 	public static final String TYPE_DRAGON = "DRAGON";
+	public static final String TYPE_RHINOCEROS = "RHINOCEROS";
 	
 	
 	public static final int[] LAYERS_SIZES_BEE = new int[] {19,5,17,2};
@@ -70,6 +74,7 @@ public class Constantes
 	public static final int[] LAYERS_SIZES_SLUG = new int[] {22,11,18,12,2};
 	public static final int[] LAYERS_SIZES_HEDGEHOG = new int[] {22,28,14,4};
 	public static final int[] LAYERS_SIZES_DRAGON = new int[] {25,28,14,4};
+	public static final int[] LAYERS_SIZES_RHINOCEROS = new int[] {23,26,12,3};
 	
 	public static int FOOD_AMOUNT=1000;
 	public static int FUEL_AMOUNT=250;
