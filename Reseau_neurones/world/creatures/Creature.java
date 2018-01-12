@@ -35,7 +35,7 @@ public abstract class Creature
 	protected final double dOrientation;
 	protected final double orientationMin=0;
 	protected final double orientationMax=2*Math.PI;
-	protected final double speed;
+	protected double speed;
 	protected Individu brain;
 	protected Captor[] captors;
 	protected boolean alive;

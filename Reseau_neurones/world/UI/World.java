@@ -1,35 +1,6 @@
 package UI;
 
-import static utils.Constantes.BOMB;
-import static utils.Constantes.DRAW_ALL;
-import static utils.Constantes.DRAW_CAPTORS;
-import static utils.Constantes.DRAW_HP;
-import static utils.Constantes.FUEL;
-import static utils.Constantes.LAYERS_SIZES_BEE;
-import static utils.Constantes.LAYERS_SIZES_COMPLEXDODGER;
-import static utils.Constantes.LAYERS_SIZES_HEDGEHOG;
-import static utils.Constantes.LAYERS_SIZES_SIMPLEDODGER;
-import static utils.Constantes.LAYERS_SIZES_SLUG;
-import static utils.Constantes.LAYERS_SIZES_SOLDIER;
-import static utils.Constantes.LAYERS_SIZES_TANK;
-import static utils.Constantes.LAYERS_SIZES_WASP;
-import static utils.Constantes.MEAT;
-import static utils.Constantes.PAUSE;
-import static utils.Constantes.POWERUP;
-import static utils.Constantes.SCROLL_X;
-import static utils.Constantes.SCROLL_Y;
-import static utils.Constantes.SIZE;
-import static utils.Constantes.SLOW_MO;
-import static utils.Constantes.TIME_TO_WAIT;
-import static utils.Constantes.TYPE_BEE;
-import static utils.Constantes.TYPE_COMPLEXDODGER;
-import static utils.Constantes.TYPE_HEDGEHOG;
-import static utils.Constantes.TYPE_SIMPLEDODGER;
-import static utils.Constantes.TYPE_SLUG;
-import static utils.Constantes.TYPE_SOLDIER;
-import static utils.Constantes.TYPE_TANK;
-import static utils.Constantes.TYPE_WASP;
-import static utils.Constantes.VEGETABLE;
+import static utils.Constantes.*;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -48,6 +19,7 @@ import UI.controls.Controller;
 import UI.controls.WorldController;
 import collectables.Collectable;
 import creatures.Creature;
+import creatures.chargers.Rhinoceros;
 import creatures.dodgers.ComplexDodger;
 import creatures.dodgers.SimpleDodger;
 import creatures.insects.Bee;
@@ -430,6 +402,12 @@ public abstract class World implements Epreuve
 		creatures.add(new Hedgehog(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
 				creatures,collectables,delimitations, box));
 	}
+	
+	public void generateRhinoceros(Individu intelligence, Selection selec)
+	{
+		creatures.add(new Rhinoceros(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
+				creatures,collectables,delimitations, box));
+	}
 
 
 	/**
@@ -467,6 +445,9 @@ public abstract class World implements Epreuve
 				break;
 			case TYPE_HEDGEHOG:
 				generateHedgehog(i, selec);
+				break;
+			case TYPE_RHINOCEROS:
+				generateRhinoceros(i, selec);
 				break;
 			default:
 				System.out.println("World.lancerEpreuve : Type non défini");
@@ -507,6 +488,9 @@ public abstract class World implements Epreuve
 			break;
 		case TYPE_HEDGEHOG:
 			layersSize=LAYERS_SIZES_HEDGEHOG;
+			break;
+		case TYPE_RHINOCEROS:
+			layersSize=LAYERS_SIZES_RHINOCEROS;
 			break;
 		default:
 			System.out.println("World.initSelection - Type inconnu");
