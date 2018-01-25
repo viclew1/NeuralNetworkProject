@@ -88,16 +88,6 @@ public abstract class Captor
 
 	protected abstract void detectWall(DelimitationBox box);
 
-	private void detectZones(List<Zone> zones)
-	{
-		for (int i=0;i<zones.size();i++)
-		{
-			Zone z = zones.get(i);
-			if (z==null || !around.contains(z.getHitBox().getBounds2D()))
-				continue;
-			processDetection(z);
-		}
-	}
 
 	private void processDetection(Creature c)
 	{

@@ -43,17 +43,17 @@ public class Constantes
 	public static final int ADAPTATIVE = 11;
 	
 	
-	public static final int VEGETABLE = 11;
-	public static final int MEAT = 12;
-	public static final int FUEL = 13;
-	public static final int POWERUP = 14;
-	public static final int BOMB = 15;
+	public static final int VEGETABLE = 101;
+	public static final int MEAT = 102;
+	public static final int FUEL = 103;
+	public static final int POWERUP = 104;
+	public static final int BOMB = 105;
 	
-	public static final int PROJECTILE = 22;
-	public static final int FIREBALL = 23;
+	public static final int PROJECTILE = 202;
+	public static final int FIREBALL = 203;
 	
-	public static final int LAVA = 31;
-	public static final int WATER = 32;
+	public static final int LAVA = 301;
+	public static final int WATER = 302;
 
 	public static final String TYPE_BEE = "BEE";
 	public static final String TYPE_WASP = "WASP";
