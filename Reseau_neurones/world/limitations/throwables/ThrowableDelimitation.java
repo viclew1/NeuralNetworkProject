@@ -17,10 +17,10 @@ public class ThrowableDelimitation extends Delimitation
 	private Color color;
 	private boolean expireOnTouch;
 
-	public ThrowableDelimitation(double x, double y, double sz, double speed, double orientation, double damages, boolean expireOnTouch, ShooterCreature sender,
+	public ThrowableDelimitation(double x, double y, double sz, double speed, double orientation, double damages, double range, boolean expireOnTouch, ShooterCreature sender,
 			int type, Color color)
 	{
-		super(x, y, sz, sz, damages, sender, type);
+		super(x, y, sz, sz, damages, range, sender, type);
 		this.speed=speed;
 		this.orientation=orientation;
 		this.color=color;
@@ -28,7 +28,8 @@ public class ThrowableDelimitation extends Delimitation
 	}
 
 	@Override
-	public void draw(Graphics g) {
+	public void draw(Graphics g) 
+	{
 		Color oldColor = g.getColor();
 		g.setColor(color);
 		g.fillOval((int)(x*SIZE+SCROLL_X), (int)(y*SIZE+SCROLL_Y), (int)(w*SIZE), (int)(h*SIZE));
@@ -36,9 +37,12 @@ public class ThrowableDelimitation extends Delimitation
 	}
 
 	@Override
-	public void update() {
+	public void update() 
+	{
 		x+=Math.cos(orientation)*speed;
 		y-=Math.sin(orientation)*speed;
+		range -= speed;
+		if (range <= 0) expire();
 	}
 
 	@Override

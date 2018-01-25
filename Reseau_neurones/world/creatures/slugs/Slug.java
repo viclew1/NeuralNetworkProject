@@ -3,6 +3,7 @@ package creatures.slugs;
 import java.awt.Color;
 import java.util.List;
 
+import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
 import collectables.Collectable;
@@ -10,14 +11,13 @@ import collectables.expirables.Bomb;
 import creatures.Creature;
 import genetics.Individu;
 import genetics.Selection;
-import limitations.Delimitation;
-import limitations.DelimitationBox;
 import zones.Zone;
 
 import static utils.Constantes.*;
 
 public class Slug extends SlugsCreature {
-	public Slug(double x, double y, Individu brain, Selection selec, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box) {
+	public Slug(double x, double y, Individu brain, Selection selec, World world) 
+	{
 		super(x, y, 2, 500, 0.3, 3, 1, 
 				new Captor[]{
 						new EyeCaptor(Math.PI/7,8,Math.PI/3),
@@ -30,10 +30,11 @@ public class Slug extends SlugsCreature {
 						SLUG,
 						VEGETABLE,
 						RHINOCEROS,
+						DRAGON,
 		},
 				brain, selec, SLUG, Color.ORANGE, 
 				LAYERS_SIZES_SLUG[0],
-				creatures, collectables, delimitations, box);
+				world);
 	}
 
 	@Override
@@ -80,12 +81,10 @@ public class Slug extends SlugsCreature {
 		switch (c.getType())
 		{
 		case HEDGEHOG:
-			if (!isInvincible())
-				alive=false;
+				die();
 			break;
 		case RHINOCEROS:
-			if (!isInvincible())
-				alive=false;
+				die();
 			break;
 		case SLUG:
 			break;

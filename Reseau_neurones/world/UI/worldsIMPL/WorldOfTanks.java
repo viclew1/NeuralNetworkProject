@@ -12,19 +12,19 @@ public class WorldOfTanks extends World
 {
 
 
-	public WorldOfTanks(String name)
+	public WorldOfTanks()
 	{
-		super(name);
+		super();
 	}
 	
-	public WorldOfTanks(String name, Dimension dimensions)
+	public WorldOfTanks(Dimension dimensions)
 	{
-		super(name, dimensions);
+		super(dimensions);
 	}
 	
-	public WorldOfTanks(String name, int w, int h)
+	public WorldOfTanks(int w, int h)
 	{
-		super(name, w, h);
+		super(w, h);
 	}
 	
 	@Override

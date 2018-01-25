@@ -15,19 +15,19 @@ public class WorldOfDodge extends World
 	private int cdAvancement=0;
 
 
-	public WorldOfDodge(String name)
+	public WorldOfDodge()
 	{
-		super(name);
+		super();
 	}
 
-	public WorldOfDodge(String name, Dimension dimensions)
+	public WorldOfDodge(Dimension dimensions)
 	{
-		super(name, dimensions);
+		super(dimensions);
 	}
 
-	public WorldOfDodge(String name, int w, int h)
+	public WorldOfDodge(int w, int h)
 	{
-		super(name, w, h);
+		super(w, h);
 	}
 
 	@Override

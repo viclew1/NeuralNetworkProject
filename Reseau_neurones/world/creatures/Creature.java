@@ -7,8 +7,10 @@ import java.awt.Graphics;
 import java.text.DecimalFormat;
 import java.util.List;
 
+import UI.World;
 import captors.Captor;
 import collectables.Collectable;
+import creatures.team.Team;
 import genetics.Individu;
 import genetics.Selection;
 import limitations.Delimitation;
@@ -21,6 +23,8 @@ public abstract class Creature
 	private final double xInit, yInit;
 	private final Selection selec;
 
+	private Team team;
+	private int teamIndex;
 
 	private boolean invincible = true;
 	private int invincibleTime = 60;
@@ -38,7 +42,7 @@ public abstract class Creature
 	protected double speed;
 	protected Individu brain;
 	protected Captor[] captors;
-	protected boolean alive;
+	private boolean alive;
 	private final int type;
 	private final Color color;
 	private boolean selected=false;
@@ -52,8 +56,7 @@ public abstract class Creature
 	protected DelimitationBox box;
 
 	public Creature(double x, double y, double radius, double hpMax, double speed, double rotationSpeed, double hpLostPerInstant, Captor[] captors,
-			int[] thingsToSee, Individu brain, Selection selec, int type, Color color, int nbInput, List<Creature> creatures, 
-			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
+			int[] thingsToSee, Individu brain, Selection selec, int type, Color color, int nbInput, World world)
 	{
 
 		this.xInit = x;
@@ -74,24 +77,54 @@ public abstract class Creature
 		this.alive=true;
 		this.color=color;
 		this.nbInput=nbInput;
-		this.creatures=creatures;
-		this.collectables=collectables;
-		this.delimitations=delimitations;
-		this.box=box;
+		this.creatures=world.creatures;
+		this.collectables=world.collectables;
+		this.delimitations=world.delimitations;
+		this.box=world.box;
 		initCaptors(thingsToSee);
 	}
 
-	public void reset(double x, double y)
+	public void reset(double x, double y, Individu newBrain)
 	{
 		this.x = x;
 		this.y = y;
-		this.hp = hpMax;
-		Individu newBrain = selec.getOffspring(this.brain);
 		this.brain = newBrain;
-		this.alive = true;
+		revive();
 		invincibleTimeLeft = invincibleTime;
 		invincible = true;
 
+	}
+	
+	public void die()
+	{
+		this.alive = false;
+		this.hp = 0;
+	}
+	
+	public void revive()
+	{
+		this.alive = true;
+		this.hp = hpMax;
+	}
+
+	public Team getTeam()
+	{
+		return team;
+	}
+
+	public void setTeam(Team team)
+	{
+		this.team = team;
+	}
+
+	public int getTeamIndex()
+	{
+		return teamIndex;
+	}
+
+	public void setTeamIndex(int index)
+	{
+		this.teamIndex = index;
 	}
 
 	public void draw(Graphics g, boolean selected)
@@ -105,7 +138,7 @@ public abstract class Creature
 			drawCaptors(g);
 		drawCreature(g);
 	}
-	
+
 	private void drawScore(Graphics g)
 	{
 		Color oldColor = g.getColor();
@@ -138,6 +171,11 @@ public abstract class Creature
 			g.setColor(color);
 		else
 			g.setColor(new Color(color.getRed(),color.getGreen(),color.getBlue(),127));
+		if (team != null)
+			g.setColor(new Color(
+					(int)(Math.max(0, g.getColor().getRed() / team.colorModifier())),
+					(int)(Math.max(0, g.getColor().getGreen() / team.colorModifier())), 
+					(int)(Math.max(0, g.getColor().getBlue() / team.colorModifier()))));
 		g.fillOval(xFinal(), yFinal(), sizeFinal(), sizeFinal());
 		g.setColor(Color.BLACK);
 		g.drawOval(xFinal(), yFinal(), sizeFinal(), sizeFinal());
@@ -178,7 +216,7 @@ public abstract class Creature
 		if (!isInvincible())
 			hp -= damages;
 	}
-	
+
 	protected abstract void updateScore();
 
 	private void initCaptors(int[] thingsToSee)
@@ -208,8 +246,7 @@ public abstract class Creature
 		hp-=hpLostPerInstant;
 		if (hp<=0)
 		{
-			alive=false;
-			hp = 0;
+			die();
 			return;
 		}
 		double[] inputs = new double[nbInput];
@@ -239,7 +276,7 @@ public abstract class Creature
 	}
 
 	protected abstract void addParticularInput(double[] inputs, int currentCount);
-	
+
 	protected abstract void applySeenFitness(List<Integer> seenThings);
 
 	protected abstract void applyDecisions(double[] decisions);
@@ -292,7 +329,7 @@ public abstract class Creature
 		}
 		loseHp(d.getDamages());
 		if (hp<=0)
-			alive=false;
+			die();
 	}
 
 	/**
@@ -347,7 +384,7 @@ public abstract class Creature
 	{
 		return brain;
 	}
-	
+
 	public double getHp() {
 		return hp;
 	}
@@ -355,6 +392,11 @@ public abstract class Creature
 	public boolean isInvincible()
 	{
 		return invincible;
+	}
+
+	public Selection getSelection()
+	{
+		return selec;
 	}
 
 }

@@ -5,19 +5,18 @@ import static utils.Constantes.*;
 import java.awt.Color;
 import java.util.List;
 
+import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
 import collectables.Collectable;
 import creatures.Creature;
 import genetics.Individu;
 import genetics.Selection;
-import limitations.Delimitation;
-import limitations.DelimitationBox;
 
 public class Bee extends InsectCreature
 {
 
-	public Bee(double x, double y, Individu brain, Selection selec, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
+	public Bee(double x, double y, Individu brain, Selection selec, World world)
 	{
 		super(x, y, 1, 400, 1, 5, 1,
 				new Captor[]{
@@ -26,7 +25,7 @@ public class Bee extends InsectCreature
 						new EyeCaptor(-Math.PI,6,Math.PI/4),
 				},
 				brain, selec,	BEE, Color.YELLOW, LAYERS_SIZES_BEE[0],
-				creatures,collectables,delimitations,box);
+				world);
 	}
 
 	@Override
@@ -55,7 +54,7 @@ public class Bee extends InsectCreature
 		{
 		case WASP:
 			if (!isInvincible())
-				alive = false;
+				die();
 			break;
 		default:
 			break;

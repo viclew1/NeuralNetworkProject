@@ -3,15 +3,13 @@ package creatures.shooters;
 import java.awt.Color;
 import java.util.List;
 
+import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
 import collectables.Collectable;
 import creatures.Creature;
 import genetics.Individu;
 import genetics.Selection;
-import limitations.Delimitation;
-import limitations.DelimitationBox;
-
 import static utils.Constantes.*;
 
 public class Hedgehog extends ShooterCreature{
@@ -19,17 +17,18 @@ public class Hedgehog extends ShooterCreature{
 	static Color brown = new Color(156, 93, 82);
 
 	public Hedgehog(double x, double y, Individu brain, Selection selec, 
-			List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box) {
-		super(x, y, 3, 300, 0.7, 0.5, 2, 2, 2000, 40, brown,
+			World world)
+	{
+		super(x, y, 3, 300, 0.7, 0.5, 2, 2, 2000, Integer.MAX_VALUE, 40, brown,
 				new Captor[]{
 						new EyeCaptor(Math.PI/7,18,Math.PI/3),
 						new EyeCaptor(-Math.PI/7,18,Math.PI/3),
 						new EyeCaptor(-Math.PI,10,Math.PI/4),
 		},
-				new int[] {SLUG, BOMB, HEDGEHOG, VEGETABLE, RHINOCEROS}, 
+				new int[] {SLUG, BOMB, HEDGEHOG, VEGETABLE, RHINOCEROS, DRAGON}, 
 				brain, selec, HEDGEHOG, brown, 
 				LAYERS_SIZES_HEDGEHOG[0],
-				creatures, collectables, delimitations, box);
+				world);
 	}
 
 	@Override
@@ -38,7 +37,7 @@ public class Hedgehog extends ShooterCreature{
 		{
 		case BOMB:
 			if (!isInvincible())
-				alive=false;
+				die();
 			break;
 		case VEGETABLE:
 			brain.addScore(50);
@@ -67,7 +66,7 @@ public class Hedgehog extends ShooterCreature{
 			break;
 		case RHINOCEROS:
 			if (!c.isInvincible())
-				this.alive = false;
+				die();
 			break;
 		default:
 			break;

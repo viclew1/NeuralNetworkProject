@@ -3,9 +3,7 @@ package creatures.chargers;
 import static utils.Constantes.*;
 
 import java.awt.Color;
-import java.util.List;
-import java.util.Random;
-
+import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
 import collectables.Collectable;
@@ -13,25 +11,22 @@ import creatures.Creature;
 import genetics.Individu;
 import genetics.Selection;
 import limitations.Delimitation;
-import limitations.DelimitationBox;
 import limitations.throwables.Projectile;
 
 public class Rhinoceros extends ChargerCreature {
 
 	public Rhinoceros(double x, double y,
-			Individu brain, Selection selec,
-			List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations,
-			DelimitationBox box) {
+			Individu brain, Selection selec, World world) {
 		super(x, y, 3, 500, 0.5, 1, 
 				new Captor[]{
 						new EyeCaptor(Math.PI/7,30,Math.PI/3),
 						new EyeCaptor(-Math.PI/7,30,Math.PI/3),
 						new EyeCaptor(-Math.PI,10,Math.PI/4),
 				},
-				new int[] {SLUG, BOMB, HEDGEHOG, VEGETABLE, RHINOCEROS},
+				new int[] {SLUG, BOMB, HEDGEHOG, VEGETABLE, RHINOCEROS, DRAGON},
 				brain, selec, RHINOCEROS, Color.GRAY, 
 				LAYERS_SIZES_RHINOCEROS[0], 
-				creatures, collectables, delimitations, box);
+				world);
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -123,6 +118,6 @@ public class Rhinoceros extends ChargerCreature {
 		}
 		loseHp(d.getDamages());
 		if (hp<=0)
-			alive=false;
+			die();
 	}
 }

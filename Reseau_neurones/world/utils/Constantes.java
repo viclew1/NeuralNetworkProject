@@ -5,17 +5,19 @@ public class Constantes
 
 	public final static String TITRE_APPLICATION = "Neural Network Project";
 
-	
-	public static final int POPULATION_SIZE_BEE = 100;
-	public static final int POPULATION_SIZE_WASP = 40;
-	public static final int POPULATION_SIZE_TANK = 300;
-	public static final int POPULATION_SIZE_SOLDIER = 300;
-	public static final int POPULATION_SIZE_COMPLEXDODGER = 600;
+	public static final int POPULATION_SIZE_BEE = 5;
+	public static final int POPULATION_SIZE_WASP = 2;
+	public static final int POPULATION_SIZE_TANK = 15;
+	public static final int POPULATION_SIZE_SOLDIER = 15;
+	public static final int POPULATION_SIZE_COMPLEXDODGER = 30;
 	public static final int POPULATION_SIZE_SIMPLEDODGER = 0;
-	public static final int POPULATION_SIZE_SLUG = 30;
-	public static final int POPULATION_SIZE_HEDGEHOG = 20;
-	public static final int POPULATION_SIZE_RHINOCEROS = 5;
-
+	public static final int POPULATION_SIZE_SLUG = 5;
+	public static final int POPULATION_SIZE_HEDGEHOG = 3;
+	public static final int POPULATION_SIZE_RHINOCEROS = 2;
+	public static final int POPULATION_SIZE_DRAGON = 1;
+	public static final int POPULATION_SIZE_ADAPTATIVE = 5;
+	
+	public static final int TEAM_SIZE = 20;
 	
 	public static final int GENERATION_COUNT = 100000;
 
@@ -37,8 +39,8 @@ public class Constantes
 	public static final int SLUG = 7;
 	public static final int HEDGEHOG = 8;
 	public static final int RHINOCEROS = 9;
-	
 	public static final int DRAGON = 10;
+	public static final int ADAPTATIVE = 11;
 	
 	
 	public static final int VEGETABLE = 11;
@@ -63,18 +65,20 @@ public class Constantes
 	public static final String TYPE_HEDGEHOG = "HEDGEHOG";
 	public static final String TYPE_DRAGON = "DRAGON";
 	public static final String TYPE_RHINOCEROS = "RHINOCEROS";
+	public static final String TYPE_ADAPTATIVE = "ADAPTATIVE";
 	
 	
-	public static final int[] LAYERS_SIZES_BEE = new int[] {19,5,17,2};
-	public static final int[] LAYERS_SIZES_TANK = new int[] {25,6,23,4};
+	public static final int[] LAYERS_SIZES_BEE = new int[] {22,5,17,2};
+	public static final int[] LAYERS_SIZES_TANK = new int[] {26,6,23,4};
 	public static final int[] LAYERS_SIZES_WASP = new int[] {23,25,13,8,2};
-	public static final int[] LAYERS_SIZES_SOLDIER = new int[] {25,15,7,15,4};
+	public static final int[] LAYERS_SIZES_SOLDIER = new int[] {26,15,7,15,4};
 	public static final int[] LAYERS_SIZES_COMPLEXDODGER = new int[] {23,4,12,2};
 	public static final int[] LAYERS_SIZES_SIMPLEDODGER = new int[] {23,4,21,2};
-	public static final int[] LAYERS_SIZES_SLUG = new int[] {22,11,18,12,2};
-	public static final int[] LAYERS_SIZES_HEDGEHOG = new int[] {22,28,14,4};
-	public static final int[] LAYERS_SIZES_DRAGON = new int[] {25,28,14,4};
-	public static final int[] LAYERS_SIZES_RHINOCEROS = new int[] {23,26,12,3};
+	public static final int[] LAYERS_SIZES_SLUG = new int[] {30,11,18,12,2};
+	public static final int[] LAYERS_SIZES_HEDGEHOG = new int[] {29,28,14,4};
+	public static final int[] LAYERS_SIZES_DRAGON = new int[] {32,28,14,4};
+	public static final int[] LAYERS_SIZES_RHINOCEROS = new int[] {28,26,12,3};
+	public static final int[] LAYERS_SIZES_ADAPTATIVE = new int[] {28,26,12,3};
 	
 	public static int FOOD_AMOUNT=1000;
 	public static int FUEL_AMOUNT=250;

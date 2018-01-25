@@ -10,19 +10,19 @@ import collectables.Vegetable;
 
 public class WorldHappyTreeFriends extends World{
 	
-	public WorldHappyTreeFriends(String name)
+	public WorldHappyTreeFriends()
 	{
-		super(name);
+		super();
 	}
 
-	public WorldHappyTreeFriends(String name, Dimension dimensions)
+	public WorldHappyTreeFriends(Dimension dimensions)
 	{
-		super(name, dimensions);
+		super(dimensions);
 	}
 
-	public WorldHappyTreeFriends(String name, int w, int h)
+	public WorldHappyTreeFriends(int w, int h)
 	{
-		super(name, w, h);
+		super(w, h);
 	}
 
 	protected void initSelections() {
@@ -30,6 +30,7 @@ public class WorldHappyTreeFriends extends World{
 		initSelection(POPULATION_SIZE_SLUG, GENERATION_COUNT, TYPE_SLUG);
 		initSelection(POPULATION_SIZE_HEDGEHOG, GENERATION_COUNT, TYPE_HEDGEHOG);
 		initSelection(POPULATION_SIZE_RHINOCEROS, GENERATION_COUNT, TYPE_RHINOCEROS);
+		initSelection(POPULATION_SIZE_DRAGON, GENERATION_COUNT, TYPE_DRAGON);
 	}
 
 	protected void generateCollectables() {

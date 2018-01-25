@@ -180,11 +180,10 @@ public abstract class Captor
 		double[] ponderatedResults = new double[results.length + 1];
 		for (int i=0 ; i<results.length ; i++)
 		{
-			double result = results[i];
-			result/=range;
-			if (result > 1) result = 0;
-			else result = 1 - result;
-			ponderatedResults[i] = result;
+			results[i]/=range;
+			if (results[i] > 1) results[i] = 0;
+			else results[i] = 1 - results[i];
+			ponderatedResults[i] = results[i];
 		}
 		ponderatedResults[results.length] = wallResult;
 		return ponderatedResults;

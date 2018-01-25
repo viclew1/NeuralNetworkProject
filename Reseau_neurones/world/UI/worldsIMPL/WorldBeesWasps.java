@@ -12,19 +12,19 @@ public class WorldBeesWasps extends World
 {
 
 
-	public WorldBeesWasps(String name)
+	public WorldBeesWasps()
 	{
-		super(name);
+		super();
 	}
 	
-	public WorldBeesWasps(String name, Dimension dimensions)
+	public WorldBeesWasps(Dimension dimensions)
 	{
-		super(name, dimensions);
+		super(dimensions);
 	}
 	
-	public WorldBeesWasps(String name, int w, int h)
+	public WorldBeesWasps(int w, int h)
 	{
-		super(name, w, h);
+		super(w, h);
 	}
 	
 	@Override

@@ -1,70 +1,51 @@
 package creatures.shooters;
 
 import java.awt.Color;
-import java.util.List;
-
+import UI.World;
 import captors.Captor;
-import collectables.Collectable;
 import creatures.Creature;
 import genetics.Individu;
 import genetics.Selection;
-import limitations.Delimitation;
-import limitations.DelimitationBox;
 import limitations.throwables.Projectile;
 import zones.Zone;
-
-import static utils.Constantes.*;
 
 public abstract class ShooterCreature extends Creature
 {
 
-	protected double projSpeed,projSize,projDamages;
+	protected double projSpeed,projSize,projDamages,projRange;
 	protected int cdShoot = 0;
 	protected Color projColor;
 	protected int cooldown;
 
 	public ShooterCreature(double x, double y, double radius, double hpMax, double speed, double hpLostPerInstant,
-			double projSpeed, double projSize, double projDamages, int cooldown, Color projColor,
-			Captor[] captors, Individu brain, Selection selec, int type, Color color, int nbInput, List<Creature> creatures,
-			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
-	{
-		super(x, y, radius, hpMax, speed, 3, hpLostPerInstant, captors,
-				new int[] {SOLDIER,TANK,PROJECTILE,FUEL,POWERUP},
-				brain, selec, type, color, nbInput, creatures, collectables,
-				delimitations, box);
-		
-		this.projDamages=projDamages;
-		this.projSize=projSize;
-		this.projSpeed=projSpeed;
-		this.projColor=projColor;
-		this.cooldown=cooldown;
-	}
-	
-	public ShooterCreature(double x, double y, double radius, double hpMax, double speed, double hpLostPerInstant,
-			double projSpeed, double projSize, double projDamages, int cooldown, Color projColor,
-			Captor[] captors, int[] thingsToSee, Individu brain, Selection selec, int type, Color color, int nbInput, List<Creature> creatures,
-			List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
+			double projSpeed, double projSize, double projDamages,double projRange, int cooldown, Color projColor,
+			Captor[] captors, int[] thingsToSee, Individu brain, Selection selec, int type, Color color, int nbInput, World world)
 	{
 		super(x, y, radius, hpMax, speed, 3, hpLostPerInstant, captors,
 				thingsToSee,
-				brain, selec, type, color, nbInput, creatures, collectables,
-				delimitations, box);
+				brain, selec, type, color, nbInput, world);
 		
 		this.projDamages=projDamages;
 		this.projSize=projSize;
 		this.projSpeed=projSpeed;
 		this.projColor=projColor;
+		this.projRange = projRange;
 		this.cooldown=cooldown;
 	}
 
+	
+	public boolean canShoot()
+	{
+		return cdShoot<=0;
+	}
 
 	public abstract void targetReport(int targetType);
 	
 	protected void shoot()
 	{
-		if (cdShoot<=0)
+		if (canShoot())
 		{
-			delimitations.add(new Projectile(x, y, projSize, projSpeed, orientation, projDamages, this, projColor));
+			delimitations.add(new Projectile(x, y, projSize, projSpeed, orientation, projDamages, projRange, this, projColor));
 			cdShoot=cooldown;
 		}
 	}
@@ -78,6 +59,6 @@ public abstract class ShooterCreature extends Creature
 	@Override
 	protected void addParticularInput(double[] inputs, int currentCount)
 	{
-		
+		inputs[currentCount++] = canShoot()?1:0;
 	}
 }

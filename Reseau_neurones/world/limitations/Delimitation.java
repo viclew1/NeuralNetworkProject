@@ -11,12 +11,12 @@ public abstract class Delimitation
 	protected double x,y,w,h;
 	protected final ShooterCreature sender;
 	protected double damages;
-	
+	protected double range;
 	private boolean expired=false;
 
 	private final int type;
 
-	public Delimitation(double x, double y, double w, double h, double damages, ShooterCreature sender, int type)
+	public Delimitation(double x, double y, double w, double h, double damages, double range, ShooterCreature sender, int type)
 	{
 		this.x=x;
 		this.y=y;
@@ -25,6 +25,7 @@ public abstract class Delimitation
 		this.type=type;
 		this.damages=damages;
 		this.sender=sender;
+		this.range = range;
 	}
 
 	public abstract void draw(Graphics g);

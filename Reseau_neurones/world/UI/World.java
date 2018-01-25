@@ -19,15 +19,8 @@ import UI.controls.Controller;
 import UI.controls.WorldController;
 import collectables.Collectable;
 import creatures.Creature;
-import creatures.chargers.Rhinoceros;
-import creatures.dodgers.ComplexDodger;
-import creatures.dodgers.SimpleDodger;
-import creatures.insects.Bee;
-import creatures.insects.Wasp;
-import creatures.shooters.Hedgehog;
-import creatures.shooters.Soldier;
-import creatures.shooters.Tank;
-import creatures.slugs.Slug;
+import creatures.CreatureFactory;
+import creatures.team.Team;
 import genetics.Epreuve;
 import genetics.Individu;
 import genetics.Selection;
@@ -45,7 +38,7 @@ import zones.Zone;
 public abstract class World implements Epreuve
 {
 
-	private final String name;
+	private final String name = "NEURAL NETWORK PROJECT";
 
 	private Map<String, double[]> weights;
 
@@ -54,13 +47,16 @@ public abstract class World implements Epreuve
 
 	private int fpsToDraw = 0;
 
+	private final boolean TEAM_MODE = false;
+
 	private List<Selection> selections;
 
-	protected List<Delimitation> delimitations;
-	protected List<Creature> creatures;
-	protected List<Collectable> collectables;
-	protected List<Zone> zones;
-	protected DelimitationBox box;
+	public List<Delimitation> delimitations;
+	public List<Creature> creatures;
+	public List<Collectable> collectables;
+	public List<Zone> zones;
+	public DelimitationBox box;
+
 	protected int collectableAmount;
 	protected int meatCount,vegetableCount, powerUpCount, fuelCount, bombCount;
 
@@ -70,9 +66,8 @@ public abstract class World implements Epreuve
 	/**
 	 * Crée un environnement avec une image de la taille de l'écran
 	 */
-	public World(String name)
+	public World()
 	{
-		this.name = name;
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		init((int)(d.getWidth()), (int)(d.getHeight()));
 	}
@@ -81,9 +76,8 @@ public abstract class World implements Epreuve
 	 * Crée un environnement avec une image de la taille de la dimension passée en argument
 	 * @param dimension Dimension de l'image
 	 */
-	public World(String name, Dimension dimension)
+	public World(Dimension dimension)
 	{
-		this.name = name;
 		init((int)(dimension.getWidth()), (int)(dimension.getHeight()));
 	}
 
@@ -92,9 +86,8 @@ public abstract class World implements Epreuve
 	 * @param w largeur de l'image
 	 * @param h hauteur de l'image
 	 */
-	public World(String name, int w, int h)
+	public World(int w, int h)
 	{
-		this.name = name;
 		init(w,h);
 	}
 
@@ -242,11 +235,19 @@ public abstract class World implements Epreuve
 
 	private void sleepAndRefresh()
 	{
-		meatCount=0;
-		vegetableCount=0;
-		fuelCount=0;
-		powerUpCount=0;
+		updateAndRemoveDelimitations();
 
+		updateAndReplaceCollectables();
+		
+		generateDelimitations();
+
+		updateCreatures();
+	}
+
+
+	
+	private void updateAndRemoveDelimitations()
+	{
 		for (int i=0;i<delimitations.size();i++)
 		{
 			Delimitation d = delimitations.get(i);
@@ -260,16 +261,15 @@ public abstract class World implements Epreuve
 			else
 				d.update();
 		}
+	}
 
-		/*for (int i=0;i<zones.size();i++)
-		{
-			Zone z = zones.get(i);
-			if (z.isExpired() || !IntersectionsChecker.contains(box, z))
-				zones.remove(i--);
-			else
-				z.update();
-		}*/
-
+	private void updateAndReplaceCollectables()
+	{
+		meatCount=0;
+		vegetableCount=0;
+		fuelCount=0;
+		powerUpCount=0;
+		
 		for (int i=0;i<collectables.size();i++)
 		{
 			Collectable c = collectables.get(i);
@@ -300,116 +300,63 @@ public abstract class World implements Epreuve
 				}
 			}
 		}
-
-
 		for (int i=collectables.size();i<collectableAmount;i++)
 			generateCollectables();
+	}
 
-		generateDelimitations();
-
+	private void updateCreatures()
+	{
 		for (int i=0; i<creatures.size() ;i++)
 		{
 			Creature creature1 = creatures.get(i);
 			if (creature1==null || !creature1.isAlive() || !IntersectionsChecker.contains(box, creature1))
 			{
-				creature1.reset(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6));
+				if (TEAM_MODE)
+				{
+					creatures.remove(creature1);
+					creature1.getTeam().remove(creature1);
+					if (creature1.getTeam().allDead())
+					{
+						creature1.getTeam().reset();
+						for (int j = 0 ; j < creature1.getTeam().size() ; j++)
+							creatures.add(creature1.getTeam().get(j));
+					}
+					else
+						continue;
+				}
+				else
+				{
+					Individu newBrain = creature1.getSelection().getOffspring(creature1.getBrain());
+					creature1.reset(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), newBrain);
+				}
 			}
 			creature1.update();
 			creature1.detect();
 			for (int j=0;j<collectables.size();j++)
 			{
 				Collectable collect = collectables.get(j);
-				if (collect!=null)
-					if (!collect.isConsumed())
-						if (IntersectionsChecker.preciseIntersects(creature1,collect))
-							new CreaCollecInteraction(creature1,collect).process();
+				if (!collect.isConsumed())
+					if (IntersectionsChecker.preciseIntersects(creature1,collect))
+						new CreaCollecInteraction(creature1,collect).process();
 			}
 			for (int j=0;j<delimitations.size();j++)
 			{
 				Delimitation delim = delimitations.get(j);
-				if (delim!=null)
-					if (!delim.isExpired())
-						if (IntersectionsChecker.preciseIntersects(creature1,delim))
-							new CreaDelimInteraction(creature1,delim).process();
+				if (!delim.isExpired())
+					if (IntersectionsChecker.preciseIntersects(creature1,delim))
+						new CreaDelimInteraction(creature1,delim).process();
 			}
-			/*for (int j=0;j<zones.size();j++)
-			{
-				Zone z = zones.get(j);
-				if (z!=null)
-					if (!z.isExpired())
-						if (IntersectionsChecker.intersects(creature1,z))
-							new CreaZoneInteraction(creature1,z).process();
-			}*/
 			for (int j=i+1; j<creatures.size() ;j++)
 			{
 				Creature creature2 = creatures.get(j);
-				if (creature2!=null)
-					if (creature2.isAlive())
-						if (IntersectionsChecker.preciseIntersects(creature1,creature2))
-							new CreaCreaInteraction(creature1,creature2).process();
+				if (creature2.isAlive())
+					if (IntersectionsChecker.preciseIntersects(creature1,creature2))
+						new CreaCreaInteraction(creature1,creature2).process();
 			}
 		}
 	}
 
-	/**
-	 * Générateurs de créatures
-	 */
-
-	public void generateBee(Individu intelligence, Selection selec)
-	{
-		creatures.add(new Bee(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
-				creatures,collectables,delimitations, box));
-	}
-
-	public void generateWasp(Individu intelligence, Selection selec)
-	{
-		creatures.add(new Wasp(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
-				creatures,collectables,delimitations, box));
-	}
-
-	public void generateSoldier(Individu intelligence, Selection selec)
-	{
-		creatures.add(new Soldier(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
-				creatures,collectables,delimitations, box));
-	}
-
-	public void generateTank(Individu intelligence, Selection selec)
-	{
-		creatures.add(new Tank(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
-				creatures,collectables,delimitations, box));
-	}
-
-	public void generateComplexDodger(Individu intelligence, Selection selec)
-	{
-		creatures.add(new ComplexDodger(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
-				creatures,collectables,delimitations, box));
-	}
-
-	public void generateSimpleDodger(Individu intelligence, Selection selec)
-	{
-		creatures.add(new SimpleDodger(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
-				creatures,collectables,delimitations, box));
-	}
-
-	public void generateSlug(Individu intelligence, Selection selec)
-	{
-		creatures.add(new Slug(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
-				creatures,collectables,delimitations, box));
-	}
-
-	public void generateHedgehog(Individu intelligence, Selection selec)
-	{
-		creatures.add(new Hedgehog(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
-				creatures,collectables,delimitations, box));
-	}
 	
-	public void generateRhinoceros(Individu intelligence, Selection selec)
-	{
-		creatures.add(new Rhinoceros(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), intelligence, selec,
-				creatures,collectables,delimitations, box));
-	}
-
-
 	/**
 	 * Actions Override depuis Epreuve
 	 */
@@ -420,39 +367,15 @@ public abstract class World implements Epreuve
 		for (Individu i : population)
 		{
 			i.resetScore();
-			switch (type)
+			if (!TEAM_MODE)
 			{
-			case TYPE_WASP:
-				generateWasp(i, selec);
-				break;
-			case TYPE_BEE:
-				generateBee(i, selec);
-				break;
-			case TYPE_TANK:
-				generateTank(i, selec);
-				break;
-			case TYPE_SOLDIER:
-				generateSoldier(i, selec);
-				break;
-			case TYPE_COMPLEXDODGER:
-				generateComplexDodger(i, selec);
-				break;
-			case TYPE_SIMPLEDODGER:
-				generateSimpleDodger(i, selec);
-				break;
-			case TYPE_SLUG:
-				generateSlug(i, selec);
-				break;
-			case TYPE_HEDGEHOG:
-				generateHedgehog(i, selec);
-				break;
-			case TYPE_RHINOCEROS:
-				generateRhinoceros(i, selec);
-				break;
-			default:
-				System.out.println("World.lancerEpreuve : Type non défini");
-				System.exit(0);
-				break;
+				creatures.add(CreatureFactory.generate(type, i, selec, this));
+			}
+			else
+			{
+				Team t = new Team(type, TEAM_SIZE, i, selec, this);
+				for (int j = 0 ; j < t.size() ; j++)
+					creatures.add(t.get(j));
 			}
 		}
 	}
@@ -460,42 +383,11 @@ public abstract class World implements Epreuve
 	@Override
 	public void initSelection(int nbIndiv, int nbGen, String type)
 	{
+		if (!TEAM_MODE)
+			nbIndiv *= TEAM_SIZE;
 		Selection selection=new Selection(World.this, nbIndiv, nbGen, type);
 		selection.population=new Individu[selection.nombreIndividus];
-		int[] layersSize = null;
-		switch (type)
-		{
-		case TYPE_BEE:
-			layersSize=LAYERS_SIZES_BEE;
-			break;
-		case TYPE_TANK:
-			layersSize=LAYERS_SIZES_TANK;
-			break;
-		case TYPE_WASP:
-			layersSize=LAYERS_SIZES_WASP;
-			break;
-		case TYPE_SOLDIER:
-			layersSize=LAYERS_SIZES_SOLDIER;
-			break;
-		case TYPE_COMPLEXDODGER:
-			layersSize=LAYERS_SIZES_COMPLEXDODGER;
-			break;
-		case TYPE_SIMPLEDODGER:
-			layersSize=LAYERS_SIZES_SIMPLEDODGER;
-			break;
-		case TYPE_SLUG:
-			layersSize=LAYERS_SIZES_SLUG;
-			break;
-		case TYPE_HEDGEHOG:
-			layersSize=LAYERS_SIZES_HEDGEHOG;
-			break;
-		case TYPE_RHINOCEROS:
-			layersSize=LAYERS_SIZES_RHINOCEROS;
-			break;
-		default:
-			System.out.println("World.initSelection - Type inconnu");
-			System.exit(0);
-		}
+		int[] layersSize = CreatureFactory.getLayersSize(type);
 		for (int i=0;i<selection.nombreIndividus;i++)
 		{
 			double[] wValues;
@@ -557,8 +449,8 @@ public abstract class World implements Epreuve
 			double c_x  = c.getX();
 			double c_y  = c.getY();
 			double c_sz = c.getSize();
-			if (c_x>realX) continue;
-			if (c_y>realY) continue;
+			if (c_x>realX) 		continue;
+			if (c_y>realY) 		continue;
 			if (c_x+c_sz<realX) continue;
 			if (c_y+c_sz<realY) continue;
 			selectedCreature=c;

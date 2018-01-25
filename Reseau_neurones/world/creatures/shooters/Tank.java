@@ -3,30 +3,31 @@ package creatures.shooters;
 import java.awt.Color;
 import java.util.List;
 
+import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
 import collectables.Collectable;
 import creatures.Creature;
 import genetics.Individu;
 import genetics.Selection;
-import limitations.Delimitation;
-import limitations.DelimitationBox;
 
 import static utils.Constantes.*;
 
 public class Tank extends ShooterCreature
 {
 
-	public Tank(double x, double y, Individu brain, Selection selec, List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
+	public Tank(double x, double y, Individu brain, Selection selec, World world)
 	{
 		super(x, y, 3, 500, 0.15,0.05,
-				0.2,1.2,150, 150, Color.BLACK,
+				0.2,1.2,150, Integer.MAX_VALUE, 150, Color.BLACK,
 				new Captor[] {
 						new EyeCaptor(Math.PI/7,16,Math.PI/3),
 						new EyeCaptor(-Math.PI/7,16,Math.PI/3),
 						new EyeCaptor(-Math.PI,4,Math.PI/2),
-		}, brain, selec, TANK, Color.BLUE,	LAYERS_SIZES_TANK[0],
-				creatures,collectables,delimitations, box);
+		},
+				new int[] {SOLDIER,TANK,PROJECTILE,FUEL,POWERUP},
+				brain, selec, TANK, Color.BLUE,	LAYERS_SIZES_TANK[0],
+				world);
 	}
 
 	@Override
