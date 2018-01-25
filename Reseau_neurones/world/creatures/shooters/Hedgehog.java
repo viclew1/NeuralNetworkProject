@@ -65,8 +65,16 @@ public class Hedgehog extends ShooterCreature{
 		case HEDGEHOG:
 			break;
 		case RHINOCEROS:
-			if (!c.isInvincible())
+			if (!this.isInvincible()) {
+				brain.addScore(-1000);
 				die();
+			}
+			break;
+		case DRAGON:
+			if (!this.isInvincible()) {
+				brain.addScore(-1000);
+				die();
+			}
 			break;
 		default:
 			break;

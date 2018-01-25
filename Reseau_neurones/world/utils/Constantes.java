@@ -11,13 +11,14 @@ public class Constantes
 	public static final int POPULATION_SIZE_SOLDIER = 15;
 	public static final int POPULATION_SIZE_COMPLEXDODGER = 30;
 	public static final int POPULATION_SIZE_SIMPLEDODGER = 0;
-	public static final int POPULATION_SIZE_SLUG = 5;
-	public static final int POPULATION_SIZE_HEDGEHOG = 3;
-	public static final int POPULATION_SIZE_RHINOCEROS = 2;
+	public static final int POPULATION_SIZE_SLUG = 6;
+	public static final int POPULATION_SIZE_HEDGEHOG = 4;
+	public static final int POPULATION_SIZE_RHINOCEROS = 3;
+	public static final int POPULATION_SIZE_BLACKWITCH = 1;
 	public static final int POPULATION_SIZE_DRAGON = 1;
 	public static final int POPULATION_SIZE_ADAPTATIVE = 5;
 	
-	public static final int TEAM_SIZE = 20;
+	public static final int TEAM_SIZE = 6;
 	
 	public static final int GENERATION_COUNT = 100000;
 
@@ -41,7 +42,7 @@ public class Constantes
 	public static final int RHINOCEROS = 9;
 	public static final int DRAGON = 10;
 	public static final int ADAPTATIVE = 11;
-	
+	public static final int BLACKWITCH = 11;
 	
 	public static final int VEGETABLE = 101;
 	public static final int MEAT = 102;
@@ -64,6 +65,7 @@ public class Constantes
 	public static final String TYPE_SLUG = "SLUG";
 	public static final String TYPE_HEDGEHOG = "HEDGEHOG";
 	public static final String TYPE_DRAGON = "DRAGON";
+	public static final String TYPE_BLACKWITCH = "BLACKWITCH";
 	public static final String TYPE_RHINOCEROS = "RHINOCEROS";
 	public static final String TYPE_ADAPTATIVE = "ADAPTATIVE";
 	
@@ -79,6 +81,7 @@ public class Constantes
 	public static final int[] LAYERS_SIZES_DRAGON = new int[] {32,28,14,4};
 	public static final int[] LAYERS_SIZES_RHINOCEROS = new int[] {28,26,12,3};
 	public static final int[] LAYERS_SIZES_ADAPTATIVE = new int[] {28,26,12,3};
+	public static final int[] LAYERS_SIZES_BLACKWITCH = new int[] {28,26,12,3};
 	
 	public static int FOOD_AMOUNT=1000;
 	public static int FUEL_AMOUNT=250;

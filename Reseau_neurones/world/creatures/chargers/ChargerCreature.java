@@ -13,9 +13,10 @@ import zones.Zone;
 
 public class ChargerCreature extends Creature {
 	
-	protected Boolean invincible = false;
-	protected int invicibilityTimeLeft = 30;
-	protected int invicibilityCooldown = 800;
+	static Color pourpre = new Color(65, 11, 16);
+	protected Boolean isCharging = false;
+	protected int chargeTimeLeft = 50;
+	protected int chargeCooldown = (int) (450*Math.random());
 
 	public ChargerCreature(double x, double y, double radius, double hpMax, double speed,
 			double hpLostPerInstant, Captor[] captors, int[] thingsToSee, Individu brain, Selection selec, int type,
@@ -25,9 +26,10 @@ public class ChargerCreature extends Creature {
 	}
 
 	public void charge() {
-		if (invicibilityCooldown<=0){
-			this.invincible = true;
+		if (chargeCooldown<=0){
+			this.isCharging = true;
 			this.speed = 1.3;
+			this.color = pourpre;
 		}
 	}
 	

@@ -86,6 +86,12 @@ public class Slug extends SlugsCreature {
 		case RHINOCEROS:
 				die();
 			break;
+		case DRAGON:
+			if (!this.isInvincible()) {
+				brain.addScore(-1000);
+				die();
+			}
+			break;
 		case SLUG:
 			break;
 		default:

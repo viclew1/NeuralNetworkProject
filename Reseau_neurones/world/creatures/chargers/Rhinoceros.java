@@ -32,23 +32,25 @@ public class Rhinoceros extends ChargerCreature {
 	
 	@Override
 	protected void applyDecisions(double[] decisions) {
-		invicibilityCooldown--;
-		if(invicibilityTimeLeft>=0) {
-			invicibilityTimeLeft--;
+		chargeCooldown--;
+		if(isCharging) {
+			chargeTimeLeft--;
 		}
-		if(invincible && invicibilityTimeLeft<= 0) {
-			invincible = false;
+		if(chargeTimeLeft<= 0) {
+			isCharging = false;
 			speed = 0.5;
-			invicibilityTimeLeft=30;
+			chargeTimeLeft=50;
+			chargeCooldown=450;
+			this.color=Color.GRAY;
 		}
-		if(!invincible) {
+		if(!isCharging) {
 			turn(2*(0.5-decisions[0]));
 		}
-		if(!invincible) {
+		if(!isCharging) {
 			moveFront(2*(0.5-decisions[1]));
 		}
-		if(invincible) {
-			moveFront(decisions[1]);
+		if(isCharging) {
+			moveFront(0.6+(0.4*decisions[1]));
 		}
 		if (decisions[2]>0.5)
 			charge();
@@ -88,6 +90,12 @@ public class Rhinoceros extends ChargerCreature {
 			if (!c.isInvincible()) {
 				hp+=80;
 				brain.addScore(1000);
+			}
+			break;
+		case DRAGON:
+			if (!this.isInvincible()) {
+				brain.addScore(-1000);
+				die();
 			}
 			break;
 		case RHINOCEROS:

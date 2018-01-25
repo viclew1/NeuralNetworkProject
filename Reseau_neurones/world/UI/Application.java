@@ -10,9 +10,9 @@ public class Application
 	public static void main(String[] args)
 	{
 		//World world = new WorldBeesWasps();
-		World world = new WorldOfDodge();
-		//World world = new WorldHappyTreeFriends();
-		world.start(120, 120, true);
+		//World world = new WorldOfDodge();
+		World world = new WorldHappyTreeFriends();
+		world.start(160, 160, true);
 		/*world.start(120, 120, 
 				new String[] {
 						TYPE_COMPLEXDODGER,
