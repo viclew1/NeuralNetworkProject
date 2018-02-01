@@ -13,6 +13,7 @@ public class Application
 		//World world = new WorldOfDodge();
 		//World world = new WorldHappyTreeFriends();
 		world.start(120, 120, true);
+
 		/*world.start(120, 120, 
 				new String[] {
 						TYPE_COMPLEXDODGER,

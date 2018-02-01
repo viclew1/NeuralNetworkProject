@@ -49,7 +49,7 @@ public abstract class Creature
 	protected Captor[] captors;
 	private boolean alive;
 	private final int type;
-	private final Color color;
+	protected Color color;
 	private boolean selected=false;
 
 	protected int nbInput;
