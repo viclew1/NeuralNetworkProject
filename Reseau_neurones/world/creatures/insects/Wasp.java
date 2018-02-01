@@ -8,6 +8,7 @@ import java.util.List;
 import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
+import captors.LineCaptor;
 import collectables.Collectable;
 import creatures.Creature;
 import genetics.Individu;
@@ -18,9 +19,9 @@ public class Wasp extends InsectCreature
 
 	public Wasp(double x, double y, Individu brain, Selection selec, World world)
 	{
-		super(x, y, 2, 400, 0.8, 2, 1,
+		super(x, y, 2, 400, 1.15, 2, 1,
 				new Captor[]{
-						new EyeCaptor(0,45,0.001),
+						new LineCaptor(0, 17),
 						new EyeCaptor(Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI,6,Math.PI/4),
@@ -54,18 +55,10 @@ public class Wasp extends InsectCreature
 		switch (c.getType())
 		{
 		case WASP:
-			if (hp/hpMax < 0.5 && c.getHp()/hpMax > 0.5)
-			{
-				c.loseHp(3);
-				this.hp += 3;
-				brain.addScore(5);
-				c.getBrain().addScore(5);
-			}
 			break;
 		case BEE:
 			if (!c.isInvincible())
 			{
-				brain.addScore(50);
 				hp+=50;
 				if (hp>hpMax)
 					hp=hpMax;
@@ -94,7 +87,6 @@ public class Wasp extends InsectCreature
 	@Override
 	protected void updateScore()
 	{
-		// TODO Auto-generated method stub
-
+		brain.addScore(0.01);
 	}
 }

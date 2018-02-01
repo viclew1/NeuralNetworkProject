@@ -28,11 +28,6 @@ public class AdaptativeCreature extends Creature
 				LAYERS_SIZES_ADAPTATIVE[0], world);
 	}
 
-	public void attack()
-	{
-		
-	}
-	
 	@Override
 	protected void updateScore()
 	{
@@ -40,38 +35,71 @@ public class AdaptativeCreature extends Creature
 	}
 
 	@Override
-	protected void addParticularInput(double[] inputs, int currentCount)
+	public void interactWith(Collectable c)
 	{
-		
+		if (c.isConsumed())
+			return;
+		switch (c.getType())
+		{
+		case VEGETABLE:
+			brain.addScore(500);
+			hp+=50;
+			if (hp>hpMax)
+				hp=hpMax;
+			c.consume();
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void interactWith(Creature c)
+	{
+		switch (c.getType())
+		{
+		case WASP:
+			if (!isInvincible())
+				die();
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override
 	protected void applySeenFitness(List<Integer> seenThings)
 	{
+		for (int type : seenThings)
+		{
+			switch (type)
+			{
+			case VEGETABLE:
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	@Override
+	protected void addParticularInput(double[] inputs, int currentCount)
+	{
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	protected void applyDecisions(double[] decisions)
 	{
-		
-	}
-
-	@Override
-	public void interactWith(Collectable c)
-	{
-		
-	}
-
-	@Override
-	public void interactWith(Creature c)
-	{
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void interactWith(Zone z)
 	{
+		// TODO Auto-generated method stub
 		
 	}
 

@@ -1,6 +1,7 @@
 package captors;
 
 import java.awt.Graphics;
+import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +11,11 @@ import creatures.Creature;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
 import utils.DistanceChecker;
-import zones.Zone;
+import utils.IntersectionsChecker;
 
 public abstract class Captor
 {
-	protected final double range;
+	protected final double range,orientation;
 	protected Creature creature;
 
 	private int[] thingsToSee;
@@ -22,9 +23,12 @@ public abstract class Captor
 	protected double wallResult;
 
 	protected Rectangle2D around;
+	protected Shape hitbox;
 
-	public Captor(double range)
+	
+	public Captor(double orientation, double range)
 	{
+		this.orientation = orientation;
 		this.range=range;
 	}
 
@@ -45,7 +49,6 @@ public abstract class Captor
 
 	public void detect(List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
-		updateHitbox();
 		for (int i=0;i<results.length;i++)
 			results[i] = Double.MAX_VALUE;
 		detectCreatures(creatures);
@@ -53,8 +56,6 @@ public abstract class Captor
 		detectDelimitations(delimitations);
 		detectWall(box);
 	}
-
-	protected abstract void updateHitbox();
 
 	private void detectCreatures(List<Creature> creatures)
 	{
@@ -146,25 +147,6 @@ public abstract class Captor
 			results[index] = value;
 	}
 
-	private void processDetection(Zone z)
-	{
-		int type = z.getType();
-		int index = -1;
-		for (int i=0 ; i<thingsToSee.length ; i++)
-		{
-			if (thingsToSee[i]==type)
-			{
-				index=i;
-				break;
-			}
-		}
-		if (index==-1 || !checkIntersection(z))
-			return;
-		double value = DistanceChecker.distance(creature, z);
-		if (results[index] > value)
-			results[index] = value;
-	}
-
 	public double[] getResults()
 	{
 		double[] ponderatedResults = new double[results.length + 1];
@@ -178,11 +160,21 @@ public abstract class Captor
 		ponderatedResults[results.length] = wallResult;
 		return ponderatedResults;
 	}
+	
+	protected boolean checkIntersection(Creature c)
+	{
+		return IntersectionsChecker.intersects(hitbox,c);
+	}
 
-	protected abstract boolean checkIntersection(Creature c);
-	protected abstract boolean checkIntersection(Collectable c);
-	protected abstract boolean checkIntersection(Delimitation d);
-	protected abstract boolean checkIntersection(Zone z);
+	protected boolean checkIntersection(Collectable c)
+	{
+		return IntersectionsChecker.intersects(hitbox,c);
+	}
+
+	protected boolean checkIntersection(Delimitation d)
+	{
+		return IntersectionsChecker.intersects(hitbox,d);
+	}
 
 	public List<Integer> getThingsInSight()
 	{

@@ -9,30 +9,22 @@ import java.awt.Graphics;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 
-import collectables.Collectable;
-import creatures.Creature;
-import limitations.Delimitation;
 import limitations.DelimitationBox;
-import utils.DistanceChecker;
-import utils.IntersectionsChecker;
-import zones.Zone;
 
 public class EyeCaptor extends Captor
 {
 
-	private final double orientation,widthAngle;
+	private final double widthAngle;
 	protected double[] xPoints,yPoints;
-	protected final Path2D hitbox;
 
 	public EyeCaptor(double orientation, double range, double widthAngle)
 	{
-		super(range);
+		super(orientation, range);
 		this.xPoints = new double[3];
 		this.yPoints = new double[3];
-		this.orientation=orientation;
 		this.widthAngle=widthAngle;
 		this.hitbox = new Path2D.Double();
-		this.around = new Rectangle2D.Double(xPoints[0]-range,yPoints[0]-range,range*2,range*2);
+		this.around = new Rectangle2D.Double();
 	}
 
 	@Override
@@ -44,30 +36,14 @@ public class EyeCaptor extends Captor
 		yPoints[1] = y - Math.sin(orientation+widthAngle/2+deltaOrientation)*range;
 		xPoints[2] = x + Math.cos(orientation-widthAngle/2+deltaOrientation)*range;
 		yPoints[2] = y - Math.sin(orientation-widthAngle/2+deltaOrientation)*range;
-	}
-
-	@Override
-	protected boolean checkIntersection(Creature c)
-	{
-		return IntersectionsChecker.intersects(hitbox,c);
-	}
-
-	@Override
-	protected boolean checkIntersection(Collectable c)
-	{
-		return IntersectionsChecker.intersects(hitbox,c);
-	}
-
-	@Override
-	protected boolean checkIntersection(Delimitation d)
-	{
-		return IntersectionsChecker.intersects(hitbox,d);
-	}
-
-	@Override
-	protected boolean checkIntersection(Zone z)
-	{
-		return IntersectionsChecker.intersects(hitbox,z);
+		
+		((Path2D) hitbox).reset();
+		((Path2D) hitbox).moveTo(xPoints[0], yPoints[0]);
+		for(int i = 1; i < xPoints.length; ++i) {
+			((Path2D) hitbox).lineTo(xPoints[i], yPoints[i]);
+		}
+		((Path2D) hitbox).closePath();
+		around.setFrame(xPoints[0]-range,yPoints[0]-range,range*2,range*2);
 	}
 
 	@Override
@@ -86,18 +62,6 @@ public class EyeCaptor extends Captor
 		g.setColor(Color.RED);
 		g.drawRect((int)(around.getX()*SIZE+SCROLL_X), (int)(around.getY()*SIZE+SCROLL_Y), (int)(around.getWidth()*SIZE), (int)(around.getHeight()*SIZE));
 		g.setColor(color);
-	}
-
-	@Override
-	protected void updateHitbox()
-	{
-		hitbox.reset();
-		hitbox.moveTo(xPoints[0], yPoints[0]);
-		for(int i = 1; i < xPoints.length; ++i) {
-			hitbox.lineTo(xPoints[i], yPoints[i]);
-		}
-		hitbox.closePath();
-		around.setFrame(xPoints[0]-range,yPoints[0]-range,range*2,range*2);
 	}
 
 	@Override

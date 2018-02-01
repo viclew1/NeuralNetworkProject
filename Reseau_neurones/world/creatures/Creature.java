@@ -4,6 +4,7 @@ import static utils.Constantes.*;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.geom.Line2D;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -35,6 +36,10 @@ public abstract class Creature
 	protected double hp;
 	protected double y;
 	protected final double radius;
+	private final double range;
+	
+	protected double damages = 0;
+	
 	protected double orientation=0;
 	protected final double dOrientation;
 	protected final double orientationMin=0;
@@ -55,8 +60,9 @@ public abstract class Creature
 	protected List<Delimitation> delimitations;
 	protected DelimitationBox box;
 
-	public Creature(double x, double y, double radius, double hpMax, double speed, double rotationSpeed, double hpLostPerInstant, Captor[] captors,
-			int[] thingsToSee, Individu brain, Selection selec, int type, Color color, int nbInput, World world)
+	private Line2D attackHitbox; 
+
+	public Creature(double x, double y, double radius, double hpMax, double speed, double rotationSpeed, double hpLostPerInstant, Captor[] captors, int[] thingsToSee, Individu brain, Selection selec, int type, Color color, int nbInput, World world)
 	{
 
 		this.xInit = x;
@@ -66,6 +72,8 @@ public abstract class Creature
 		this.x=x;
 		this.y=y;
 		this.radius=radius;
+		this.range = 2 * radius;
+		this.attackHitbox = new Line2D.Double(x+radius/2, y+radius/2, x+radius/2+Math.cos(orientation)*range, y+radius/2-Math.sin(orientation)*range);
 		this.hpMax=hpMax;
 		this.hp=hpMax;
 		this.speed=speed;
@@ -95,12 +103,27 @@ public abstract class Creature
 
 	}
 	
+	public Line2D getAttackHitbox()
+	{
+		return attackHitbox;
+	}
+	
+	public double getDamages()
+	{
+		return damages;
+	}
+	
+	public void attackedBy(Creature c)
+	{
+		loseHp(c.getDamages());
+	}
+
 	public void die()
 	{
 		this.alive = false;
 		this.hp = 0;
 	}
-	
+
 	public void revive()
 	{
 		this.alive = true;
@@ -176,6 +199,12 @@ public abstract class Creature
 					(int)(Math.max(0, g.getColor().getRed() / team.colorModifier())),
 					(int)(Math.max(0, g.getColor().getGreen() / team.colorModifier())), 
 					(int)(Math.max(0, g.getColor().getBlue() / team.colorModifier()))));
+
+		g.drawLine(
+				(int)(attackHitbox.getX1()*SIZE+SCROLL_X), 
+				(int)(attackHitbox.getY1()*SIZE+SCROLL_Y), 
+				(int)(attackHitbox.getX2()*SIZE+SCROLL_X), 
+				(int)(attackHitbox.getY2()*SIZE+SCROLL_Y));
 		g.fillOval(xFinal(), yFinal(), sizeFinal(), sizeFinal());
 		g.setColor(Color.BLACK);
 		g.drawOval(xFinal(), yFinal(), sizeFinal(), sizeFinal());
@@ -196,6 +225,7 @@ public abstract class Creature
 	public void update()
 	{
 		updateInvincibility();
+		detect();
 		updatePosition();
 		updateCaptors();
 		updateScore();
@@ -214,7 +244,11 @@ public abstract class Creature
 	public void loseHp(double damages)
 	{
 		if (!isInvincible())
+		{
 			hp -= damages;
+			if (hp<=0)
+				die();
+		}
 	}
 
 	protected abstract void updateScore();
@@ -243,12 +277,7 @@ public abstract class Creature
 
 	private void updatePosition()
 	{
-		hp-=hpLostPerInstant;
-		if (hp<=0)
-		{
-			die();
-			return;
-		}
+		loseHp(hpLostPerInstant);
 		double[] inputs = new double[nbInput];
 		int cpt=0;
 		for (int i=0;i<captors.length;i++)
@@ -256,8 +285,6 @@ public abstract class Creature
 			double[] results = captors[i].getResults();
 			for (int j=0;j<results.length;j++)
 				inputs[cpt++] = results[j];
-			List<Integer> seenThings = captors[i].getThingsInSight();
-			applySeenFitness(seenThings);
 		}
 		inputs[cpt++]=1-hp/hpMax;
 		double xCenter = box.width/2;
@@ -266,13 +293,19 @@ public abstract class Creature
 		double yRatio = y - yCenter;
 		inputs[cpt++] = (orientation >= Math.PI)?(orientation-Math.PI)/Math.PI:0;
 		inputs[cpt++] = (orientation < Math.PI)?orientation/Math.PI:0;
-		inputs[cpt++] = (xRatio>0)?xRatio/xCenter:0; 
+		inputs[cpt++] = (xRatio>0)?xRatio/xCenter:0;
 		inputs[cpt++] = (xRatio>0)?0:-xRatio/xCenter;
 		inputs[cpt++] = (yRatio>0)?yRatio/yCenter:0;
 		inputs[cpt++] = (yRatio>0)?0:-yRatio/yCenter;
 		addParticularInput(inputs, cpt);
 		double[] decisions = brain.getOutputs(inputs);
 		applyDecisions(decisions);
+
+		attackHitbox.setLine(
+				x+radius/2, 
+				y+radius/2, 
+				x+radius/2+Math.cos(orientation)*range, 
+				y+radius/2-Math.sin(orientation)*range);
 	}
 
 	protected abstract void addParticularInput(double[] inputs, int currentCount);
@@ -328,8 +361,6 @@ public abstract class Creature
 			break;
 		}
 		loseHp(d.getDamages());
-		if (hp<=0)
-			die();
 	}
 
 	/**

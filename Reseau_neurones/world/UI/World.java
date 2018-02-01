@@ -308,50 +308,54 @@ public abstract class World implements Epreuve
 	{
 		for (int i=0; i<creatures.size() ;i++)
 		{
-			Creature creature1 = creatures.get(i);
-			if (creature1==null || !creature1.isAlive() || !IntersectionsChecker.contains(box, creature1))
+			Creature c = creatures.get(i);
+			if (c==null || !c.isAlive() || !IntersectionsChecker.contains(box, c))
 			{
 				if (TEAM_MODE)
 				{
-					creatures.remove(creature1);
-					creature1.getTeam().remove(creature1);
-					if (creature1.getTeam().allDead())
+					creatures.remove(c);
+					c.getTeam().remove(c);
+					if (c.getTeam().allDead())
 					{
-						creature1.getTeam().reset();
-						for (int j = 0 ; j < creature1.getTeam().size() ; j++)
-							creatures.add(creature1.getTeam().get(j));
+						c.getTeam().reset();
+						for (int j = 0 ; j < c.getTeam().size() ; j++)
+							creatures.add(c.getTeam().get(j));
 					}
 					else
 						continue;
 				}
 				else
 				{
-					Individu newBrain = creature1.getSelection().getOffspring(creature1.getBrain());
-					creature1.reset(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), newBrain);
+					Individu newBrain = c.getSelection().getOffspring(c.getBrain());
+					c.reset(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), newBrain);
 				}
 			}
-			creature1.update();
-			creature1.detect();
+			c.update();
 			for (int j=0;j<collectables.size();j++)
 			{
 				Collectable collect = collectables.get(j);
 				if (!collect.isConsumed())
-					if (IntersectionsChecker.preciseIntersects(creature1,collect))
-						new CreaCollecInteraction(creature1,collect).process();
+					if (IntersectionsChecker.intersects(c,collect))
+						new CreaCollecInteraction(c,collect).process();
 			}
 			for (int j=0;j<delimitations.size();j++)
 			{
 				Delimitation delim = delimitations.get(j);
 				if (!delim.isExpired())
-					if (IntersectionsChecker.preciseIntersects(creature1,delim))
-						new CreaDelimInteraction(creature1,delim).process();
+					if (IntersectionsChecker.preciseIntersects(c,delim))
+						new CreaDelimInteraction(c,delim).process();
 			}
 			for (int j=i+1; j<creatures.size() ;j++)
 			{
 				Creature creature2 = creatures.get(j);
+				if (creature2 == c)
+					continue;
 				if (creature2.isAlive())
-					if (IntersectionsChecker.preciseIntersects(creature1,creature2))
-						new CreaCreaInteraction(creature1,creature2).process();
+					if (IntersectionsChecker.intersects(c.getAttackHitbox(),creature2))
+					{
+						new CreaCreaInteraction(c,creature2).process();
+						//creature2.attackedBy(c);
+					}
 			}
 		}
 	}

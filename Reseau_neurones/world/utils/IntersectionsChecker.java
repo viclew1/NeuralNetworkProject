@@ -1,11 +1,9 @@
 package utils;
 
-import java.awt.geom.Line2D;
-import java.awt.geom.Path2D;
+import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import captors.Captor;
 import collectables.Collectable;
 import creatures.Creature;
 import limitations.Delimitation;
@@ -37,48 +35,25 @@ public class IntersectionsChecker
 				.intersects(new Rectangle2D.Double(creature2.getX(), creature2.getY(), creature2.getSize(), creature2.getSize()));
 	}
 	
-	public static boolean intersects(Line2D captorLine, Creature creature)
-	{
-		Rectangle2D creatureRect = new Rectangle2D.Double(creature.getX(), creature.getY(), creature.getSize(), creature.getSize());
-		return creatureRect.intersectsLine(captorLine);
-	}
-	
-	public static boolean intersects(Line2D captorLine, Collectable collec)
-	{
-		Rectangle2D collecRect = new Rectangle2D.Double(collec.getX(), collec.getY(), collec.getSize(), collec.getSize());
-		return collecRect.intersectsLine(captorLine);
-	}
-	
-	public static boolean intersects(Line2D captorLine, Delimitation delim)
-	{
-		Rectangle2D delimRect = new Rectangle2D.Double(delim.getX(), delim.getY(), delim.getW(), delim.getH());
-		return delimRect.intersectsLine(captorLine);
-	}
-	
-	public static boolean intersects(Path2D captorHitbox, Creature creature)
+	public static boolean intersects(Shape captorHitbox, Creature creature)
 	{
 		Rectangle2D creatureRect = new Rectangle2D.Double(creature.getX(), creature.getY(), creature.getSize(), creature.getSize());
 		return intersects(captorHitbox,creatureRect);
 	}
 	
-	public static boolean intersects(Path2D captorHitbox, Collectable collec)
+	public static boolean intersects(Shape captorHitbox, Collectable collec)
 	{
 		Rectangle2D collecRect = new Rectangle2D.Double(collec.getX(), collec.getY(), collec.getSize(), collec.getSize());
 		return intersects(captorHitbox,collecRect);
 	}
 	
-	public static boolean intersects(Path2D captorHitbox, Delimitation delim)
+	public static boolean intersects(Shape captorHitbox, Delimitation delim)
 	{
 		Rectangle2D delimRect = new Rectangle2D.Double(delim.getX(), delim.getY(), delim.getW(), delim.getH());
 		return intersects(captorHitbox,delimRect);
 	}
 	
-	public static boolean intersects(Path2D captorHitbox, Zone zone)
-	{
-		return intersects(captorHitbox,zone.getHitBox().getBounds2D());
-	}
-	
-	private static boolean intersects(Path2D captorHitbox, Rectangle2D rect)
+	private static boolean intersects(Shape captorHitbox, Rectangle2D rect)
 	{
 		return captorHitbox.intersects(rect);
 	}

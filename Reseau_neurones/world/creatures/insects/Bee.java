@@ -36,7 +36,6 @@ public class Bee extends InsectCreature
 		switch (c.getType())
 		{
 		case VEGETABLE:
-			brain.addScore(500);
 			hp+=50;
 			if (hp>hpMax)
 				hp=hpMax;
@@ -79,7 +78,6 @@ public class Bee extends InsectCreature
 	@Override
 	protected void updateScore()
 	{
-		// TODO Auto-generated method stub
-		
+		brain.addScore(0.01);
 	}
 }

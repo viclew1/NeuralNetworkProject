@@ -9,7 +9,7 @@ public class Constantes
 	public static final int POPULATION_SIZE_WASP = 2;
 	public static final int POPULATION_SIZE_TANK = 15;
 	public static final int POPULATION_SIZE_SOLDIER = 15;
-	public static final int POPULATION_SIZE_COMPLEXDODGER = 30;
+	public static final int POPULATION_SIZE_COMPLEXDODGER = 12;
 	public static final int POPULATION_SIZE_SIMPLEDODGER = 0;
 	public static final int POPULATION_SIZE_SLUG = 5;
 	public static final int POPULATION_SIZE_HEDGEHOG = 3;
@@ -68,9 +68,9 @@ public class Constantes
 	public static final String TYPE_ADAPTATIVE = "ADAPTATIVE";
 	
 	
-	public static final int[] LAYERS_SIZES_BEE = new int[] {22,5,17,2};
+	public static final int[] LAYERS_SIZES_BEE = new int[] {22,17,2};
 	public static final int[] LAYERS_SIZES_TANK = new int[] {26,6,23,4};
-	public static final int[] LAYERS_SIZES_WASP = new int[] {23,25,13,8,2};
+	public static final int[] LAYERS_SIZES_WASP = new int[] {23,18,2};
 	public static final int[] LAYERS_SIZES_SOLDIER = new int[] {26,15,7,15,4};
 	public static final int[] LAYERS_SIZES_COMPLEXDODGER = new int[] {23,4,12,2};
 	public static final int[] LAYERS_SIZES_SIMPLEDODGER = new int[] {23,4,21,2};
