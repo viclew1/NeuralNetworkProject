@@ -293,12 +293,13 @@ public class Environnement implements Epreuve
 
 			for (Line2D line : lines)
 			{
-				for (Line2D side : c.sides)
-					if (line.intersectsLine(side))
-					{
-						ok = false;
-						break;
-					}
+				if (c.around.intersectsLine(line))
+					for (Line2D side : c.sides)
+						if (line.intersectsLine(side))
+						{
+							ok = false;
+							break;
+						}
 			}
 
 			if (!c.isAlive() || !ok)

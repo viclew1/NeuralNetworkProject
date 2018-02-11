@@ -5,6 +5,7 @@ import static utils.Constantes.*;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
 import java.util.Random;
 
@@ -40,7 +41,8 @@ public class Car
 
 	protected final Environnement environnement;
 	protected final Line2D[] sides;
-
+	protected final Rectangle2D around;
+	
 	public Car(double x, double y, Individu brain, Selection selec, Environnement environnement)
 	{
 		this.selec = selec;
@@ -64,6 +66,7 @@ public class Car
 		this.color=new Color(new Random().nextInt(256), new Random().nextInt(256), new Random().nextInt(256));
 		this.environnement = environnement;
 		sides = new Line2D[4];
+		around = new Rectangle2D.Double();
 		updateHitbox();
 	}
 
@@ -185,6 +188,14 @@ public class Car
 		sides[1] = new Line2D.Double(x2, y2, x4, y4);
 		sides[2] = new Line2D.Double(x4, y4, x3, y3);
 		sides[3] = new Line2D.Double(x3, y3, x, y);
+		
+		
+		double xMin = Math.min(Math.min(Math.min(x4, x3), x2), x);
+		double xMax = Math.max(Math.max(Math.max(x4, x3), x2), x);
+		double yMin = Math.min(Math.min(Math.min(y4, y3), y2), y);
+		double yMax = Math.max(Math.max(Math.max(y4, y3), y2), y);
+		
+		around.setFrame(xMin, yMin, xMax - xMin, yMax - yMin );
 	}
 
 	public void detect()
