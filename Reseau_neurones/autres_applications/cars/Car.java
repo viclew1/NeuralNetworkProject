@@ -147,7 +147,7 @@ public class Car
 		brain.resetScore();
 		double minD = Double.MAX_VALUE;
 		int minIndex = -1;
-		for (int i = 0 ; i < 25 ; i++)
+		for (int i = Map.CLOSEST ; i < Map.FAREST ; i++)
 		{
 			Line2D line = environnement.lines[i];
 			double xx = line.getX1();
@@ -160,7 +160,7 @@ public class Car
 			}
 		}
 		double dToStart = (x - environnement.xStart) * (x - environnement.xStart) + (y - environnement.yStart) * (y - environnement.yStart);
-		brain.addScore((25-minIndex)*2 + dToStart);
+		brain.addScore(Math.abs(Map.CLOSEST-minIndex)*2 + dToStart);
 		for (Captor c : captors)
 			c.update();
 		detect();
