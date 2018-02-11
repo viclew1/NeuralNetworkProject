@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
 
+@SuppressWarnings("serial")
 public class DelimitationBox extends Rectangle2D.Double
 {
 

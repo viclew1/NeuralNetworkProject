@@ -12,7 +12,7 @@ public abstract class SlugsCreature extends Creature {
 	public int bombCooldown;
 
 	public SlugsCreature(double x, double y, double radius, double hpMax, double speed, double rotationSpeed,
-			double hpLostPerInstant, Captor[] captors, int[] thingsToSee, Individu brain, Selection selec, int type, Color color,
+			double hpLostPerInstant, Captor[] captors, int[][] thingsToSee, Individu brain, Selection selec, int type, Color color,
 			int nbInput, World world) {
 		
 		super(x, y, radius, hpMax, speed, rotationSpeed, hpLostPerInstant, captors, thingsToSee, brain, selec, type, color, nbInput,
@@ -43,6 +43,13 @@ public abstract class SlugsCreature extends Creature {
 	
 	@Override
 	protected void addParticularInput(double[] inputs, int currentCount)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	protected void addSpecialFitness()
 	{
 		// TODO Auto-generated method stub
 		

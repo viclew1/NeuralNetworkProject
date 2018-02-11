@@ -1,8 +1,6 @@
 package creatures.shooters;
 
 import java.awt.Color;
-import java.util.List;
-
 import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
@@ -25,7 +23,20 @@ public class Hedgehog extends ShooterCreature{
 						new EyeCaptor(-Math.PI/7,18,Math.PI/3),
 						new EyeCaptor(-Math.PI,10,Math.PI/4),
 		},
-				new int[] {SLUG, BOMB, HEDGEHOG, VEGETABLE, RHINOCEROS, DRAGON}, 
+				new int[][] {
+					{
+						HEDGEHOG,
+						SLUG,
+						RHINOCEROS,
+						DRAGON,
+					},
+					{
+						BOMB,
+						VEGETABLE,
+					},
+					{
+						PROJECTILE,
+					}},
 				brain, selec, HEDGEHOG, brown, 
 				LAYERS_SIZES_HEDGEHOG[0],
 				world);
@@ -52,27 +63,21 @@ public class Hedgehog extends ShooterCreature{
 		}
 	}
 
-	
-	
 	@Override
-	public void interactWith(Creature c) {
+	public void touchedBy(Creature c)
+	{
 		switch (c.getType())
 		{
-		case SLUG:
-			if (!c.isInvincible())
-				brain.addScore(1000);
-			break;
 		case HEDGEHOG:
+			reproduceWith(c);
 			break;
 		case RHINOCEROS:
 			if (!this.isInvincible()) {
-				brain.addScore(-1000);
 				die();
 			}
 			break;
 		case DRAGON:
 			if (!this.isInvincible()) {
-				brain.addScore(-1000);
 				die();
 			}
 			break;
@@ -82,11 +87,41 @@ public class Hedgehog extends ShooterCreature{
 	}
 
 	@Override
+	public void touch(Creature c)
+	{
+		switch (c.getType())
+		{
+		case SLUG:
+			if (!c.isInvincible())
+				{
+				hp += 50;
+				if (hp > hpMax) hp = hpMax;
+				brain.addScore(10);
+				}
+			break;
+		case HEDGEHOG:
+			break;
+		case RHINOCEROS:
+			if (!this.isInvincible()) {
+				die();
+			}
+			break;
+		case DRAGON:
+			if (!this.isInvincible()) {
+				die();
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
 	public void targetReport(int targetType) {
 		switch (targetType)
 		{
 		case SLUG:
-			brain.addScore(100);
+			brain.addScore(10);
 			break;
 		case RHINOCEROS:
 			//brain.addScore(0);
@@ -100,22 +135,10 @@ public class Hedgehog extends ShooterCreature{
 	}
 
 	@Override
-	protected void updateScore() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void applySeenFitness(List<Integer> seenThings) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	protected void applyDecisions(double[] decisions) {
 		cdShoot--;
 		turn(2*(0.5-decisions[0]));
-		moveFront(2*(0.5-decisions[1]));
+		moveFront(decisions[1]);
 		straff(2*(0.5-decisions[2]));
 		if (decisions[3]>0.5)
 			shoot();

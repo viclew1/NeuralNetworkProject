@@ -1,36 +1,12 @@
 package genetics;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.time.Instant;
-import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 public abstract class Utils
 {
 	public static int chancesMutation=10;
 	public static int chancesCrossOver=65;
-
-	private static OutputStream os;
-	private static final File f;
-
-	static {
-		String name = "Best_Creatures_"+Date.from(Instant.now())+".txt";
-		name = name.replace(' ', '_');
-		name = name.replace(':', '_');
-
-		f = new File(name);
-		try
-		{
-			f.createNewFile();
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
 
 	private static final Random r = new Random();
 
@@ -70,38 +46,16 @@ public abstract class Utils
 			array[i] = temp;
 		}
 	}
-
-	public static void saveBest(Individu deadOne)
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static void shuffleList(List list)
 	{
-		try
+		for (int i=list.size()-1 ; i>= 1 ; i--)
 		{
-			if (deadOne!=null)
-				os.write((deadOne.getName() + " : " + deadOne.getScore() + "\n" + deadOne + "\n\n").getBytes());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	public static void initSave()
-	{
-		try
-		{
-			os = new FileOutputStream(f);
-		} catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	public static void endSave()
-	{
-		try
-		{
-			os.flush();
-		} catch (IOException e)
-		{
-			e.printStackTrace();
+			int j = r.nextInt(i+1);
+			Object temp = list.get(j);
+			list.set(j,list.get(i));
+			list.set(i, temp);
 		}
 	}
 }

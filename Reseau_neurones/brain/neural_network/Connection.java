@@ -6,7 +6,7 @@ public class Connection
 {
 
 	private double weight;
-
+	
 	public Connection()
 	{
 		randomizeWeight();

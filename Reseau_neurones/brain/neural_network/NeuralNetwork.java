@@ -165,11 +165,24 @@ public class NeuralNetwork extends Individu
 
 	public String toString()
 	{
-		String str="["+name+"] : ";
-		for (Connection c : connections)
-			str+=c.getWeight()+",";
+		String str = "[" + name + "] : ";
+		str += connectionsStr();
 		return str;
 	}
+
+	public String connectionsStr()
+	{
+		String str = "";
+		for (int i = 0 ; i < connections.length ; i++)
+		{
+			Connection c = connections[i];
+			str+=c.getWeight();
+			if (i != connections.length - 1)
+				str += ",";
+		}
+		return str;
+	}
+
 
 	@Override
 	public void draw(Graphics g)

@@ -5,8 +5,8 @@ import java.util.Random;
 public class WeightValues
 {
 
-	public static final double MIN_WEIGHT = -12;
-	public static final double MAX_WEIGHT =  12;
+	public static final double MIN_WEIGHT = -5;
+	public static final double MAX_WEIGHT =  5;
 	public static final double DELTA_WEIGHT = 0.5;
 	
 	public static double weightRandomizer()

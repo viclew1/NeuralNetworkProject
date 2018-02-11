@@ -3,7 +3,6 @@ package utils;
 import collectables.Collectable;
 import creatures.Creature;
 import limitations.Delimitation;
-import zones.Zone;
 
 public class DistanceChecker
 {
@@ -46,10 +45,5 @@ public class DistanceChecker
 		return distancePtoP(x1, y1, x2, y2, crea.getSize()/2, collec.getSize()/2);
 	}
 
-	public static double distance(Creature crea, Zone z)
-	{
-		//TODO : distance correcte
-		return 0;
-	}
 
 }

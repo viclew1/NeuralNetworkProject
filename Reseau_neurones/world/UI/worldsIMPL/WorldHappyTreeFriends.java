@@ -12,17 +12,17 @@ public class WorldHappyTreeFriends extends World{
 	
 	public WorldHappyTreeFriends()
 	{
-		super();
+		super("World Of Things");
 	}
 
 	public WorldHappyTreeFriends(Dimension dimensions)
 	{
-		super(dimensions);
+		super("World Of Things", dimensions);
 	}
 
 	public WorldHappyTreeFriends(int w, int h)
 	{
-		super(w, h);
+		super("World Of Things", w, h);
 	}
 
 	protected void initSelections() {

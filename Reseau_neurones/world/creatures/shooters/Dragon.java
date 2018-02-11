@@ -3,8 +3,6 @@ package creatures.shooters;
 import static utils.Constantes.*;
 
 import java.awt.Color;
-import java.util.List;
-
 import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
@@ -30,7 +28,20 @@ public class Dragon extends ShooterCreature
 						new EyeCaptor(-Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI,6,Math.PI/4),
 		},
-				new int[] {SLUG, BOMB, HEDGEHOG, VEGETABLE, RHINOCEROS,},
+				new int[][] {
+					{
+						HEDGEHOG,
+						SLUG,
+						RHINOCEROS,
+						DRAGON,
+					},
+					{
+						BOMB,
+						VEGETABLE,
+					},
+					{
+						PROJECTILE,
+					}},
 				brain, selec, DRAGON, Color.RED, LAYERS_SIZES_DRAGON[0],
 				world);
 	}
@@ -56,25 +67,11 @@ public class Dragon extends ShooterCreature
 	}
 
 	@Override
-	protected void updateScore()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void applySeenFitness(List<Integer> seenThings)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	protected void applyDecisions(double[] decisions)
 	{
 		cdShoot--;
 		turn(2*(0.5-decisions[0]));
-		moveFront(2*(0.5-decisions[1]));
+		moveFront(decisions[1]);
 		straff(2*(0.5-decisions[2]));
 		if (decisions[3]>0.5)
 			shoot();
@@ -88,10 +85,17 @@ public class Dragon extends ShooterCreature
 	}
 
 	@Override
-	public void interactWith(Creature c)
+	public void touchedBy(Creature c)
 	{
 		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public void touch(Creature c)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 }

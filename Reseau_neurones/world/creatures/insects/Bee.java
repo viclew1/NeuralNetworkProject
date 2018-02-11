@@ -3,11 +3,10 @@ package creatures.insects;
 import static utils.Constantes.*;
 
 import java.awt.Color;
-import java.util.List;
-
 import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
+import captors.LineCaptor;
 import collectables.Collectable;
 import creatures.Creature;
 import genetics.Individu;
@@ -18,12 +17,22 @@ public class Bee extends InsectCreature
 
 	public Bee(double x, double y, Individu brain, Selection selec, World world)
 	{
-		super(x, y, 1, 400, 1, 5, 1,
+		super(x, y, 1, 400, 1.2, 6, 1,
 				new Captor[]{
+						new LineCaptor(0, 12),
 						new EyeCaptor(Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI,6,Math.PI/4),
 				},
+				new int[][] {
+					{
+						WASP,
+					},
+					{
+						VEGETABLE,
+					},
+					{
+					}},
 				brain, selec,	BEE, Color.YELLOW, LAYERS_SIZES_BEE[0],
 				world);
 	}
@@ -36,18 +45,17 @@ public class Bee extends InsectCreature
 		switch (c.getType())
 		{
 		case VEGETABLE:
-			hp+=50;
-			if (hp>hpMax)
-				hp=hpMax;
+			heal(50);
+			brain.addScore(1);
 			c.consume();
 			break;
 		default:
 			break;
 		}
 	}
-
+	
 	@Override
-	public void interactWith(Creature c)
+	public void touchedBy(Creature c)
 	{
 		switch (c.getType())
 		{
@@ -61,23 +69,21 @@ public class Bee extends InsectCreature
 	}
 
 	@Override
-	protected void applySeenFitness(List<Integer> seenThings)
+	public void touch(Creature c)
 	{
-		for (int type : seenThings)
+		switch (c.getType())
 		{
-			switch (type)
-			{
-			case VEGETABLE:
-				break;
-			default:
-				break;
-			}
+		case BEE:
+			reproduceWith(c);
+			break;
+		default:
+			break;
 		}
 	}
 
 	@Override
-	protected void updateScore()
+	protected void addSpecialFitness()
 	{
-		brain.addScore(0.01);
+		
 	}
 }

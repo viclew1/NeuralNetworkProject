@@ -19,7 +19,7 @@ public abstract class ShooterCreature extends Creature
 
 	public ShooterCreature(double x, double y, double radius, double hpMax, double speed, double hpLostPerInstant,
 			double projSpeed, double projSize, double projDamages,double projRange, int cooldown, Color projColor,
-			Captor[] captors, int[] thingsToSee, Individu brain, Selection selec, int type, Color color, int nbInput, World world)
+			Captor[] captors, int[][] thingsToSee, Individu brain, Selection selec, int type, Color color, int nbInput, World world)
 	{
 		super(x, y, radius, hpMax, speed, 3, hpLostPerInstant, captors,
 				thingsToSee,
@@ -60,5 +60,12 @@ public abstract class ShooterCreature extends Creature
 	protected void addParticularInput(double[] inputs, int currentCount)
 	{
 		inputs[currentCount++] = canShoot()?1:0;
+	}
+	
+	@Override
+	protected void addSpecialFitness()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -19,19 +19,19 @@ public abstract class DodgerCreature extends Creature
 			Captor[] captors, Individu brain, Selection selec, int type, Color color, int nbInput,
 			World world)
 	{
-		super(x, y, radius, hpMax, speed, 3, hpLostPerInstant, captors, new int[] {
-				FIREBALL,
-		}, brain, selec, type, color, nbInput, world);
+		super(x, y, radius, hpMax, speed, 3, hpLostPerInstant, captors, new int[][] {
+			{
+			},
+			{
+			},
+			{
+				FIREBALL
+			}}, brain, selec, type, color, nbInput, world);
+		this.ttl = Integer.MAX_VALUE;
 	}
 	
 	@Override
 	public void interactWith(Collectable c)
-	{
-		
-	}
-
-	@Override
-	public void interactWith(Creature c)
 	{
 		
 	}

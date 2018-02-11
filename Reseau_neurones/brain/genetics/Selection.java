@@ -1,5 +1,11 @@
 package genetics;
+import java.awt.Color;
+import java.io.Writer;
 import java.util.Random;
+
+import utils.CSVUtils;
+import utils.SaveUtils;
+
 import static genetics.Utils.*;
 
 public class Selection
@@ -14,6 +20,10 @@ public class Selection
 	public int deadIndex = 0;
 	public Individu meilleurTrouve;
 	public double meilleureFitness=Double.MIN_VALUE;
+	
+	public Writer csvOut;
+	
+	public Color color = new Color(new Random().nextInt(256), new Random().nextInt(256), new Random().nextInt(256));
 
 	public Selection(Epreuve epreuve, int nombreIndividus, int nombreGenerations, String type)
 	{
@@ -239,6 +249,7 @@ public class Selection
 			deadCount++;
 		if (deadIndex==deads.length)
 			deadIndex = 0;
+		
 
 		Individu[] matingPopulation = new Individu[nombreIndividus + deadCount];
 		for (int i = 0 ; i < nombreIndividus ; i++)
@@ -254,7 +265,24 @@ public class Selection
 
 
 		matingPopulation = stochasticNewPopulationGenerator(matingPopulation, fitnessSum);
-		Individu offspring = breed(matingPopulation[r.nextInt(nombreIndividus)],matingPopulation[r.nextInt(nombreIndividus)]);
+		
+		Individu parent1;
+		double rdmD = r.nextDouble();
+		if (rdmD > 0.9)
+		{
+			parent1 = meilleurTrouve;
+		}
+		else if (rdmD < 0.1)
+		{
+			parent1 = population[0].deepCopy();
+			parent1.randomize();
+		}
+		else
+		{
+			parent1 = matingPopulation[r.nextInt(nombreIndividus)];
+		}
+
+		Individu offspring = breed(parent1,matingPopulation[r.nextInt(nombreIndividus)]);
 		offspring.setIndex(deadOne.index);
 		population[deadOne.index] = offspring;
 		return offspring;
@@ -262,7 +290,17 @@ public class Selection
 	
 	public void saveBest()
 	{
-		Utils.saveBest(meilleurTrouve);
+		SaveUtils.saveBest(meilleurTrouve);
+	}
+
+	public Individu getOffspring(Individu i1, Individu i2)
+	{
+		return breed(i1, i2);
+	}
+
+	public void writeCsvEntry(double[] inputs, double[] outputs)
+	{
+		CSVUtils.saveEntry(inputs, outputs);
 	}
 
 }

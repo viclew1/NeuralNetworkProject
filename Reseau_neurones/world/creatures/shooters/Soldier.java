@@ -3,8 +3,6 @@ package creatures.shooters;
 import static utils.Constantes.*;
 
 import java.awt.Color;
-import java.util.List;
-
 import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
@@ -25,7 +23,18 @@ public class Soldier extends ShooterCreature
 						new EyeCaptor(-Math.PI/7,10,Math.PI/3),
 						new EyeCaptor(-Math.PI,5,Math.PI/2),
 		},
-				new int[] {SOLDIER,TANK,PROJECTILE,FUEL,POWERUP},
+				new int[][] {
+					{
+						SOLDIER,
+						TANK,
+					},
+					{
+						FUEL,
+						POWERUP,
+					},
+					{
+						PROJECTILE,
+					}},
 				brain, selec, SOLDIER, Color.CYAN, LAYERS_SIZES_SOLDIER[0],
 				world);
 	}
@@ -38,10 +47,17 @@ public class Soldier extends ShooterCreature
 	}
 
 	@Override
-	public void interactWith(Creature c)
+	public void touchedBy(Creature c)
 	{
 		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public void touch(Creature c)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -49,7 +65,7 @@ public class Soldier extends ShooterCreature
 	{
 		cdShoot--;
 		turn(2*(0.5-decisions[0]));
-		moveFront(2*(0.5-decisions[1]));
+		moveFront(decisions[1]);
 		straff(2*(0.5-decisions[2]));
 		if (decisions[3]>0.5)
 			shoot();
@@ -71,17 +87,4 @@ public class Soldier extends ShooterCreature
 		}
 	}
 
-	@Override
-	protected void applySeenFitness(List<Integer> seenThings)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void updateScore()
-	{
-		// TODO Auto-generated method stub
-		
-	}
 }

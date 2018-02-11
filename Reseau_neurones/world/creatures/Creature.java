@@ -11,7 +11,6 @@ import java.util.List;
 import UI.World;
 import captors.Captor;
 import collectables.Collectable;
-import creatures.team.Team;
 import genetics.Individu;
 import genetics.Selection;
 import limitations.Delimitation;
@@ -21,11 +20,8 @@ import zones.Zone;
 
 public abstract class Creature
 {
-	private final double xInit, yInit;
 	private final Selection selec;
 
-	private Team team;
-	private int teamIndex;
 
 	private boolean invincible = true;
 	private int invincibleTime = 60;
@@ -37,9 +33,9 @@ public abstract class Creature
 	protected double y;
 	protected final double radius;
 	private final double range;
-	
+
 	protected double damages = 0;
-	
+
 	protected double orientation=0;
 	protected final double dOrientation;
 	protected final double orientationMin=0;
@@ -55,6 +51,14 @@ public abstract class Creature
 	protected int nbInput;
 	protected double hpLostPerInstant;
 
+	protected double maturity = 0;
+	protected int childCount = 0;
+	protected final double adultAge = 25;
+	
+	protected int ttl = 12000;
+	private int timeLived = 0;
+
+	protected World world;
 	protected List<Creature> creatures;
 	protected List<Collectable> collectables;
 	protected List<Delimitation> delimitations;
@@ -62,17 +66,16 @@ public abstract class Creature
 
 	private Line2D attackHitbox; 
 
-	public Creature(double x, double y, double radius, double hpMax, double speed, double rotationSpeed, double hpLostPerInstant, Captor[] captors, int[] thingsToSee, Individu brain, Selection selec, int type, Color color, int nbInput, World world)
+	public Creature(double x, double y, double radius, double hpMax, double speed, double rotationSpeed, double hpLostPerInstant, Captor[] captors, int[][] thingsToSee, Individu brain, Selection selec, int type, Color color, int nbInput, World world)
 	{
-
-		this.xInit = x;
-		this.yInit = y;
 		this.selec = selec;
 
+		this.invincibleTimeLeft = invincibleTime;
+		this.invincible = true;
 		this.x=x;
 		this.y=y;
 		this.radius=radius;
-		this.range = 2 * radius;
+		this.range = 1.1 * radius;
 		this.attackHitbox = new Line2D.Double(x+radius/2, y+radius/2, x+radius/2+Math.cos(orientation)*range, y+radius/2-Math.sin(orientation)*range);
 		this.hpMax=hpMax;
 		this.hp=hpMax;
@@ -83,13 +86,27 @@ public abstract class Creature
 		this.brain=brain;
 		this.type=type;
 		this.alive=true;
-		this.color=color;
+		this.color=mixColors(color, selec.color);
 		this.nbInput=nbInput;
+		this.world = world;
 		this.creatures=world.creatures;
 		this.collectables=world.collectables;
 		this.delimitations=world.delimitations;
 		this.box=world.box;
 		initCaptors(thingsToSee);
+	}
+	
+	private Color mixColors(Color c0, Color c1)
+	{
+		double totalAlpha = c0.getAlpha() + c1.getAlpha();
+		double weight0 = c0.getAlpha() / totalAlpha;
+		double weight1 = c1.getAlpha() / totalAlpha;
+
+		double r = weight0 * c0.getRed() + weight1 * c1.getRed();
+		double g = weight0 * c0.getGreen() + weight1 * c1.getGreen();
+		double b = weight0 * c0.getBlue() + weight1 * c1.getBlue();
+
+		return new Color((int) r, (int) g, (int) b);
 	}
 
 	public void reset(double x, double y, Individu newBrain)
@@ -97,25 +114,22 @@ public abstract class Creature
 		this.x = x;
 		this.y = y;
 		this.brain = newBrain;
+		this.maturity = 0;
+		this.childCount = 0;
 		revive();
 		invincibleTimeLeft = invincibleTime;
 		invincible = true;
 
 	}
-	
+
 	public Line2D getAttackHitbox()
 	{
 		return attackHitbox;
 	}
-	
+
 	public double getDamages()
 	{
 		return damages;
-	}
-	
-	public void attackedBy(Creature c)
-	{
-		loseHp(c.getDamages());
 	}
 
 	public void die()
@@ -123,31 +137,33 @@ public abstract class Creature
 		this.alive = false;
 		this.hp = 0;
 	}
+	
+	public void setHp(double hp)
+	{
+		this.hp = hp;
+	}
+	
+	public void heal(double hp)
+	{
+		this.hp += hp;
+		if (this.hp > hpMax) this.hp = hpMax;	
+	}
+	
+	public void loseHp(double damages)
+	{
+		if (!isInvincible())
+		{
+			hp -= damages;
+			if (hp<=0)
+				die();
+		}
+	}
 
 	public void revive()
 	{
 		this.alive = true;
 		this.hp = hpMax;
-	}
-
-	public Team getTeam()
-	{
-		return team;
-	}
-
-	public void setTeam(Team team)
-	{
-		this.team = team;
-	}
-
-	public int getTeamIndex()
-	{
-		return teamIndex;
-	}
-
-	public void setTeamIndex(int index)
-	{
-		this.teamIndex = index;
+		timeLived = 0;
 	}
 
 	public void draw(Graphics g, boolean selected)
@@ -167,6 +183,9 @@ public abstract class Creature
 		Color oldColor = g.getColor();
 		g.setColor(Color.BLACK);
 		g.drawString("Score créature : "+new DecimalFormat("##.##").format(brain.getScore()),10, 150);
+		g.drawString("Maturité : "+ new DecimalFormat("##.##").format(maturity), 10, 170);
+		g.drawString("Compte d'enfants : "+ childCount, 10, 190);
+		g.drawString("Âge : "+ timeLived, 10, 210);
 		g.setColor(oldColor);
 	}
 
@@ -191,14 +210,13 @@ public abstract class Creature
 	{
 		Color oldColor = g.getColor();
 		if (!selected)
+		{
 			g.setColor(color);
+		}
 		else
+		{
 			g.setColor(new Color(color.getRed(),color.getGreen(),color.getBlue(),127));
-		if (team != null)
-			g.setColor(new Color(
-					(int)(Math.max(0, g.getColor().getRed() / team.colorModifier())),
-					(int)(Math.max(0, g.getColor().getGreen() / team.colorModifier())), 
-					(int)(Math.max(0, g.getColor().getBlue() / team.colorModifier()))));
+		}
 
 		g.drawLine(
 				(int)(attackHitbox.getX1()*SIZE+SCROLL_X), 
@@ -222,14 +240,24 @@ public abstract class Creature
 			c.draw(g);
 	}
 
-	public void update()
+	public void update(boolean evolving)
 	{
+		loseHp(hpLostPerInstant);
+		
 		updateInvincibility();
 		detect();
-		updatePosition();
+		updatePosition(evolving);
 		updateCaptors();
-		updateScore();
+
+		addSpecialFitness();
+		
+		brain.addScore(0.01 * (childCount+1));
+		maturity+=0.01;
+		timeLived+=0.01;
+		if (timeLived >= ttl) die();
 	}
+	
+	protected abstract void addSpecialFitness();
 
 	private void updateInvincibility()
 	{
@@ -241,19 +269,7 @@ public abstract class Creature
 		}
 	}
 
-	public void loseHp(double damages)
-	{
-		if (!isInvincible())
-		{
-			hp -= damages;
-			if (hp<=0)
-				die();
-		}
-	}
-
-	protected abstract void updateScore();
-
-	private void initCaptors(int[] thingsToSee)
+	private void initCaptors(int[][] thingsToSee)
 	{
 		for (Captor c : captors)
 		{
@@ -275,9 +291,9 @@ public abstract class Creature
 			c.detect(creatures, collectables, delimitations, box);
 	}
 
-	private void updatePosition()
+	private void updatePosition(boolean evolving)
 	{
-		loseHp(hpLostPerInstant);
+		//System.out.println(CreatureFactory.getTypeStrFromTypeInt(getType()) + " " + (captors[0].getResultCount() * captors.length + 7));
 		double[] inputs = new double[nbInput];
 		int cpt=0;
 		for (int i=0;i<captors.length;i++)
@@ -286,11 +302,11 @@ public abstract class Creature
 			for (int j=0;j<results.length;j++)
 				inputs[cpt++] = results[j];
 		}
-		inputs[cpt++]=1-hp/hpMax;
 		double xCenter = box.width/2;
 		double yCenter = box.height/2;
 		double xRatio = x - xCenter;
 		double yRatio = y - yCenter;
+		inputs[cpt++] = 1 - hp/hpMax;
 		inputs[cpt++] = (orientation >= Math.PI)?(orientation-Math.PI)/Math.PI:0;
 		inputs[cpt++] = (orientation < Math.PI)?orientation/Math.PI:0;
 		inputs[cpt++] = (xRatio>0)?xRatio/xCenter:0;
@@ -299,6 +315,8 @@ public abstract class Creature
 		inputs[cpt++] = (yRatio>0)?0:-yRatio/yCenter;
 		addParticularInput(inputs, cpt);
 		double[] decisions = brain.getOutputs(inputs);
+		if (!evolving)
+			selec.writeCsvEntry(inputs, decisions);
 		applyDecisions(decisions);
 
 		attackHitbox.setLine(
@@ -309,8 +327,6 @@ public abstract class Creature
 	}
 
 	protected abstract void addParticularInput(double[] inputs, int currentCount);
-
-	protected abstract void applySeenFitness(List<Integer> seenThings);
 
 	protected abstract void applyDecisions(double[] decisions);
 
@@ -341,7 +357,9 @@ public abstract class Creature
 
 	public abstract void interactWith(Collectable c);
 
-	public abstract void interactWith(Creature c);
+	public abstract void touchedBy(Creature c);
+
+	public abstract void touch(Creature c);
 
 	public abstract void interactWith(Zone z);
 
@@ -362,6 +380,36 @@ public abstract class Creature
 		}
 		loseHp(d.getDamages());
 	}
+
+
+	/**
+	 * Reproduction
+	 */
+
+	public void reproduceWith(Creature c)
+	{
+		/*if (canReproduce() && c.canReproduce() && c.getType() == type)
+		{
+			maturity = 0;
+			c.maturity = 0;
+			if (team != null)
+			{
+				team.add(CreatureFactory.generate(CreatureFactory.getTypeStrFromTypeInt(type), selec.getOffspring(this.getBrain(),c.getBrain()), selec, world));
+			}
+			else
+			{
+				creatures.add(CreatureFactory.generate(CreatureFactory.getTypeStrFromTypeInt(type), selec.getOffspring(this.getBrain(),c.getBrain()), selec, world));
+			}
+			childCount ++;
+			c.childCount ++;
+		}*/
+	}
+
+	public boolean canReproduce()
+	{
+		return maturity >= adultAge;
+	}
+
 
 	/**
 	 *  CALCULS DE LA POSITION SUR L'ECRAN
@@ -416,7 +464,8 @@ public abstract class Creature
 		return brain;
 	}
 
-	public double getHp() {
+	public double getHp() 
+	{
 		return hp;
 	}
 
@@ -429,5 +478,4 @@ public abstract class Creature
 	{
 		return selec;
 	}
-
 }

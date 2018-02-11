@@ -1,11 +1,10 @@
 package creatures.shooters;
 
 import java.awt.Color;
-import java.util.List;
-
 import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
+import captors.LineCaptor;
 import collectables.Collectable;
 import creatures.Creature;
 import genetics.Individu;
@@ -18,14 +17,23 @@ public class Tank extends ShooterCreature
 
 	public Tank(double x, double y, Individu brain, Selection selec, World world)
 	{
-		super(x, y, 3, 500, 0.15,0.05,
-				0.2,1.2,150, Integer.MAX_VALUE, 150, Color.BLACK,
+		super(x, y, 1.2, 400, 0.15,1,
+				1.3,1,500, Integer.MAX_VALUE, 150, Color.BLACK,
 				new Captor[] {
-						new EyeCaptor(Math.PI/7,16,Math.PI/3),
-						new EyeCaptor(-Math.PI/7,16,Math.PI/3),
-						new EyeCaptor(-Math.PI,4,Math.PI/2),
+						new LineCaptor(0, 30),
+						new EyeCaptor(Math.PI/6,25,Math.PI/3),
+						new EyeCaptor(-Math.PI/6,25,Math.PI/3),
+						new EyeCaptor(-Math.PI,10,Math.PI/2),
 		},
-				new int[] {SOLDIER,TANK,PROJECTILE,FUEL,POWERUP},
+				new int[][] {
+					{
+						TANK,
+					},
+					{
+					},
+					{
+						PROJECTILE,
+					}},
 				brain, selec, TANK, Color.BLUE,	LAYERS_SIZES_TANK[0],
 				world);
 	}
@@ -55,10 +63,17 @@ public class Tank extends ShooterCreature
 	}
 
 	@Override
-	public void interactWith(Creature c)
+	public void touchedBy(Creature c)
 	{
 		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public void touch(Creature c)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -66,9 +81,9 @@ public class Tank extends ShooterCreature
 	{
 		cdShoot--;
 		turn(2*(0.5-decisions[0]));
-		moveFront(2*(0.5-decisions[1]));
-		straff(2*(0.5-decisions[2]));
-		if (decisions[3]>0.5)
+		straff(2*(0.5-decisions[1]));
+		moveFront(2*(0.5-decisions[2]));
+		if (decisions[3]>0.7)
 			shoot();
 	}
 
@@ -81,24 +96,11 @@ public class Tank extends ShooterCreature
 			brain.addScore(5);
 			break;
 		case TANK:
-			brain.addScore(5);
+			brain.addScore(2);
+			heal(hpMax);
 			break;
 		default:
 			break;
 		}
-	}
-
-	@Override
-	protected void applySeenFitness(List<Integer> seenThings)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void updateScore()
-	{
-		// TODO Auto-generated method stub
-
 	}
 }

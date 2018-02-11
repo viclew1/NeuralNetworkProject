@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,25 +21,27 @@ import UI.controls.WorldController;
 import collectables.Collectable;
 import creatures.Creature;
 import creatures.CreatureFactory;
-import creatures.team.Team;
 import genetics.Epreuve;
 import genetics.Individu;
 import genetics.Selection;
-import genetics.Utils;
 import interactions.CreaCollecInteraction;
 import interactions.CreaCreaInteraction;
 import interactions.CreaDelimInteraction;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
 import neural_network.NeuralNetwork;
+import utils.CSVUtils;
 import utils.Draftman;
 import utils.IntersectionsChecker;
+import utils.SaveUtils;
 import zones.Zone;
 
 public abstract class World implements Epreuve
 {
 
 	private final String name = "NEURAL NETWORK PROJECT";
+
+	private final String fileName;
 
 	private Map<String, double[]> weights;
 
@@ -47,9 +50,8 @@ public abstract class World implements Epreuve
 
 	private int fpsToDraw = 0;
 
-	private final boolean TEAM_MODE = false;
-
 	private List<Selection> selections;
+	private boolean evolving = true;
 
 	public List<Delimitation> delimitations;
 	public List<Creature> creatures;
@@ -64,21 +66,23 @@ public abstract class World implements Epreuve
 
 
 	/**
-	 * Crée un environnement avec une image de la taille de l'écran
+	 * Crée un environnement de la taille de l'écran
 	 */
-	public World()
+	public World(String name)
 	{
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		init((int)(d.getWidth()), (int)(d.getHeight()));
+		this.fileName = name;
 	}
 
 	/**
-	 * Crée un environnement avec une image de la taille de la dimension passée en argument
+	 * Crée un environnement de la taille de la dimension passée en argument
 	 * @param dimension Dimension de l'image
 	 */
-	public World(Dimension dimension)
+	public World(String name, Dimension dimension)
 	{
 		init((int)(dimension.getWidth()), (int)(dimension.getHeight()));
+		this.fileName = name;
 	}
 
 	/**
@@ -86,14 +90,14 @@ public abstract class World implements Epreuve
 	 * @param w largeur de l'image
 	 * @param h hauteur de l'image
 	 */
-	public World(int w, int h)
+	public World(String name, int w, int h)
 	{
 		init(w,h);
+		this.fileName = name;
 	}
 
 	/**
-	 * Initialise l'image en fonction de la largeur / hauteur passés en argument
-	 * Initialise les Kernels utilsés pour le calcul et le dessin
+	 * Initialise l'environnement en fonction de la largeur / hauteur passés en argument
 	 * @param w largeur
 	 * @param h hauteur
 	 */
@@ -165,6 +169,8 @@ public abstract class World implements Epreuve
 		initSelections();
 		long timeRefFps = System.nanoTime();
 		long timeRefRecount = System.nanoTime();
+		if (evolving)
+			SaveUtils.prepareSave(fileName);
 		while (true)
 		{
 			if (!SLOW_MO || System.nanoTime() - timeRefFps > TIME_TO_WAIT)
@@ -174,13 +180,13 @@ public abstract class World implements Epreuve
 				{
 					sleepAndRefresh();
 					fps++;
-					if (saveIt++ >= saveDelta)
+					if (evolving && (saveIt++ >= saveDelta))
 					{
 						saveIt = 0;
-						Utils.initSave();
+						SaveUtils.initSave();
 						for (Selection s : selections)
 							s.saveBest();
-						Utils.endSave();
+						SaveUtils.endSave();
 					}
 				} else
 					try
@@ -203,6 +209,12 @@ public abstract class World implements Epreuve
 		}
 	}
 
+
+	public void generateCsv(int x, int y, boolean visible, String[] types, double[][] weights)
+	{
+		evolving = false;
+		start(x, y, visible, types, weights);
+	}
 
 
 	/**
@@ -238,14 +250,14 @@ public abstract class World implements Epreuve
 		updateAndRemoveDelimitations();
 
 		updateAndReplaceCollectables();
-		
+
 		generateDelimitations();
 
 		updateCreatures();
 	}
 
 
-	
+
 	private void updateAndRemoveDelimitations()
 	{
 		for (int i=0;i<delimitations.size();i++)
@@ -269,7 +281,7 @@ public abstract class World implements Epreuve
 		vegetableCount=0;
 		fuelCount=0;
 		powerUpCount=0;
-		
+
 		for (int i=0;i<collectables.size();i++)
 		{
 			Collectable c = collectables.get(i);
@@ -309,33 +321,24 @@ public abstract class World implements Epreuve
 		for (int i=0; i<creatures.size() ;i++)
 		{
 			Creature c = creatures.get(i);
-			if (c==null || !c.isAlive() || !IntersectionsChecker.contains(box, c))
+			if (!c.isAlive() || !IntersectionsChecker.contains(box, c))
 			{
-				if (TEAM_MODE)
-				{
-					creatures.remove(c);
-					c.getTeam().remove(c);
-					if (c.getTeam().allDead())
-					{
-						c.getTeam().reset();
-						for (int j = 0 ; j < c.getTeam().size() ; j++)
-							creatures.add(c.getTeam().get(j));
-					}
-					else
-						continue;
-				}
-				else
+				if (evolving)
 				{
 					Individu newBrain = c.getSelection().getOffspring(c.getBrain());
 					c.reset(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), newBrain);
 				}
+				else
+				{
+					c.reset(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), c.getBrain());
+				}
 			}
-			c.update();
+			c.update(evolving);
 			for (int j=0;j<collectables.size();j++)
 			{
 				Collectable collect = collectables.get(j);
 				if (!collect.isConsumed())
-					if (IntersectionsChecker.intersects(c,collect))
+					if (IntersectionsChecker.preciseIntersects(c,collect))
 						new CreaCollecInteraction(c,collect).process();
 			}
 			for (int j=0;j<delimitations.size();j++)
@@ -345,22 +348,21 @@ public abstract class World implements Epreuve
 					if (IntersectionsChecker.preciseIntersects(c,delim))
 						new CreaDelimInteraction(c,delim).process();
 			}
-			for (int j=i+1; j<creatures.size() ;j++)
+			for (int j=0; j<creatures.size() ;j++)
 			{
 				Creature creature2 = creatures.get(j);
 				if (creature2 == c)
 					continue;
 				if (creature2.isAlive())
-					if (IntersectionsChecker.intersects(c.getAttackHitbox(),creature2))
+					if ( IntersectionsChecker.preciseIntersects(c, creature2) || IntersectionsChecker.intersects(c.getAttackHitbox(),creature2))
 					{
 						new CreaCreaInteraction(c,creature2).process();
-						//creature2.attackedBy(c);
 					}
 			}
 		}
 	}
 
-	
+
 	/**
 	 * Actions Override depuis Epreuve
 	 */
@@ -371,24 +373,13 @@ public abstract class World implements Epreuve
 		for (Individu i : population)
 		{
 			i.resetScore();
-			if (!TEAM_MODE)
-			{
-				creatures.add(CreatureFactory.generate(type, i, selec, this));
-			}
-			else
-			{
-				Team t = new Team(type, TEAM_SIZE, i, selec, this);
-				for (int j = 0 ; j < t.size() ; j++)
-					creatures.add(t.get(j));
-			}
+			creatures.add(CreatureFactory.generate(type, i, selec, this));
 		}
 	}
 
 	@Override
 	public void initSelection(int nbIndiv, int nbGen, String type)
 	{
-		if (!TEAM_MODE)
-			nbIndiv *= TEAM_SIZE;
 		Selection selection=new Selection(World.this, nbIndiv, nbGen, type);
 		selection.population=new Individu[selection.nombreIndividus];
 		int[] layersSize = CreatureFactory.getLayersSize(type);
@@ -401,6 +392,11 @@ public abstract class World implements Epreuve
 				selection.population[i]=new NeuralNetwork(type,i,layersSize,wValues);
 		}
 
+		if (!evolving)
+		{
+			Writer w = CSVUtils.prepareSave(fileName + "_" + type);
+			selection.csvOut = w;
+		}
 		selections.add(selection);
 		lancerEpreuve(selection, selection.population, type);
 	}

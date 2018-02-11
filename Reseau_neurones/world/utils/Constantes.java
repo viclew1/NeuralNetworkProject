@@ -5,20 +5,19 @@ public class Constantes
 
 	public final static String TITRE_APPLICATION = "Neural Network Project";
 
-	public static final int POPULATION_SIZE_BEE = 5;
-	public static final int POPULATION_SIZE_WASP = 2;
-	public static final int POPULATION_SIZE_TANK = 15;
-	public static final int POPULATION_SIZE_SOLDIER = 15;
-	public static final int POPULATION_SIZE_COMPLEXDODGER = 12;
+	public static final int POPULATION_SIZE_BEE = 140;
+	public static final int POPULATION_SIZE_WASP = 45;
+	public static final int POPULATION_SIZE_TANK = 40;
+	public static final int POPULATION_SIZE_SOLDIER = 100;
+	public static final int POPULATION_SIZE_COMPLEXDODGER = 150;
 	public static final int POPULATION_SIZE_SIMPLEDODGER = 0;
-	public static final int POPULATION_SIZE_SLUG = 6;
-	public static final int POPULATION_SIZE_HEDGEHOG = 4;
-	public static final int POPULATION_SIZE_RHINOCEROS = 3;
+	public static final int POPULATION_SIZE_SLUG = 30;
+	public static final int POPULATION_SIZE_HEDGEHOG = 30;
+	public static final int POPULATION_SIZE_RHINOCEROS = 12;
 	public static final int POPULATION_SIZE_BLACKWITCH = 1;
-	public static final int POPULATION_SIZE_DRAGON = 1;
-	public static final int POPULATION_SIZE_ADAPTATIVE = 5;
+	public static final int POPULATION_SIZE_DRAGON = 5;
+	public static final int POPULATION_SIZE_ADAPTATIVE = 30;
 	
-	public static final int TEAM_SIZE = 6;
 	
 	public static final int GENERATION_COUNT = 100000;
 
@@ -42,7 +41,7 @@ public class Constantes
 	public static final int RHINOCEROS = 9;
 	public static final int DRAGON = 10;
 	public static final int ADAPTATIVE = 11;
-	public static final int BLACKWITCH = 11;
+	public static final int BLACKWITCH = 12;
 	
 	public static final int VEGETABLE = 101;
 	public static final int MEAT = 102;
@@ -70,20 +69,20 @@ public class Constantes
 	public static final String TYPE_ADAPTATIVE = "ADAPTATIVE";
 	
 	
-	public static final int[] LAYERS_SIZES_BEE = new int[] {22,17,2};
-	public static final int[] LAYERS_SIZES_TANK = new int[] {26,6,23,4};
-	public static final int[] LAYERS_SIZES_WASP = new int[] {23,18,2};
-	public static final int[] LAYERS_SIZES_SOLDIER = new int[] {26,15,7,15,4};
-	public static final int[] LAYERS_SIZES_COMPLEXDODGER = new int[] {23,4,12,2};
-	public static final int[] LAYERS_SIZES_SIMPLEDODGER = new int[] {23,4,21,2};
-	public static final int[] LAYERS_SIZES_SLUG = new int[] {30,11,18,12,2};
-	public static final int[] LAYERS_SIZES_HEDGEHOG = new int[] {29,28,14,4};
-	public static final int[] LAYERS_SIZES_DRAGON = new int[] {32,28,14,4};
-	public static final int[] LAYERS_SIZES_RHINOCEROS = new int[] {28,26,12,3};
-	public static final int[] LAYERS_SIZES_ADAPTATIVE = new int[] {28,26,12,3};
-	public static final int[] LAYERS_SIZES_BLACKWITCH = new int[] {28,26,12,3};
+	public static final int[] LAYERS_SIZES_BEE = new int[] {23,12,2};
+	public static final int[] LAYERS_SIZES_TANK = new int[] {24,10,4};
+	public static final int[] LAYERS_SIZES_WASP = new int[] {19,11,2};
+	public static final int[] LAYERS_SIZES_SOLDIER = new int[] {26,15,4};
+	public static final int[] LAYERS_SIZES_COMPLEXDODGER = new int[] {23,12,2};
+	public static final int[] LAYERS_SIZES_SIMPLEDODGER = new int[] {23,12,2};
+	public static final int[] LAYERS_SIZES_SLUG = new int[] {43,18,2};
+	public static final int[] LAYERS_SIZES_HEDGEHOG = new int[] {44,28,4};
+	public static final int[] LAYERS_SIZES_DRAGON = new int[] {56,28,4};
+	public static final int[] LAYERS_SIZES_RHINOCEROS = new int[] {43,26,3};
+	public static final int[] LAYERS_SIZES_ADAPTATIVE = new int[] {23,11,3};
+	public static final int[] LAYERS_SIZES_BLACKWITCH = new int[] {28,12,3};
 	
-	public static int FOOD_AMOUNT=1000;
+	public static int FOOD_AMOUNT=250;
 	public static int FUEL_AMOUNT=250;
 	
 	public static boolean DRAW_CAPTORS = false;
@@ -91,6 +90,6 @@ public class Constantes
 	public static boolean DRAW_ALL = true;
 	public static boolean PAUSE = false;
 	public static boolean SLOW_MO = false;
-	public static long TIME_TO_WAIT = 1000000000 / 60;
+	public static long TIME_TO_WAIT = 1000000000 / 20;
 	
 }

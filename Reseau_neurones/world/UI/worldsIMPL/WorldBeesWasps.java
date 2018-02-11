@@ -14,17 +14,17 @@ public class WorldBeesWasps extends World
 
 	public WorldBeesWasps()
 	{
-		super();
+		super("World Bee Wasps");
 	}
 	
 	public WorldBeesWasps(Dimension dimensions)
 	{
-		super(dimensions);
+		super("World Bee Wasps", dimensions);
 	}
 	
 	public WorldBeesWasps(int w, int h)
 	{
-		super(w, h);
+		super("World Bee Wasps", w, h);
 	}
 	
 	@Override

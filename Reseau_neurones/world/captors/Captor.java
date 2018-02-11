@@ -3,7 +3,6 @@ package captors;
 import java.awt.Graphics;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.List;
 
 import collectables.Collectable;
@@ -18,14 +17,15 @@ public abstract class Captor
 	protected final double range,orientation;
 	protected Creature creature;
 
-	private int[] thingsToSee;
-	private double[] results;
+	private double[] ponderatedResults;
 	protected double wallResult;
 
 	protected Rectangle2D around;
 	protected Shape hitbox;
+	private int[][] thingsToSee;
+	private int resultCount;
 
-	
+
 	public Captor(double orientation, double range)
 	{
 		this.orientation = orientation;
@@ -37,153 +37,202 @@ public abstract class Captor
 		this.creature=creature;
 	}
 
-	public void setThingsToSee(int[] thingsToSee)
-	{
-		this.thingsToSee=thingsToSee;
-		this.results = new double[thingsToSee.length];
-	}
-
 	public abstract void update(double x, double y, double deltaOrientation);
 
 	public abstract void draw(Graphics g);
 
 	public void detect(List<Creature> creatures, List<Collectable> collectables, List<Delimitation> delimitations, DelimitationBox box)
 	{
-		for (int i=0;i<results.length;i++)
-			results[i] = Double.MAX_VALUE;
-		detectCreatures(creatures);
-		detectCollectables(collectables);
-		detectDelimitations(delimitations);
+		int cpt = 0;
+		this.ponderatedResults = new double[resultCount];
+
+		if (thingsToSee[0].length > 0)
+		{
+			Result<Creature>[] closestCreaResult = detectCreatures(creatures);
+
+			for (Result<Creature> r : closestCreaResult)
+			{
+				double resultDist = 1 - r.getValue() / range;
+				if (resultDist > 1) resultDist = 1;
+				if (resultDist < 0) resultDist = 0;
+				ponderatedResults[cpt++] = resultDist;
+			}
+		}
+
+		if (thingsToSee[1].length > 0)
+		{
+			Result<Collectable>[] closestCollecResult = detectCollectables(collectables);
+
+			for (Result<Collectable> r : closestCollecResult)
+			{
+				double resultDist = 1 - r.getValue() / range;
+				if (resultDist > 1) resultDist = 1;
+				if (resultDist < 0) resultDist = 0;
+				ponderatedResults[cpt++] = resultDist;
+			}
+		}
+
+
+		if (thingsToSee[2].length > 0)
+		{
+			Result<Delimitation>[] closestDelimResult = detectDelimitations(delimitations);
+
+			for (Result<Delimitation> r : closestDelimResult)
+			{
+				double resultDist = 1 - r.getValue() / range;
+				if (resultDist > 1) resultDist = 1;
+				if (resultDist < 0) resultDist = 0;
+				ponderatedResults[cpt++] = resultDist;
+			}
+		}
+
 		detectWall(box);
+		ponderatedResults[cpt++] = wallResult;
 	}
 
-	private void detectCreatures(List<Creature> creatures)
+	private Result<Creature>[] detectCreatures(List<Creature> creatures)
 	{
+		@SuppressWarnings("unchecked")
+		Result<Creature>[] closest = new Result[thingsToSee[0].length];
+		for (int i = 0 ; i < closest.length ; i++)
+			closest[i] = new Result<>(null, Integer.MAX_VALUE);
 		for (int i=0; i<creatures.size();i++)
 		{
 			Creature c = creatures.get(i);
-			if (c!=null && c!=creature && around.contains(c.getX()+c.getSize()/2,c.getY()+c.getSize()/2))
-				processDetection(c);
+			if (c!=creature)
+			{
+				for (int j = 0 ; j < closest.length ; j++)
+				{
+					if (thingsToSee[0][j] == c.getType())
+						processDetection(c, closest[j]);
+				}
+
+			}
 		}
+		return closest;
 	}
 
-	private void detectCollectables(List<Collectable> collectables)
+	private Result<Collectable>[] detectCollectables(List<Collectable> collectables)
 	{
+		@SuppressWarnings("unchecked")
+		Result<Collectable>[] closest = new Result[thingsToSee[1].length];
+		for (int i = 0 ; i < closest.length ; i++)
+			closest[i] = new Result<>(null, Integer.MAX_VALUE);
 		for (int i=0;i<collectables.size();i++)
 		{
 			Collectable c = collectables.get(i);
-			if (c!=null && around.contains(c.getX()+c.getSize()/2,c.getY()+c.getSize()/2))
-				processDetection(c);
+			for (int j = 0 ; j < closest.length ; j++)
+			{
+				if (thingsToSee[1][j] == c.getType())
+					processDetection(c, closest[j]);
+			}
 		}
+		return closest;
 	}
 
-	private void detectDelimitations(List<Delimitation> delimitations)
+	private Result<Delimitation>[] detectDelimitations(List<Delimitation> delimitations)
 	{
+		@SuppressWarnings("unchecked")
+		Result<Delimitation>[] closest = new Result[thingsToSee[2].length];
+		for (int i = 0 ; i < closest.length ; i++)
+			closest[i] = new Result<>(null, Integer.MAX_VALUE);
 		for (int i=0;i<delimitations.size();i++)
 		{
 			Delimitation d = delimitations.get(i);
-			if (d!=null && around.contains(d.getX()+d.getW()/2,d.getY()+d.getH()/2))
-				processDetection(d);
+			for (int j = 0 ; j < closest.length ; j++)
+			{
+				if (thingsToSee[2][j] == d.getType())
+					processDetection(d, closest[j]);
+			}
 		}
+		return closest;
 	}
 
 	protected abstract void detectWall(DelimitationBox box);
 
 
-	private void processDetection(Creature c)
+	private void processDetection(Creature c, Result<Creature> closest)
 	{
-		int type = c.getType();
-		int index = -1;
-		for (int i=0 ; i<thingsToSee.length ; i++)
-		{
-			if (thingsToSee[i]==type)
-			{
-				index=i;
-				break;
-			}
-		}
-		if (index==-1 || !checkIntersection(c))
+		if (!checkIntersection(c))
 			return;
 		double value = DistanceChecker.distance(creature, c);
-		if (results[index] > value)
-			results[index] = value;
+		if (closest.getValue() > value)
+		{
+			closest.setValue(value);
+			closest.setSeen(c);
+		}
 	}
 
-	private void processDetection(Collectable c)
+	private void processDetection(Collectable c, Result<Collectable> closest)
 	{
-		int type = c.getType();
-		int index = -1;
-		for (int i=0 ; i<thingsToSee.length ; i++)
-		{
-			if (thingsToSee[i]==type)
-			{
-				index=i;
-				break;
-			}
-		}
-		if (index==-1 || !checkIntersection(c))
+		if (!checkIntersection(c))
 			return;
 		double value = DistanceChecker.distance(creature, c);
-		if (results[index] > value)
-			results[index] = value;
+		if (closest.getValue() > value)
+		{
+			closest.setValue(value);
+			closest.setSeen(c);
+		}
 	}
 
-	private void processDetection(Delimitation d)
+	private void processDetection(Delimitation d, Result<Delimitation> closest)
 	{
-		int type = d.getType();
-		int index = -1;
-		for (int i=0 ; i<thingsToSee.length ; i++)
-		{
-			if (thingsToSee[i]==type)
-			{
-				index=i;
-				break;
-			}
-		}
-		if (index==-1 || !checkIntersection(d))
+		if (!checkIntersection(d))
 			return;
 		double value = DistanceChecker.distance(creature, d);
-		if (results[index] > value)
-			results[index] = value;
+		if (closest.getValue() > value)
+		{
+			closest.setValue(value);
+			closest.setSeen(d);
+		}
 	}
 
 	public double[] getResults()
 	{
-		double[] ponderatedResults = new double[results.length + 1];
-		for (int i=0 ; i<results.length ; i++)
-		{
-			results[i]/=range;
-			if (results[i] > 1) results[i] = 0;
-			else results[i] = 1 - results[i];
-			ponderatedResults[i] = results[i];
-		}
-		ponderatedResults[results.length] = wallResult;
 		return ponderatedResults;
 	}
-	
+
 	protected boolean checkIntersection(Creature c)
 	{
+		if (!IntersectionsChecker.contains(around, c)) return false;
 		return IntersectionsChecker.intersects(hitbox,c);
 	}
 
 	protected boolean checkIntersection(Collectable c)
 	{
+		if (!IntersectionsChecker.contains(around, c)) return false;
 		return IntersectionsChecker.intersects(hitbox,c);
 	}
 
 	protected boolean checkIntersection(Delimitation d)
 	{
+		if (!IntersectionsChecker.contains(around, d)) return false;
 		return IntersectionsChecker.intersects(hitbox,d);
 	}
 
-	public List<Integer> getThingsInSight()
+	public void setThingsToSee(int[][] thingsToSee)
 	{
-		List<Integer> seen = new ArrayList<>();
-		for (int i = 0 ; i < results.length ; i++)
+		this.thingsToSee = thingsToSee;
+		resultCount = 0;
+		if (thingsToSee[0].length > 0)
 		{
-			if (results[i] != 0)
-				seen.add(thingsToSee[i]);
+			resultCount += 1;
+			resultCount += thingsToSee[0].length;
 		}
-		return seen;
+		if (thingsToSee[1].length > 0)
+		{
+			resultCount += thingsToSee[1].length;
+		}
+		if (thingsToSee[2].length > 0)
+		{
+			resultCount += thingsToSee[2].length;
+		}
+		resultCount ++;
 	}
+
+	public int getResultCount()
+	{
+		return resultCount;
+	}
+
 }

@@ -43,7 +43,12 @@ public class EyeCaptor extends Captor
 			((Path2D) hitbox).lineTo(xPoints[i], yPoints[i]);
 		}
 		((Path2D) hitbox).closePath();
-		around.setFrame(xPoints[0]-range,yPoints[0]-range,range*2,range*2);
+		
+		double minX = Math.min(Math.min(xPoints[0],xPoints[1]),xPoints[2]);
+		double minY = Math.min(Math.min(yPoints[0],yPoints[1]),yPoints[2]);
+		double maxX = Math.max(Math.max(xPoints[0],xPoints[1]),xPoints[2]);
+		double maxY = Math.max(Math.max(yPoints[0],yPoints[1]),yPoints[2]);
+		around.setFrame(minX,minY,maxX - minX,maxY - minY);
 	}
 
 	@Override

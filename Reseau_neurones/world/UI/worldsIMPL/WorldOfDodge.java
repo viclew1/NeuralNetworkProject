@@ -17,24 +17,26 @@ public class WorldOfDodge extends World
 
 	public WorldOfDodge()
 	{
-		super();
+		super("World Of Dodge");
 	}
 
 	public WorldOfDodge(Dimension dimensions)
 	{
-		super(dimensions);
+		super("World Of Dodge", dimensions);
 	}
 
 	public WorldOfDodge(int w, int h)
 	{
-		super(w, h);
+		super("World Of Dodge", w, h);
 	}
 
 	@Override
 	protected void initSelections()
 	{
 		initSelection(POPULATION_SIZE_COMPLEXDODGER, GENERATION_COUNT, TYPE_COMPLEXDODGER);
-		initSelection(POPULATION_SIZE_SIMPLEDODGER, GENERATION_COUNT, TYPE_SIMPLEDODGER);
+		//initSelection(POPULATION_SIZE_COMPLEXDODGER, GENERATION_COUNT, TYPE_COMPLEXDODGER);
+		//initSelection(POPULATION_SIZE_COMPLEXDODGER, GENERATION_COUNT, TYPE_COMPLEXDODGER);
+		//initSelection(POPULATION_SIZE_SIMPLEDODGER, GENERATION_COUNT, TYPE_SIMPLEDODGER);
 	}
 
 	@Override

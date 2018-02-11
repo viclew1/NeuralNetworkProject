@@ -1,7 +1,6 @@
 package creatures.chargers;
 
 import java.awt.Color;
-import java.util.List;
 
 import UI.World;
 import captors.Captor;
@@ -11,7 +10,7 @@ import genetics.Individu;
 import genetics.Selection;
 import zones.Zone;
 
-public class ChargerCreature extends Creature {
+public abstract class ChargerCreature extends Creature {
 	
 	static Color pourpre = new Color(65, 11, 16);
 	protected Boolean isCharging = false;
@@ -19,7 +18,7 @@ public class ChargerCreature extends Creature {
 	protected int chargeCooldown = (int) (450*Math.random());
 
 	public ChargerCreature(double x, double y, double radius, double hpMax, double speed,
-			double hpLostPerInstant, Captor[] captors, int[] thingsToSee, Individu brain, Selection selec, int type,
+			double hpLostPerInstant, Captor[] captors, int[][] thingsToSee, Individu brain, Selection selec, int type,
 			Color color, int nbInput, World world) {
 		super(x, y, radius, hpMax, speed, 3, hpLostPerInstant, captors, thingsToSee, brain, selec, type, color,
 				nbInput, world);
@@ -32,26 +31,9 @@ public class ChargerCreature extends Creature {
 			this.color = pourpre;
 		}
 	}
-	
-	@Override
-	protected void updateScore() {
-		
-	}
-
-	@Override
-	protected void applySeenFitness(List<Integer> seenThings) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void interactWith(Collectable c) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void interactWith(Creature c) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -74,5 +56,7 @@ public class ChargerCreature extends Creature {
 		// TODO Auto-generated method stub
 		
 	}
+
+	
 
 }

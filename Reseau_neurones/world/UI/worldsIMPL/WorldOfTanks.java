@@ -14,23 +14,23 @@ public class WorldOfTanks extends World
 
 	public WorldOfTanks()
 	{
-		super();
+		super("World Of Tanks");
 	}
 	
 	public WorldOfTanks(Dimension dimensions)
 	{
-		super(dimensions);
+		super("World Of Tanks", dimensions);
 	}
 	
 	public WorldOfTanks(int w, int h)
 	{
-		super(w, h);
+		super("World Of Tanks", w, h);
 	}
 	
 	@Override
 	protected void initSelections()
 	{
-		collectableAmount = FUEL_AMOUNT;
+		//collectableAmount = FUEL_AMOUNT;
 		//initSelection(POPULATION_SIZE_SOLDIER, GENERATION_COUNT, TYPE_SOLDIER);
 		initSelection(POPULATION_SIZE_TANK, GENERATION_COUNT, TYPE_TANK);
 	}
@@ -38,7 +38,7 @@ public class WorldOfTanks extends World
 	@Override
 	protected void generateCollectables()
 	{
-		collectables.add(new Fuel(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6)));
+		//collectables.add(new Fuel(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6)));
 	}
 
 	@Override

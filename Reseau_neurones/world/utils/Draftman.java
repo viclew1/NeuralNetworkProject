@@ -14,7 +14,7 @@ public class Draftman
 
 	public void drawCreature(Creature c, boolean selected, Graphics g)
 	{
-		if (c!=null)
+		if (c!=null && c.isAlive())
 			c.draw(g,selected);
 	}
 

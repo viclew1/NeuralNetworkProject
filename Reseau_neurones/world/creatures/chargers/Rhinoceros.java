@@ -23,7 +23,20 @@ public class Rhinoceros extends ChargerCreature {
 						new EyeCaptor(-Math.PI/7,30,Math.PI/3),
 						new EyeCaptor(-Math.PI,10,Math.PI/4),
 				},
-				new int[] {SLUG, BOMB, HEDGEHOG, VEGETABLE, RHINOCEROS, DRAGON},
+				new int[][] {
+					{
+						HEDGEHOG,
+						SLUG,
+						RHINOCEROS,
+						DRAGON,
+					},
+					{
+						BOMB,
+						VEGETABLE,
+					},
+					{
+						PROJECTILE,
+					}},
 				brain, selec, RHINOCEROS, Color.GRAY, 
 				LAYERS_SIZES_RHINOCEROS[0], 
 				world);
@@ -75,36 +88,47 @@ public class Rhinoceros extends ChargerCreature {
 			break;
 		}
 	}
-
+	
 	@Override
-	public void interactWith(Creature c) {
+	public void touchedBy(Creature c)
+	{
 		switch (c.getType())
 		{
-		case SLUG:
-			if (!c.isInvincible()) {
-				hp+=50;
-				brain.addScore(1000);
-			}
-			break;
-		case HEDGEHOG:
-			if (!c.isInvincible()) {
-				hp+=80;
-				brain.addScore(1000);
-			}
-			break;
 		case DRAGON:
 			if (!this.isInvincible()) {
-				brain.addScore(-1000);
 				die();
 			}
-			break;
-		case RHINOCEROS:
 			break;
 		default:
 			break;
 		}
 	}
-	
+
+	@Override
+	public void touch(Creature c)
+	{
+		switch (c.getType())
+		{
+		case SLUG:
+			if (!c.isInvincible()) {
+				hp+=50;
+				brain.addScore(10);
+			}
+			break;
+		case HEDGEHOG:
+			if (!c.isInvincible()) {
+				hp+=80;
+				brain.addScore(10);
+			}
+			break;
+		case RHINOCEROS:
+			reproduceWith(c);
+			break;
+		default:
+			break;
+		}
+	}
+
 	public void interactWith(Delimitation d)
 	{
 		switch (d.getType())
@@ -127,5 +151,12 @@ public class Rhinoceros extends ChargerCreature {
 		loseHp(d.getDamages());
 		if (hp<=0)
 			die();
+	}
+
+	@Override
+	protected void addSpecialFitness()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -3,11 +3,11 @@ package creatures.dodgers;
 import static utils.Constantes.*;
 
 import java.awt.Color;
-import java.util.List;
 
 import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
+import creatures.Creature;
 import genetics.Individu;
 import genetics.Selection;
 
@@ -41,18 +41,30 @@ public class SimpleDodger extends DodgerCreature
 		double intensityY = 2*(0.5-decisions[1]);
 		move(intensityX, intensityY);
 	}
-
+	
 	@Override
-	protected void applySeenFitness(List<Integer> seenThings)
+	public void touchedBy(Creature c)
 	{
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void updateScore()
+	public void touch(Creature c)
 	{
-		brain.addScore(0.01);
+		switch (c.getType())
+		{
+		case SIMPLEDODGER:
+			reproduceWith(c);
+			break;
+		default:
+			break;
+		}
 	}
 
+	@Override
+	protected void addSpecialFitness()
+	{
+
+	}
 }

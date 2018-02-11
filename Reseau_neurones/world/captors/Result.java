@@ -1,27 +1,37 @@
 package captors;
 
-import creatures.Creature;
-
-public class Result
+public class Result<T>
 {
 
+	private T seen;
 	private double value;
-	private Creature creature;
 	
-	public Result(Creature seenCreature, double value)
+	public Result(T seen, double value)
 	{
+		this.seen = seen;
 		this.value = value;
-		this.creature = seenCreature;
 	}
-	
-	public Creature getCreature()
+
+	public T getSeen()
 	{
-		return creature;
+		return seen;
 	}
-	
+
+	public void setSeen(T seen)
+	{
+		this.seen = seen;
+	}
+
 	public double getValue()
 	{
 		return value;
 	}
+
+	public void setValue(double value)
+	{
+		this.value = value;
+	}
+	
+	
 	
 }

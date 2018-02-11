@@ -13,8 +13,8 @@ public class CreaCreaInteraction extends Interaction
 	@Override
 	public void process()
 	{
-		((Creature)o1).interactWith((Creature)o2);
-		((Creature)o2).interactWith((Creature)o1);
+		((Creature)o1).touch((Creature)o2);
+		((Creature)o2).touchedBy((Creature)o1);
 	}
 
 }
