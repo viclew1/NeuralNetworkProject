@@ -281,7 +281,7 @@ public class Environnement implements Epreuve
 	{
 		Selection selection=new Selection(Environnement.this, nbIndiv, nbGen, type);
 		selection.population=new Individu[selection.nombreIndividus];
-		int[] layersSize = new int[] {7, 13, 2};
+		int[] layersSize = new int[] {8, 14, 2};
 		for (int i=0;i<selection.nombreIndividus;i++)
 		{
 			if (weights == null)

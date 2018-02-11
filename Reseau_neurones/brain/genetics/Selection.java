@@ -241,7 +241,7 @@ public class Selection
 		if (fitness > meilleureFitness)
 		{
 			meilleureFitness = fitness;
-			meilleurTrouve = deadOne;
+			meilleurTrouve = deadOne.deepCopy();
 		}
 
 		deads[deadIndex++] = deadOne;
@@ -270,19 +270,25 @@ public class Selection
 		double rdmD = r.nextDouble();
 		if (rdmD > 0.9)
 		{
-			parent1 = meilleurTrouve;
+			parent1 = meilleurTrouve.deepCopy();
 		}
 		else if (rdmD < 0.1)
+		{
+			parent1 = population[0].deepCopy();
+			parent1.randomize();
+			return parent1;
+		}
+		else if (rdmD < 0.2)
 		{
 			parent1 = population[0].deepCopy();
 			parent1.randomize();
 		}
 		else
 		{
-			parent1 = matingPopulation[r.nextInt(nombreIndividus)];
+			parent1 = matingPopulation[r.nextInt(nombreIndividus)].deepCopy();
 		}
 
-		Individu offspring = breed(parent1,matingPopulation[r.nextInt(nombreIndividus)]);
+		Individu offspring = breed(parent1,matingPopulation[r.nextInt(nombreIndividus)].deepCopy());
 		offspring.setIndex(deadOne.index);
 		population[deadOne.index] = offspring;
 		return offspring;
