@@ -1,5 +1,39 @@
 package creatures;
 
+import static utils.Constantes.ADAPTATIVE;
+import static utils.Constantes.BEE;
+import static utils.Constantes.COMPLEXDODGER;
+import static utils.Constantes.DRAGON;
+import static utils.Constantes.HEDGEHOG;
+import static utils.Constantes.LAYERS_SIZES_ADAPTATIVE;
+import static utils.Constantes.LAYERS_SIZES_BEE;
+import static utils.Constantes.LAYERS_SIZES_COMPLEXDODGER;
+import static utils.Constantes.LAYERS_SIZES_DRAGON;
+import static utils.Constantes.LAYERS_SIZES_HEDGEHOG;
+import static utils.Constantes.LAYERS_SIZES_RHINOCEROS;
+import static utils.Constantes.LAYERS_SIZES_SIMPLEDODGER;
+import static utils.Constantes.LAYERS_SIZES_SLUG;
+import static utils.Constantes.LAYERS_SIZES_SOLDIER;
+import static utils.Constantes.LAYERS_SIZES_TANK;
+import static utils.Constantes.LAYERS_SIZES_WASP;
+import static utils.Constantes.RHINOCEROS;
+import static utils.Constantes.SIMPLEDODGER;
+import static utils.Constantes.SLUG;
+import static utils.Constantes.SOLDIER;
+import static utils.Constantes.TANK;
+import static utils.Constantes.TYPE_ADAPTATIVE;
+import static utils.Constantes.TYPE_BEE;
+import static utils.Constantes.TYPE_COMPLEXDODGER;
+import static utils.Constantes.TYPE_DRAGON;
+import static utils.Constantes.TYPE_HEDGEHOG;
+import static utils.Constantes.TYPE_RHINOCEROS;
+import static utils.Constantes.TYPE_SIMPLEDODGER;
+import static utils.Constantes.TYPE_SLUG;
+import static utils.Constantes.TYPE_SOLDIER;
+import static utils.Constantes.TYPE_TANK;
+import static utils.Constantes.TYPE_WASP;
+import static utils.Constantes.WASP;
+
 import java.util.Random;
 
 import UI.World;
@@ -14,42 +48,40 @@ import creatures.shooters.Hedgehog;
 import creatures.shooters.Soldier;
 import creatures.shooters.Tank;
 import creatures.slugs.Slug;
-import genetics.Individu;
-import genetics.Selection;
-import static utils.Constantes.*;
+import fr.lewon.Individual;
 
 public class CreatureFactory
 {
 	/**
-	 * Générateurs de créatures
+	 * Gï¿½nï¿½rateurs de crï¿½atures
 	 */
 	
-	public static Creature generate(String type, Individu intelligence, Selection selec, World world)
+	public static Creature generate(String type, Individual intelligence, World world)
 	{
 		switch (type)
 		{
 		case TYPE_BEE:
-			return generateBee(intelligence, selec, world);
+			return generateBee(intelligence, world);
 		case TYPE_WASP:
-			return generateWasp(intelligence, selec, world);
+			return generateWasp(intelligence, world);
 		case TYPE_SOLDIER:
-			return generateSoldier(intelligence, selec, world);
+			return generateSoldier(intelligence, world);
 		case TYPE_TANK:
-			return generateTank(intelligence, selec, world);
+			return generateTank(intelligence, world);
 		case TYPE_COMPLEXDODGER:
-			return generateComplexDodger(intelligence, selec, world);
+			return generateComplexDodger(intelligence, world);
 		case TYPE_SIMPLEDODGER:
-			return generateSimpleDodger(intelligence, selec, world);
+			return generateSimpleDodger(intelligence, world);
 		case TYPE_SLUG:
-			return generateSlug(intelligence, selec, world);
+			return generateSlug(intelligence, world);
 		case TYPE_HEDGEHOG:
-			return generateHedgehog(intelligence, selec, world);
+			return generateHedgehog(intelligence, world);
 		case TYPE_RHINOCEROS:
-			return generateRhinoceros(intelligence, selec, world);
+			return generateRhinoceros(intelligence, world);
 		case TYPE_DRAGON:
-			return generateDragon(intelligence, selec, world);
+			return generateDragon(intelligence, world);
 		case TYPE_ADAPTATIVE:
-			return generateAdaptative(intelligence, selec, world);
+			return generateAdaptative(intelligence, world);
 		default:
 			System.out.println("Type inconnu - CreatureFactory.generateCreature");
 			System.exit(0);
@@ -57,59 +89,59 @@ public class CreatureFactory
 		return null;
 	}
 
-	public static Creature generateAdaptative(Individu intelligence, Selection selec, World world)
+	public static Creature generateAdaptative(Individual intelligence, World world)
 	{
-		return new AdaptativeCreature(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, selec, world);
+		return new AdaptativeCreature(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, world);
 	}
 	
-	public static Creature generateBee(Individu intelligence, Selection selec, World world)
+	public static Creature generateBee(Individual intelligence, World world)
 	{
-		return new Bee(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, selec, world);
+		return new Bee(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, world);
 	}
 
-	public static Creature generateWasp(Individu intelligence, Selection selec, World world)
+	public static Creature generateWasp(Individual intelligence, World world)
 	{
-		return new Wasp(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, selec, world);
+		return new Wasp(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, world);
 	}
 
-	public static Creature generateSoldier(Individu intelligence, Selection selec, World world)
+	public static Creature generateSoldier(Individual intelligence, World world)
 	{
-		return new Soldier(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, selec, world);
+		return new Soldier(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, world);
 	}
 
-	public static Creature generateTank(Individu intelligence, Selection selec, World world)
+	public static Creature generateTank(Individual intelligence, World world)
 	{
-		return new Tank(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, selec, world);
+		return new Tank(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, world);
 	}
 
-	public static Creature generateComplexDodger(Individu intelligence, Selection selec, World world)
+	public static Creature generateComplexDodger(Individual intelligence, World world)
 	{
-		return new ComplexDodger(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, selec, world);
+		return new ComplexDodger(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, world);
 	}
 	
-	public static Creature generateSimpleDodger(Individu intelligence, Selection selec, World world)
+	public static Creature generateSimpleDodger(Individual intelligence, World world)
 	{
-		return new SimpleDodger(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, selec, world);
+		return new SimpleDodger(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, world);
 	}
 
-	public static Creature generateSlug(Individu intelligence, Selection selec, World world)
+	public static Creature generateSlug(Individual intelligence, World world)
 	{
-		return new Slug(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, selec, world);
+		return new Slug(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, world);
 	}
 
-	public static Creature generateHedgehog(Individu intelligence, Selection selec, World world)
+	public static Creature generateHedgehog(Individual intelligence, World world)
 	{
-		return new Hedgehog(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, selec, world);
+		return new Hedgehog(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, world);
 	}
 
-	public static Creature generateRhinoceros(Individu intelligence, Selection selec, World world)
+	public static Creature generateRhinoceros(Individual intelligence, World world)
 	{
-		return new Rhinoceros(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, selec, world);
+		return new Rhinoceros(3+new Random().nextDouble()*(world.box.getWidth()-6), 3+new Random().nextDouble()*(world.box.getHeight()-6), intelligence, world);
 	}
 
-	public static Creature generateDragon(Individu intelligence, Selection selec, World world)
+	public static Creature generateDragon(Individual intelligence, World world)
 	{
-		return new Dragon(10+new Random().nextDouble()*(world.box.getWidth()-20), 10+new Random().nextDouble()*(world.box.getHeight()-20), intelligence, selec, world);
+		return new Dragon(10+new Random().nextDouble()*(world.box.getWidth()-20), 10+new Random().nextDouble()*(world.box.getHeight()-20), intelligence, world);
 	}
 
 	public static int[] getLayersSize(String type)

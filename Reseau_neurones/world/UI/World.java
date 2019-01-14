@@ -1,57 +1,66 @@
 package UI;
 
-import static utils.Constantes.*;
+import static utils.Constantes.BOMB;
+import static utils.Constantes.DRAW_ALL;
+import static utils.Constantes.DRAW_CAPTORS;
+import static utils.Constantes.DRAW_HP;
+import static utils.Constantes.FUEL;
+import static utils.Constantes.MEAT;
+import static utils.Constantes.PAUSE;
+import static utils.Constantes.POWERUP;
+import static utils.Constantes.SCROLL_X;
+import static utils.Constantes.SCROLL_Y;
+import static utils.Constantes.SIZE;
+import static utils.Constantes.SLOW_MO;
+import static utils.Constantes.VEGETABLE;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.DefaultXYDataset;
 
 import UI.controls.Controller;
 import UI.controls.WorldController;
 import collectables.Collectable;
 import creatures.Creature;
 import creatures.CreatureFactory;
-import genetics.Epreuve;
-import genetics.Individu;
-import genetics.Selection;
+import fr.lewon.Individual;
+import fr.lewon.SelectionProcessor;
+import fr.lewon.Trial;
+import fr.lewon.exceptions.NNException;
+import fr.lewon.nn.impl.NeuralNetworkClassic;
+import fr.lewon.selection.SelectionType;
+import fr.lewon.utils.PopulationInfos;
 import interactions.CreaCollecInteraction;
 import interactions.CreaCreaInteraction;
 import interactions.CreaDelimInteraction;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
-import neural_network.NeuralNetwork;
-import utils.CSVUtils;
+import utils.Constantes;
 import utils.Draftman;
 import utils.IntersectionsChecker;
-import utils.SaveUtils;
 import zones.Zone;
 
-public abstract class World implements Epreuve
+public abstract class World extends Trial
 {
 
 	private final String name = "NEURAL NETWORK PROJECT";
-
-	private final String fileName;
-
-	private Map<String, double[]> weights;
 
 	private JFrame jf;
 	private JPanel jp;
 
 	private int fpsToDraw = 0;
-
-	private List<Selection> selections;
-	private boolean evolving = true;
 
 	public List<Delimitation> delimitations;
 	public List<Creature> creatures;
@@ -64,40 +73,40 @@ public abstract class World implements Epreuve
 
 	private Creature selectedCreature;
 
+	private JFreeChart chart;
+	private List<PopulationInfos> graphInfos;
+	private static final int MAX_GRAPHINFOS_SIZE = 100;
+
 
 	/**
-	 * Crée un environnement de la taille de l'écran
+	 * Crï¿½e un environnement de la taille de l'ï¿½cran
 	 */
 	public World(String name)
 	{
-		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		init((int)(d.getWidth()), (int)(d.getHeight()));
-		this.fileName = name;
+		this(name, Toolkit.getDefaultToolkit().getScreenSize());
 	}
 
 	/**
-	 * Crée un environnement de la taille de la dimension passée en argument
+	 * Crï¿½e un environnement de la taille de la dimension passï¿½e en argument
 	 * @param dimension Dimension de l'image
 	 */
 	public World(String name, Dimension dimension)
 	{
-		init((int)(dimension.getWidth()), (int)(dimension.getHeight()));
-		this.fileName = name;
+		this(name, (int) dimension.getWidth(), (int) dimension.getHeight());
 	}
 
 	/**
-	 * Crée un environnement avec pour largeur et hauteur d'image les arguments passés
+	 * Crï¿½e un environnement avec pour largeur et hauteur d'image les arguments passï¿½s
 	 * @param w largeur de l'image
 	 * @param h hauteur de l'image
 	 */
 	public World(String name, int w, int h)
 	{
 		init(w,h);
-		this.fileName = name;
 	}
 
 	/**
-	 * Initialise l'environnement en fonction de la largeur / hauteur passés en argument
+	 * Initialise l'environnement en fonction de la largeur / hauteur passï¿½s en argument
 	 * @param w largeur
 	 * @param h hauteur
 	 */
@@ -108,7 +117,7 @@ public abstract class World implements Epreuve
 		collectables = new ArrayList<>(1000);
 		delimitations = new ArrayList<>(1000);
 		zones = new ArrayList<>(1000);
-		selections = new ArrayList<>();
+		graphInfos = new ArrayList<>(MAX_GRAPHINFOS_SIZE);
 
 		jf = new JFrame(name);
 		jf.setSize(w, h);
@@ -129,6 +138,14 @@ public abstract class World implements Epreuve
 
 		};
 		jf.add(jp);
+		
+		DefaultXYDataset dataSet = new DefaultXYDataset();
+		dataSet.addSeries("Moyenne", new double[2][100]);
+		chart = ChartFactory.createXYLineChart("popInfos", "Generation", "Score", dataSet);
+		ChartPanel graphPane = new ChartPanel(chart) {
+			
+		};
+		jf.add(graphPane);
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		Controller ctrl = new WorldController(this);
@@ -142,78 +159,29 @@ public abstract class World implements Epreuve
 
 	public void start(int x, int y)
 	{
-		start(x, y, true, new String[] {}, new double[][] {});
+		start(x, y, true);
 	}
 
 	public void start(int x, int y, boolean visible)
 	{
-		start(x, y, visible,new String[] {}, new double[][] {});
-	}
-
-	public void start(int x, int y, String[] types, double[][] weights)
-	{
-		start(x, y, true, types, weights);
-	}
-
-	public void start(int x, int y, boolean visible, String[] types, double[][] weights)
-	{
 		jf.setVisible(visible);
-		int fps = 0;
-		int saveDelta = 10000;
-		int saveIt = 0;
 		box=new DelimitationBox(0, 0, x, y);
-		this.weights = new HashMap<String, double[]>();
-		for (int i = 0 ; i < types.length ; i++)
-			this.weights.put(types[i], weights[i]);
 
-		initSelections();
-		long timeRefFps = System.nanoTime();
-		long timeRefRecount = System.nanoTime();
-		if (evolving)
-			SaveUtils.prepareSave(fileName);
-		while (true)
-		{
-			if (!SLOW_MO || System.nanoTime() - timeRefFps > TIME_TO_WAIT)
-			{
-				timeRefFps = System.nanoTime();
-				if (!PAUSE)
-				{
-					sleepAndRefresh();
-					fps++;
-					if (evolving && (saveIt++ >= saveDelta))
-					{
-						saveIt = 0;
-						SaveUtils.initSave();
-						for (Selection s : selections)
-							s.saveBest();
-						SaveUtils.endSave();
-					}
-				} else
-					try
-				{
-						Thread.sleep(1);
-				} catch (InterruptedException e)
-				{
-					e.printStackTrace();
-				}
-			}
-			if (System.nanoTime() - timeRefRecount > 1000000000)
-			{
-				timeRefRecount = System.nanoTime();
-				if (!visible)
-					System.out.println("FPS : " + fps);
-				else
-					fpsToDraw = fps;
-				fps = 0;
-			}
+		SelectionProcessor sp = new SelectionProcessor(this, SelectionType.ROULETTE.getSelectionImpl(), 0.25, 0.6);
+
+		List<Individual> brains = new ArrayList<>();
+		for (int i = 0 ; i < 400 ; i++) {
+			brains.add(new NeuralNetworkClassic(23, 2, Arrays.asList(5)));
 		}
-	}
-
-
-	public void generateCsv(int x, int y, boolean visible, String[] types, double[][] weights)
-	{
-		evolving = false;
-		start(x, y, visible, types, weights);
+		try {
+			Individual best = sp.start(brains, 600, Integer.MAX_VALUE);
+			while (true) {
+				getFitness(best);
+			}
+		} catch (NNException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 
@@ -227,14 +195,14 @@ public abstract class World implements Epreuve
 		infos.add((DRAW_CAPTORS?"Cacher":"Afficher")+" capteurs : S");
 		infos.add((DRAW_HP?"Cacher":"Afficher")+" points de vie : H");
 		infos.add((DRAW_ALL?"Cacher":"Afficher")+" la simulation : G");
-		infos.add((SLOW_MO?"Désactiver":"Activer")+" le slow motion : V");
+		infos.add((SLOW_MO?"DÃ©sactiver":"Activer")+" le slow motion : V");
 		infos.add((!PAUSE?"Mettre en pause":"Quitter la pause")+" : SPACE");
 		return infos;
 	}
 
 
 	/**
-	 * Méthodes à implémenter pour personnaliser le monde
+	 * Mï¿½thodes ï¿½ implï¿½menter pour personnaliser le monde
 	 */
 
 	protected abstract void initSelections();
@@ -242,7 +210,7 @@ public abstract class World implements Epreuve
 	protected abstract void generateDelimitations();
 
 	/**
-	 * Méthodes de calcul de position des objets
+	 * Mï¿½thodes de calcul de position des objets
 	 */
 
 	private void sleepAndRefresh()
@@ -318,22 +286,16 @@ public abstract class World implements Epreuve
 
 	private void updateCreatures()
 	{
+		List<Creature> toRemove = new ArrayList<>();
 		for (int i=0; i<creatures.size() ;i++)
 		{
 			Creature c = creatures.get(i);
 			if (!c.isAlive() || !IntersectionsChecker.contains(box, c))
 			{
-				if (evolving)
-				{
-					Individu newBrain = c.getSelection().getOffspring(c.getBrain());
-					c.reset(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), newBrain);
-				}
-				else
-				{
-					c.reset(3+new Random().nextDouble()*(box.getWidth()-6), 3+new Random().nextDouble()*(box.getHeight()-6), c.getBrain());
-				}
+				toRemove.add(c);
+				continue;
 			}
-			c.update(evolving);
+			c.update();
 			for (int j=0;j<collectables.size();j++)
 			{
 				Collectable collect = collectables.get(j);
@@ -360,52 +322,11 @@ public abstract class World implements Epreuve
 					}
 			}
 		}
-	}
-
-
-	/**
-	 * Actions Override depuis Epreuve
-	 */
-
-	@Override
-	public void lancerEpreuve(Selection selec, Individu[] population, String type)
-	{
-		for (Individu i : population)
-		{
-			i.resetScore();
-			creatures.add(CreatureFactory.generate(type, i, selec, this));
+		for (Creature c : toRemove) {
+			creatures.remove(c);
 		}
 	}
 
-	@Override
-	public void initSelection(int nbIndiv, int nbGen, String type)
-	{
-		Selection selection=new Selection(World.this, nbIndiv, nbGen, type);
-		selection.population=new Individu[selection.nombreIndividus];
-		int[] layersSize = CreatureFactory.getLayersSize(type);
-		for (int i=0;i<selection.nombreIndividus;i++)
-		{
-			double[] wValues;
-			if ((wValues = weights.get(type)) == null)
-				selection.population[i]=new NeuralNetwork(type,i,layersSize);
-			else
-				selection.population[i]=new NeuralNetwork(type,i,layersSize,wValues);
-		}
-
-		if (!evolving)
-		{
-			Writer w = CSVUtils.prepareSave(fileName + "_" + type);
-			selection.csvOut = w;
-		}
-		selections.add(selection);
-		lancerEpreuve(selection, selection.population, type);
-	}
-
-	@Override
-	public double fitness(Individu individu)
-	{
-		return individu.getScore();
-	}
 
 	/**
 	 * Actions disponibles pour le Controller
@@ -457,6 +378,63 @@ public abstract class World implements Epreuve
 			return;
 		}
 		selectedCreature=null;
+	}
+
+	@Override
+	protected double testIndividual(Individual individual) throws NNException {
+
+		delimitations.clear();
+
+		List<Creature> testedCrea = new ArrayList<>();
+		for (int i = 0 ; i < 10 ; i++) {
+			testedCrea.add(CreatureFactory.generateComplexDodger(individual, this));
+		}
+		creatures.addAll(testedCrea);
+
+		int fps = 0;
+		long timeRefFps = System.nanoTime();
+		long timeRefRecount = System.nanoTime();
+		while (!creatures.isEmpty())
+		{
+			if (!SLOW_MO || System.nanoTime() - timeRefFps > Constantes.TIME_TO_WAIT)
+			{
+				timeRefFps = System.nanoTime();
+				if (!PAUSE) {
+					sleepAndRefresh();
+					fps++;
+				} else {
+					try {
+						Thread.sleep(1);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			if (System.nanoTime() - timeRefRecount > 1000000000)
+			{
+				timeRefRecount = System.nanoTime();
+				fpsToDraw = fps;
+				fps = 0;
+			}
+		}
+
+
+
+		double score = 0;
+		for (Creature c : testedCrea) {
+			score += c.getBrain().getFitness();
+		}
+		return score;
+	}
+
+	@Override
+	public void processBetweenGenerationsActions(PopulationInfos infos) {
+		if (graphInfos.size() == MAX_GRAPHINFOS_SIZE) {
+			graphInfos.remove(0);
+		}
+		graphInfos.add(infos);
+
+		System.out.println("Max : " + infos.getMaxScore());
 	}
 
 

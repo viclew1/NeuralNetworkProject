@@ -1,22 +1,24 @@
 package creatures.insects;
 
-import static utils.Constantes.*;
+import static utils.Constantes.BEE;
+import static utils.Constantes.LAYERS_SIZES_WASP;
+import static utils.Constantes.MEAT;
+import static utils.Constantes.WASP;
 
 import java.awt.Color;
+
 import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
 import captors.LineCaptor;
 import collectables.Collectable;
 import creatures.Creature;
-import genetics.Individu;
-import genetics.Selection;
-import utils.DistanceChecker;
+import fr.lewon.Individual;
 
 public class Wasp extends InsectCreature
 {
 
-	public Wasp(double x, double y, Individu brain, Selection selec, World world)
+	public Wasp(double x, double y, Individual brain, World world)
 	{
 		super(x, y, 2, 400, 0.9, 2, 2,
 				new Captor[]{
@@ -33,7 +35,7 @@ public class Wasp extends InsectCreature
 			},
 			{
 			}},
-				brain, selec, WASP, Color.ORANGE, LAYERS_SIZES_WASP[0],
+				brain, WASP, Color.ORANGE, LAYERS_SIZES_WASP[0],
 				world);
 	}
 
@@ -45,7 +47,6 @@ public class Wasp extends InsectCreature
 		switch (c.getType())
 		{
 		case MEAT:
-			brain.addScore(1);
 			heal(25);
 			c.consume();
 			break;
@@ -63,17 +64,6 @@ public class Wasp extends InsectCreature
 
 	private void eat()
 	{
-		heal(50);
-		brain.addScore(1);
-		for (int i = 0 ; i < creatures.size() ; i++)
-		{
-			Creature c = creatures.get(i);
-			if (c.getSelection() == getSelection() && DistanceChecker.distance(c, this) < shareRadius)
-			{
-				c.heal(15);
-				c.getBrain().addScore(0.2);
-			}
-		}
 	}
 
 	@Override
@@ -96,11 +86,6 @@ public class Wasp extends InsectCreature
 	@Override
 	protected void addSpecialFitness()
 	{
-		for (int i = 0 ; i < creatures.size() ; i++)
-			if (creatures.get(i).getSelection() == getSelection())
-				if (DistanceChecker.distance(this, creatures.get(i)) < shareRadius)
-					brain.addScore(0.01);
-
 	}
 
 }

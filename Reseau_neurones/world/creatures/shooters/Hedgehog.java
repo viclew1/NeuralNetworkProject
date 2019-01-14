@@ -1,20 +1,29 @@
 package creatures.shooters;
 
+import static utils.Constantes.BOMB;
+import static utils.Constantes.DRAGON;
+import static utils.Constantes.HEDGEHOG;
+import static utils.Constantes.LAYERS_SIZES_HEDGEHOG;
+import static utils.Constantes.PROJECTILE;
+import static utils.Constantes.RHINOCEROS;
+import static utils.Constantes.SLUG;
+import static utils.Constantes.VEGETABLE;
+
 import java.awt.Color;
+import java.util.List;
+
 import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
 import collectables.Collectable;
 import creatures.Creature;
-import genetics.Individu;
-import genetics.Selection;
-import static utils.Constantes.*;
+import fr.lewon.Individual;
 
 public class Hedgehog extends ShooterCreature{
 
 	static Color brown = new Color(156, 93, 82);
 
-	public Hedgehog(double x, double y, Individu brain, Selection selec, 
+	public Hedgehog(double x, double y, Individual brain, 
 			World world)
 	{
 		super(x, y, 3, 300, 0.7, 0.5, 2, 2, 2000, Integer.MAX_VALUE, 40, brown,
@@ -37,7 +46,7 @@ public class Hedgehog extends ShooterCreature{
 					{
 						PROJECTILE,
 					}},
-				brain, selec, HEDGEHOG, brown, 
+				brain, HEDGEHOG, brown, 
 				LAYERS_SIZES_HEDGEHOG[0],
 				world);
 	}
@@ -51,7 +60,6 @@ public class Hedgehog extends ShooterCreature{
 				die();
 			break;
 		case VEGETABLE:
-			brain.addScore(50);
 			hp+=50;
 			if (hp>hpMax)
 				hp=hpMax;
@@ -96,7 +104,6 @@ public class Hedgehog extends ShooterCreature{
 				{
 				hp += 50;
 				if (hp > hpMax) hp = hpMax;
-				brain.addScore(10);
 				}
 			break;
 		case HEDGEHOG:
@@ -121,13 +128,11 @@ public class Hedgehog extends ShooterCreature{
 		switch (targetType)
 		{
 		case SLUG:
-			brain.addScore(10);
 			break;
 		case RHINOCEROS:
 			//brain.addScore(0);
 			break;
 		case BOMB:
-			brain.addScore(5);
 			break;
 		default:
 			break;
@@ -135,12 +140,12 @@ public class Hedgehog extends ShooterCreature{
 	}
 
 	@Override
-	protected void applyDecisions(double[] decisions) {
+	protected void applyDecisions(List<Double> decisions) {
 		cdShoot--;
-		turn(2*(0.5-decisions[0]));
-		moveFront(decisions[1]);
-		straff(2*(0.5-decisions[2]));
-		if (decisions[3]>0.5)
+		turn(2*(0.5-decisions.get(0)));
+		moveFront(decisions.get(1));
+		straff(2*(0.5-decisions.get(2)));
+		if (decisions.get(3)>0.5)
 			shoot();
 		
 	}

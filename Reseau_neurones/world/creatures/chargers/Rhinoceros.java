@@ -1,22 +1,31 @@
 package creatures.chargers;
 
-import static utils.Constantes.*;
+import static utils.Constantes.BOMB;
+import static utils.Constantes.DRAGON;
+import static utils.Constantes.FIREBALL;
+import static utils.Constantes.HEDGEHOG;
+import static utils.Constantes.LAYERS_SIZES_RHINOCEROS;
+import static utils.Constantes.PROJECTILE;
+import static utils.Constantes.RHINOCEROS;
+import static utils.Constantes.SLUG;
+import static utils.Constantes.VEGETABLE;
 
 import java.awt.Color;
+import java.util.List;
+
 import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
 import collectables.Collectable;
 import creatures.Creature;
-import genetics.Individu;
-import genetics.Selection;
+import fr.lewon.Individual;
 import limitations.Delimitation;
 import limitations.throwables.Projectile;
 
 public class Rhinoceros extends ChargerCreature {
 
 	public Rhinoceros(double x, double y,
-			Individu brain, Selection selec, World world) {
+			Individual brain, World world) {
 		super(x, y, 3, 500, 0.5, 1, 
 				new Captor[]{
 						new EyeCaptor(Math.PI/7,30,Math.PI/3),
@@ -37,14 +46,14 @@ public class Rhinoceros extends ChargerCreature {
 					{
 						PROJECTILE,
 					}},
-				brain, selec, RHINOCEROS, Color.GRAY, 
+				brain, RHINOCEROS, Color.GRAY, 
 				LAYERS_SIZES_RHINOCEROS[0], 
 				world);
 		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
-	protected void applyDecisions(double[] decisions) {
+	protected void applyDecisions(List<Double> decisions) {
 		chargeCooldown--;
 		if(isCharging) {
 			chargeTimeLeft--;
@@ -57,15 +66,15 @@ public class Rhinoceros extends ChargerCreature {
 			this.color=Color.GRAY;
 		}
 		if(!isCharging) {
-			turn(2*(0.5-decisions[0]));
+			turn(2*(0.5-decisions.get(0)));
 		}
 		if(!isCharging) {
-			moveFront(2*(0.5-decisions[1]));
+			moveFront(2*(0.5-decisions.get(1)));
 		}
 		if(isCharging) {
-			moveFront(0.6+(0.4*decisions[1]));
+			moveFront(0.6+(0.4*decisions.get(1)));
 		}
-		if (decisions[2]>0.5)
+		if (decisions.get(2)>0.5)
 			charge();
 	}
 	
@@ -74,10 +83,8 @@ public class Rhinoceros extends ChargerCreature {
 		switch (c.getType())
 		{
 		case BOMB:
-			brain.addScore(50);
 			c.consume();
 		case VEGETABLE:
-			brain.addScore(50);
 			hp+=20;
 			if (hp>hpMax)
 				hp=hpMax;
@@ -112,13 +119,11 @@ public class Rhinoceros extends ChargerCreature {
 		case SLUG:
 			if (!c.isInvincible()) {
 				hp+=50;
-				brain.addScore(10);
 			}
 			break;
 		case HEDGEHOG:
 			if (!c.isInvincible()) {
 				hp+=80;
-				brain.addScore(10);
 			}
 			break;
 		case RHINOCEROS:

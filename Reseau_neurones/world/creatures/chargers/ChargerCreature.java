@@ -1,13 +1,13 @@
 package creatures.chargers;
 
 import java.awt.Color;
+import java.util.List;
 
 import UI.World;
 import captors.Captor;
 import collectables.Collectable;
 import creatures.Creature;
-import genetics.Individu;
-import genetics.Selection;
+import fr.lewon.Individual;
 import zones.Zone;
 
 public abstract class ChargerCreature extends Creature {
@@ -18,9 +18,9 @@ public abstract class ChargerCreature extends Creature {
 	protected int chargeCooldown = (int) (450*Math.random());
 
 	public ChargerCreature(double x, double y, double radius, double hpMax, double speed,
-			double hpLostPerInstant, Captor[] captors, int[][] thingsToSee, Individu brain, Selection selec, int type,
+			double hpLostPerInstant, Captor[] captors, int[][] thingsToSee, Individual brain, int type,
 			Color color, int nbInput, World world) {
-		super(x, y, radius, hpMax, speed, 3, hpLostPerInstant, captors, thingsToSee, brain, selec, type, color,
+		super(x, y, radius, hpMax, speed, 3, hpLostPerInstant, captors, thingsToSee, brain, type, color,
 				nbInput, world);
 	}
 
@@ -45,7 +45,7 @@ public abstract class ChargerCreature extends Creature {
 	}
 
 	@Override
-	protected void applyDecisions(double[] decisions) {
+	protected void applyDecisions(List<Double> decisions) {
 		// TODO Auto-generated method stub
 		
 	}

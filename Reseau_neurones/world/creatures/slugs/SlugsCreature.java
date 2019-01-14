@@ -1,21 +1,22 @@
 package creatures.slugs;
 
 import java.awt.Color;
+import java.util.List;
+
 import UI.World;
 import captors.Captor;
 import creatures.Creature;
-import genetics.Individu;
-import genetics.Selection;
+import fr.lewon.Individual;
 
 public abstract class SlugsCreature extends Creature {
 	
 	public int bombCooldown;
 
 	public SlugsCreature(double x, double y, double radius, double hpMax, double speed, double rotationSpeed,
-			double hpLostPerInstant, Captor[] captors, int[][] thingsToSee, Individu brain, Selection selec, int type, Color color,
+			double hpLostPerInstant, Captor[] captors, int[][] thingsToSee, Individual brain, int type, Color color,
 			int nbInput, World world) {
 		
-		super(x, y, radius, hpMax, speed, rotationSpeed, hpLostPerInstant, captors, thingsToSee, brain, selec, type, color, nbInput,
+		super(x, y, radius, hpMax, speed, rotationSpeed, hpLostPerInstant, captors, thingsToSee, brain, type, color, nbInput,
 				world);
 		
 		this.bombCooldown = 20;
@@ -36,9 +37,9 @@ public abstract class SlugsCreature extends Creature {
 	}
 	
 	@Override
-	protected void applyDecisions(double[] decisions) {
-		turn(2*(0.5-decisions[0]));
-		moveFront(decisions[1]);
+	protected void applyDecisions(List<Double> decisions) {
+		turn(2*(0.5-decisions.get(0)));
+		moveFront(decisions.get(1));
 	}
 	
 	@Override

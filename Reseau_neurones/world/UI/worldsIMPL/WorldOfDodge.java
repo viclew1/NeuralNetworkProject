@@ -1,7 +1,5 @@
 package UI.worldsIMPL;
 
-import static utils.Constantes.*;
-
 import java.awt.Dimension;
 import java.util.Random;
 
@@ -33,10 +31,6 @@ public class WorldOfDodge extends World
 	@Override
 	protected void initSelections()
 	{
-		initSelection(POPULATION_SIZE_COMPLEXDODGER, GENERATION_COUNT, TYPE_COMPLEXDODGER);
-		//initSelection(POPULATION_SIZE_COMPLEXDODGER, GENERATION_COUNT, TYPE_COMPLEXDODGER);
-		//initSelection(POPULATION_SIZE_COMPLEXDODGER, GENERATION_COUNT, TYPE_COMPLEXDODGER);
-		//initSelection(POPULATION_SIZE_SIMPLEDODGER, GENERATION_COUNT, TYPE_SIMPLEDODGER);
 	}
 
 	@Override

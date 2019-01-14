@@ -1,21 +1,24 @@
 package creatures.insects;
 
-import static utils.Constantes.*;
+import static utils.Constantes.BEE;
+import static utils.Constantes.LAYERS_SIZES_BEE;
+import static utils.Constantes.VEGETABLE;
+import static utils.Constantes.WASP;
 
 import java.awt.Color;
+
 import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
 import captors.LineCaptor;
 import collectables.Collectable;
 import creatures.Creature;
-import genetics.Individu;
-import genetics.Selection;
+import fr.lewon.Individual;
 
 public class Bee extends InsectCreature
 {
 
-	public Bee(double x, double y, Individu brain, Selection selec, World world)
+	public Bee(double x, double y, Individual brain, World world)
 	{
 		super(x, y, 1, 400, 1.2, 6, 1,
 				new Captor[]{
@@ -33,7 +36,7 @@ public class Bee extends InsectCreature
 					},
 					{
 					}},
-				brain, selec,	BEE, Color.YELLOW, LAYERS_SIZES_BEE[0],
+				brain, BEE, Color.YELLOW, LAYERS_SIZES_BEE[0],
 				world);
 	}
 
@@ -46,7 +49,6 @@ public class Bee extends InsectCreature
 		{
 		case VEGETABLE:
 			heal(50);
-			brain.addScore(1);
 			c.consume();
 			break;
 		default:

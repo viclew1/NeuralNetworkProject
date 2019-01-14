@@ -1,21 +1,28 @@
 package creatures.slugs;
 
+import static utils.Constantes.BOMB;
+import static utils.Constantes.DRAGON;
+import static utils.Constantes.HEDGEHOG;
+import static utils.Constantes.LAYERS_SIZES_SLUG;
+import static utils.Constantes.PROJECTILE;
+import static utils.Constantes.RHINOCEROS;
+import static utils.Constantes.SLUG;
+import static utils.Constantes.VEGETABLE;
+
 import java.awt.Color;
+
 import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
 import collectables.Collectable;
 import collectables.expirables.Bomb;
 import creatures.Creature;
-import genetics.Individu;
-import genetics.Selection;
+import fr.lewon.Individual;
 import zones.Zone;
-
-import static utils.Constantes.*;
 
 public class Slug extends SlugsCreature {
 
-	public Slug(double x, double y, Individu brain, Selection selec, World world) 
+	public Slug(double x, double y, Individual brain, World world) 
 	{
 		super(x, y, 2, 500, 0.3, 3, 1, 
 				new Captor[]{
@@ -37,7 +44,7 @@ public class Slug extends SlugsCreature {
 			{
 				PROJECTILE,
 			}},
-				brain, selec, SLUG, Color.ORANGE, 
+				brain, SLUG, Color.ORANGE, 
 				LAYERS_SIZES_SLUG[0],
 				world);
 	}
@@ -52,7 +59,6 @@ public class Slug extends SlugsCreature {
 		case BOMB:
 			break;
 		case VEGETABLE:
-			brain.addScore(200);
 			hp+=50;
 			if (hp>hpMax)
 				hp=hpMax;
@@ -78,7 +84,6 @@ public class Slug extends SlugsCreature {
 	}
 
 	public void addScore(double i) {
-		brain.addScore(i);
 	}
 
 	@Override

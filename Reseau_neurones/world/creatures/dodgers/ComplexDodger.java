@@ -1,19 +1,21 @@
 package creatures.dodgers;
 
+import static utils.Constantes.COMPLEXDODGER;
+import static utils.Constantes.LAYERS_SIZES_COMPLEXDODGER;
+
 import java.awt.Color;
+import java.util.List;
 
 import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
 import creatures.Creature;
-import genetics.Individu;
-import genetics.Selection;
-import static utils.Constantes.*;
+import fr.lewon.Individual;
 
 public class ComplexDodger extends DodgerCreature
 {
 
-	public ComplexDodger(double x, double y, Individu brain, Selection selec, World world)
+	public ComplexDodger(double x, double y, Individual brain, World world)
 	{
 		super(x, y, 1, 1, 1, 0, new Captor[]{
 				new EyeCaptor(Math.PI/2,15,Math.PI/3.6),
@@ -24,14 +26,14 @@ public class ComplexDodger extends DodgerCreature
 				new EyeCaptor(-Math.PI/4,15,Math.PI/3.6),
 				new EyeCaptor(-Math.PI*3/4,15,Math.PI/3.6),
 				new EyeCaptor(Math.PI*3/4,15,Math.PI/3.6),
-		}, brain, selec, COMPLEXDODGER, Color.GREEN, LAYERS_SIZES_COMPLEXDODGER[0], world);
+		}, brain, COMPLEXDODGER, Color.GREEN, LAYERS_SIZES_COMPLEXDODGER[0], world);
 	}
 	
 	@Override
-	protected void applyDecisions(double[] decisions)
+	protected void applyDecisions(List<Double> decisions)
 	{
-		turn(2*(0.5-decisions[0]));
-		moveFront(0.3 + 0.7 * decisions[1]);
+		turn(2*(0.5-decisions.get(0)));
+		moveFront(0.3 + 0.7 * decisions.get(1));
 	}
 	
 	@Override

@@ -1,18 +1,25 @@
 package creatures;
 
-import static utils.Constantes.*;
+import static utils.Constantes.DRAW_CAPTORS;
+import static utils.Constantes.DRAW_HP;
+import static utils.Constantes.FIREBALL;
+import static utils.Constantes.PROJECTILE;
+import static utils.Constantes.SCROLL_X;
+import static utils.Constantes.SCROLL_Y;
+import static utils.Constantes.SIZE;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Line2D;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import UI.World;
 import captors.Captor;
 import collectables.Collectable;
-import genetics.Individu;
-import genetics.Selection;
+import fr.lewon.Individual;
+import fr.lewon.exceptions.NNException;
 import limitations.Delimitation;
 import limitations.DelimitationBox;
 import limitations.throwables.Projectile;
@@ -20,9 +27,6 @@ import zones.Zone;
 
 public abstract class Creature
 {
-	private final Selection selec;
-
-
 	private boolean invincible = true;
 	private int invincibleTime = 60;
 	private int invincibleTimeLeft = 60;
@@ -41,7 +45,7 @@ public abstract class Creature
 	protected final double orientationMin=0;
 	protected final double orientationMax=2*Math.PI;
 	protected double speed;
-	protected Individu brain;
+	protected Individual brain;
 	protected Captor[] captors;
 	private boolean alive;
 	private final int type;
@@ -66,10 +70,8 @@ public abstract class Creature
 
 	private Line2D attackHitbox; 
 
-	public Creature(double x, double y, double radius, double hpMax, double speed, double rotationSpeed, double hpLostPerInstant, Captor[] captors, int[][] thingsToSee, Individu brain, Selection selec, int type, Color color, int nbInput, World world)
+	public Creature(double x, double y, double radius, double hpMax, double speed, double rotationSpeed, double hpLostPerInstant, Captor[] captors, int[][] thingsToSee, Individual brain, int type, Color color, int nbInput, World world)
 	{
-		this.selec = selec;
-
 		this.invincibleTimeLeft = invincibleTime;
 		this.invincible = true;
 		this.x=x;
@@ -86,7 +88,7 @@ public abstract class Creature
 		this.brain=brain;
 		this.type=type;
 		this.alive=true;
-		this.color=mixColors(color, selec.color);
+		this.color=color;
 		this.nbInput=nbInput;
 		this.world = world;
 		this.creatures=world.creatures;
@@ -96,20 +98,7 @@ public abstract class Creature
 		initCaptors(thingsToSee);
 	}
 	
-	private Color mixColors(Color c0, Color c1)
-	{
-		double totalAlpha = c0.getAlpha() + c1.getAlpha();
-		double weight0 = c0.getAlpha() / totalAlpha;
-		double weight1 = c1.getAlpha() / totalAlpha;
-
-		double r = weight0 * c0.getRed() + weight1 * c1.getRed();
-		double g = weight0 * c0.getGreen() + weight1 * c1.getGreen();
-		double b = weight0 * c0.getBlue() + weight1 * c1.getBlue();
-
-		return new Color((int) r, (int) g, (int) b);
-	}
-
-	public void reset(double x, double y, Individu newBrain)
+	public void reset(double x, double y, Individual newBrain)
 	{
 		this.x = x;
 		this.y = y;
@@ -182,10 +171,10 @@ public abstract class Creature
 	{
 		Color oldColor = g.getColor();
 		g.setColor(Color.BLACK);
-		g.drawString("Score créature : "+new DecimalFormat("##.##").format(brain.getScore()),10, 150);
-		g.drawString("Maturité : "+ new DecimalFormat("##.##").format(maturity), 10, 170);
+		g.drawString("Score crï¿½ature : "+new DecimalFormat("##.##").format(brain.getFitness()),10, 150);
+		g.drawString("Maturitï¿½ : "+ new DecimalFormat("##.##").format(maturity), 10, 170);
 		g.drawString("Compte d'enfants : "+ childCount, 10, 190);
-		g.drawString("Âge : "+ timeLived, 10, 210);
+		g.drawString("ï¿½ge : "+ timeLived, 10, 210);
 		g.setColor(oldColor);
 	}
 
@@ -231,7 +220,6 @@ public abstract class Creature
 
 	public void drawBrain(Graphics g)
 	{
-		brain.draw(g);
 	}
 
 	private void drawCaptors(Graphics g)
@@ -240,18 +228,18 @@ public abstract class Creature
 			c.draw(g);
 	}
 
-	public void update(boolean evolving)
+	public void update()
 	{
 		loseHp(hpLostPerInstant);
 		
 		updateInvincibility();
 		detect();
-		updatePosition(evolving);
+		updatePosition();
 		updateCaptors();
 
 		addSpecialFitness();
 		
-		brain.addScore(0.01 * (childCount+1));
+		brain.setFitness(brain.getFitness() + 0.01 * (childCount+1));
 		maturity+=0.01;
 		timeLived+=0.01;
 		if (timeLived >= ttl) die();
@@ -291,7 +279,7 @@ public abstract class Creature
 			c.detect(creatures, collectables, delimitations, box);
 	}
 
-	private void updatePosition(boolean evolving)
+	private void updatePosition()
 	{
 		//System.out.println(CreatureFactory.getTypeStrFromTypeInt(getType()) + " " + (captors[0].getResultCount() * captors.length + 7));
 		double[] inputs = new double[nbInput];
@@ -314,10 +302,16 @@ public abstract class Creature
 		inputs[cpt++] = (yRatio>0)?yRatio/yCenter:0;
 		inputs[cpt++] = (yRatio>0)?0:-yRatio/yCenter;
 		addParticularInput(inputs, cpt);
-		double[] decisions = brain.getOutputs(inputs);
-		if (!evolving)
-			selec.writeCsvEntry(inputs, decisions);
-		applyDecisions(decisions);
+		List<Double> inputsList = new ArrayList<>();
+		for (Double d : inputs) {
+			inputsList.add(d);
+		}
+		List<Double> decisions;
+		try {
+			decisions = brain.getOutputs(inputsList);
+			applyDecisions(decisions);
+		} catch (NNException e) {
+		}
 
 		attackHitbox.setLine(
 				x+radius/2, 
@@ -328,7 +322,7 @@ public abstract class Creature
 
 	protected abstract void addParticularInput(double[] inputs, int currentCount);
 
-	protected abstract void applyDecisions(double[] decisions);
+	protected abstract void applyDecisions(List<Double> decisions);
 
 	protected void moveFront(double intensity)
 	{
@@ -459,7 +453,7 @@ public abstract class Creature
 		return radius;
 	}
 
-	public Individu getBrain()
+	public Individual getBrain()
 	{
 		return brain;
 	}
@@ -474,8 +468,4 @@ public abstract class Creature
 		return invincible;
 	}
 
-	public Selection getSelection()
-	{
-		return selec;
-	}
 }

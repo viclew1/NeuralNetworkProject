@@ -1,13 +1,14 @@
 package creatures.dodgers;
 
-import static utils.Constantes.*;
+import static utils.Constantes.FIREBALL;
+
 import java.awt.Color;
+
 import UI.World;
 import captors.Captor;
 import collectables.Collectable;
 import creatures.Creature;
-import genetics.Individu;
-import genetics.Selection;
+import fr.lewon.Individual;
 import zones.Zone;
 
 public abstract class DodgerCreature extends Creature
@@ -16,7 +17,7 @@ public abstract class DodgerCreature extends Creature
 	
 
 	public DodgerCreature(double x, double y, double radius, double hpMax, double speed, double hpLostPerInstant,
-			Captor[] captors, Individu brain, Selection selec, int type, Color color, int nbInput,
+			Captor[] captors, Individual brain, int type, Color color, int nbInput,
 			World world)
 	{
 		super(x, y, radius, hpMax, speed, 3, hpLostPerInstant, captors, new int[][] {
@@ -26,7 +27,7 @@ public abstract class DodgerCreature extends Creature
 			},
 			{
 				FIREBALL
-			}}, brain, selec, type, color, nbInput, world);
+			}}, brain, type, color, nbInput, world);
 		this.ttl = Integer.MAX_VALUE;
 	}
 	

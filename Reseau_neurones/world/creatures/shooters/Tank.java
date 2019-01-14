@@ -1,21 +1,27 @@
 package creatures.shooters;
 
+import static utils.Constantes.FUEL;
+import static utils.Constantes.LAYERS_SIZES_TANK;
+import static utils.Constantes.POWERUP;
+import static utils.Constantes.PROJECTILE;
+import static utils.Constantes.SOLDIER;
+import static utils.Constantes.TANK;
+
 import java.awt.Color;
+import java.util.List;
+
 import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
 import captors.LineCaptor;
 import collectables.Collectable;
 import creatures.Creature;
-import genetics.Individu;
-import genetics.Selection;
-
-import static utils.Constantes.*;
+import fr.lewon.Individual;
 
 public class Tank extends ShooterCreature
 {
 
-	public Tank(double x, double y, Individu brain, Selection selec, World world)
+	public Tank(double x, double y, Individual brain, World world)
 	{
 		super(x, y, 1.2, 400, 0.15,1,
 				1.3,1,500, Integer.MAX_VALUE, 150, Color.BLACK,
@@ -34,7 +40,7 @@ public class Tank extends ShooterCreature
 					{
 						PROJECTILE,
 					}},
-				brain, selec, TANK, Color.BLUE,	LAYERS_SIZES_TANK[0],
+				brain, TANK, Color.BLUE,	LAYERS_SIZES_TANK[0],
 				world);
 	}
 
@@ -47,7 +53,6 @@ public class Tank extends ShooterCreature
 		switch (c.getType())
 		{
 		case FUEL:
-			brain.addScore(1);
 			hp+=50;
 			if (hp>hpMax) {
 				hp=hpMax;
@@ -77,13 +82,13 @@ public class Tank extends ShooterCreature
 	}
 
 	@Override
-	protected void applyDecisions(double[] decisions)
+	protected void applyDecisions(List<Double> decisions)
 	{
 		cdShoot--;
-		turn(2*(0.5-decisions[0]));
-		straff(2*(0.5-decisions[1]));
-		moveFront(2*(0.5-decisions[2]));
-		if (decisions[3]>0.7)
+		turn(2*(0.5-decisions.get(0)));
+		straff(2*(0.5-decisions.get(1)));
+		moveFront(2*(0.5-decisions.get(2)));
+		if (decisions.get(3)>0.7)
 			shoot();
 	}
 
@@ -93,10 +98,8 @@ public class Tank extends ShooterCreature
 		switch (targetType)
 		{
 		case SOLDIER:
-			brain.addScore(5);
 			break;
 		case TANK:
-			brain.addScore(2);
 			heal(hpMax);
 			break;
 		default:

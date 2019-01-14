@@ -1,15 +1,23 @@
 package creatures.shooters;
 
-import static utils.Constantes.*;
+import static utils.Constantes.BOMB;
+import static utils.Constantes.DRAGON;
+import static utils.Constantes.HEDGEHOG;
+import static utils.Constantes.LAYERS_SIZES_DRAGON;
+import static utils.Constantes.PROJECTILE;
+import static utils.Constantes.RHINOCEROS;
+import static utils.Constantes.SLUG;
+import static utils.Constantes.VEGETABLE;
 
 import java.awt.Color;
+import java.util.List;
+
 import UI.World;
 import captors.Captor;
 import captors.EyeCaptor;
 import collectables.Collectable;
 import creatures.Creature;
-import genetics.Individu;
-import genetics.Selection;
+import fr.lewon.Individual;
 import limitations.throwables.Projectile;
 
 public class Dragon extends ShooterCreature
@@ -18,7 +26,7 @@ public class Dragon extends ShooterCreature
 	private final int projCount = 5;
 	private final double angle = Math.PI/5;
 
-	public Dragon(double x, double y, Individu brain, Selection selec, World world)
+	public Dragon(double x, double y, Individual brain, World world)
 	{
 		super(x, y, 6, 2000, 0.2 ,0.05,
 				1,4,150, 40, 400, Color.RED,
@@ -42,7 +50,7 @@ public class Dragon extends ShooterCreature
 					{
 						PROJECTILE,
 					}},
-				brain, selec, DRAGON, Color.RED, LAYERS_SIZES_DRAGON[0],
+				brain, DRAGON, Color.RED, LAYERS_SIZES_DRAGON[0],
 				world);
 	}
 
@@ -67,13 +75,13 @@ public class Dragon extends ShooterCreature
 	}
 
 	@Override
-	protected void applyDecisions(double[] decisions)
+	protected void applyDecisions(List<Double> decisions)
 	{
 		cdShoot--;
-		turn(2*(0.5-decisions[0]));
-		moveFront(decisions[1]);
-		straff(2*(0.5-decisions[2]));
-		if (decisions[3]>0.5)
+		turn(2*(0.5-decisions.get(0)));
+		moveFront(decisions.get(1));
+		straff(2*(0.5-decisions.get(2)));
+		if (decisions.get(3)>0.5)
 			shoot();
 	}
 
