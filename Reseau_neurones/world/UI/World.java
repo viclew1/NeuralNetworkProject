@@ -19,7 +19,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -60,6 +59,10 @@ public abstract class World extends Trial
 	private JFrame jf;
 	private JPanel jp;
 
+	private JFrame jfGraph;
+	private double[][] bestScoreDatas;
+	private double[][] averageDatas;
+
 	private int fpsToDraw = 0;
 
 	public List<Delimitation> delimitations;
@@ -75,7 +78,7 @@ public abstract class World extends Trial
 
 	private JFreeChart chart;
 	private List<PopulationInfos> graphInfos;
-	private static final int MAX_GRAPHINFOS_SIZE = 100;
+	private static final int MAX_GRAPHINFOS_SIZE = 1000;
 
 
 	/**
@@ -139,15 +142,27 @@ public abstract class World extends Trial
 		};
 		jf.add(jp);
 		
+		jfGraph = new JFrame("Graph");
+		jfGraph.setSize(640, 400);
 		DefaultXYDataset dataSet = new DefaultXYDataset();
-		dataSet.addSeries("Moyenne", new double[2][100]);
+		bestScoreDatas = new double[2][MAX_GRAPHINFOS_SIZE];
+		averageDatas = new double[2][MAX_GRAPHINFOS_SIZE];
+		dataSet.addSeries("Moyenne", averageDatas);
+		dataSet.addSeries("Meilleur individu", bestScoreDatas);
 		chart = ChartFactory.createXYLineChart("popInfos", "Generation", "Score", dataSet);
 		ChartPanel graphPane = new ChartPanel(chart) {
 			
+			public void paint(Graphics g) {
+				super.getRootPane().updateUI();
+				super.paint(g);
+				chart.getXYPlot().setDataset(chart.getXYPlot().getDataset());
+			}
+			
 		};
-		jf.add(graphPane);
+		jfGraph.add(graphPane);
+		jfGraph.setVisible(true);
+		
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 		Controller ctrl = new WorldController(this);
 		jp.addMouseListener(ctrl);
 		jp.addMouseMotionListener(ctrl);
@@ -167,14 +182,14 @@ public abstract class World extends Trial
 		jf.setVisible(visible);
 		box=new DelimitationBox(0, 0, x, y);
 
-		SelectionProcessor sp = new SelectionProcessor(this, SelectionType.ROULETTE.getSelectionImpl(), 0.25, 0.6);
+		SelectionProcessor sp = new SelectionProcessor(this, SelectionType.TOURNAMENT_2.getSelectionImpl(), 0.25, 0.6);
 
 		List<Individual> brains = new ArrayList<>();
 		for (int i = 0 ; i < 400 ; i++) {
-			brains.add(new NeuralNetworkClassic(23, 2, Arrays.asList(5)));
+			brains.add(new NeuralNetworkClassic(23, 2));
 		}
 		try {
-			Individual best = sp.start(brains, 600, Integer.MAX_VALUE);
+			Individual best = sp.start(brains, 100, Integer.MAX_VALUE);
 			while (true) {
 				getFitness(best);
 			}
@@ -387,7 +402,7 @@ public abstract class World extends Trial
 
 		List<Creature> testedCrea = new ArrayList<>();
 		for (int i = 0 ; i < 10 ; i++) {
-			testedCrea.add(CreatureFactory.generateComplexDodger(individual, this));
+			testedCrea.add(CreatureFactory.generateSimpleDodger(individual, this));
 		}
 		creatures.addAll(testedCrea);
 
@@ -434,7 +449,28 @@ public abstract class World extends Trial
 		}
 		graphInfos.add(infos);
 
-		System.out.println("Max : " + infos.getMaxScore());
+		double[] lastPointBestScore = new double[2];
+		double[] lastPointAverage = new double[2];
+		for (int i = 0 ; i < graphInfos.size() ; i ++) {
+			PopulationInfos inf = graphInfos.get(i);
+			bestScoreDatas[0][1+i] = inf.getGeneration();
+			averageDatas[0][1+i] = inf.getGeneration();
+			
+			bestScoreDatas[1][1+i] = inf.getMaxScore();
+			averageDatas[1][1+i] = inf.getAverage();
+			
+			lastPointBestScore[0] = bestScoreDatas[0][1+i];
+			lastPointBestScore[1] = bestScoreDatas[1][1+i];
+			lastPointAverage[0] = averageDatas[0][1+i];
+			lastPointAverage[1] = averageDatas[1][1+i];
+		}
+		for (int i = graphInfos.size() ; i < MAX_GRAPHINFOS_SIZE ; i ++) {
+			bestScoreDatas[0][i] = lastPointBestScore[0];
+			bestScoreDatas[1][i] = lastPointBestScore[1];
+			averageDatas[0][i] = lastPointAverage[0];
+			averageDatas[1][i] = lastPointAverage[1];
+		}
+		jfGraph.repaint();
 	}
 
 
