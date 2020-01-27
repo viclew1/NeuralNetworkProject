@@ -16,14 +16,14 @@ public class SimpleDodger extends DodgerCreature {
 
     public SimpleDodger(double x, double y, Individual brain, World world) {
         super(x, y, 1, 1, 1, 0, new Captor[]{
-                new EyeCaptor(Math.PI / 4, 15, Math.PI / 4),
-                new EyeCaptor(3 * Math.PI / 4, 15, Math.PI / 4),
-                new EyeCaptor(Math.PI / 2, 15, Math.PI / 4),
-                new EyeCaptor(-Math.PI / 2, 15, Math.PI / 4),
-                new EyeCaptor(-Math.PI / 4, 15, Math.PI / 4),
-                new EyeCaptor(-3 * Math.PI / 4, 15, Math.PI / 4),
-                new EyeCaptor(-Math.PI, 15, Math.PI / 4),
-                new EyeCaptor(0, 15, Math.PI / 4),
+                new EyeCaptor(Math.PI / 4, 10, Math.PI / 4),
+                new EyeCaptor(3 * Math.PI / 4, 10, Math.PI / 4),
+                new EyeCaptor(Math.PI / 2, 10, Math.PI / 4),
+                new EyeCaptor(-Math.PI / 2, 10, Math.PI / 4),
+                new EyeCaptor(-Math.PI / 4, 10, Math.PI / 4),
+                new EyeCaptor(-3 * Math.PI / 4, 10, Math.PI / 4),
+                new EyeCaptor(-Math.PI, 10, Math.PI / 4),
+                new EyeCaptor(0, 10, Math.PI / 4),
         }, brain, SIMPLEDODGER, Color.GREEN, LAYERS_SIZES_SIMPLEDODGER[0], world);
     }
 

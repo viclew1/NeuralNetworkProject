@@ -29,14 +29,12 @@ import java.util.List;
 
 import static utils.Constantes.*;
 
-public abstract class World extends Trial {
+public abstract class World implements Trial {
 
     private final String name = "NEURAL NETWORK PROJECT";
 
-    private JFrame jf;
     private JPanel jp;
-
-    private int fpsToDraw = 0;
+    private int fpsToDraw;
 
     public List<Delimitation> delimitations;
     public List<Creature> creatures;
@@ -87,8 +85,6 @@ public abstract class World extends Trial {
         this.delimitations = new ArrayList<>(1000);
         this.zones = new ArrayList<>(1000);
 
-        this.jf = new JFrame(this.name);
-        this.jf.setSize(w, h);
         this.jp = new JPanel() {
 
             private static final long serialVersionUID = -9087172006439142561L;
@@ -105,9 +101,7 @@ public abstract class World extends Trial {
             }
 
         };
-        this.jf.add(this.jp);
 
-        this.jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Controller ctrl = new WorldController(this);
         this.jp.addMouseListener(ctrl);
         this.jp.addMouseMotionListener(ctrl);
@@ -124,16 +118,14 @@ public abstract class World extends Trial {
     public void start(int x, int y, boolean visible) {
         this.box = new DelimitationBox(0, 0, x, y);
 
-        SelectionProcessor sp = new SelectionProcessor(this, SelectionType.TOURNAMENT_2.getSelectionImpl(), 0.005, 0.75);
+        SelectionProcessor sp = new SelectionProcessor(this, SelectionType.TOURNAMENT_8.getSelectionImpl(), 0.05, 0.75);
 
         List<Individual> brains = new ArrayList<>();
-        for (int i = 0; i < 400; i++) {
+        for (int i = 0; i < 1000; i++) {
             brains.add(new NeuralNetworkClassic(16, 2));
         }
         try {
-            this.jf.setVisible(visible);
-            Individual best = sp.start(brains, 250, Integer.MAX_VALUE, 0);
-            this.jf.setVisible(true);
+            Individual best = sp.start(true, this.jp, brains, 2000, Integer.MAX_VALUE, 0);
             System.out.println("Best found : " + best.getFitness());
             while (true) {
                 List<Individual> population = Arrays.asList(best);
